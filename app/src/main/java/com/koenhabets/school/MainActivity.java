@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         textView = (TextView) findViewById(R.id.textView);
-
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -48,13 +47,11 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
+                                    Log.i("d", response + "d");
                                     JSONObject jsonMain = response.getJSONObject("result");
                                     JSONArray jsonArray = jsonMain.getJSONArray("items");
                                     for(int i = 0 ; i <jsonArray.length();i++ ) {
-                                        Log.i("d", response + "d");
-
                                         String d = jsonMain.getString("title");
-
                                         JSONObject vak = jsonArray.getJSONObject(i);
                                         String title = vak.getString("title");
                                         String lokaal = vak.getString("subtitle");
