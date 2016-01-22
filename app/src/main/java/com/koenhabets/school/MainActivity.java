@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.Timestamp;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,42 +46,14 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Long tsLong = System.currentTimeMillis()/1000;
-                final String ts = tsLong.toString();
-                Calendar now = Calendar.getInstance();
-                final int date = now.get(Calendar.DATE);
-                //date = date.toString();
-                Log.i("date", date + "");
                 textView.setText("");
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.scholica.com/2.0/communities/1/calendar/schedule?token=01cbc2c77d08f40a5885a26e5b11f658b093&timestamp=" + ts,
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.scholica.com/2.0/communities/1/calendar/schedule?token=01cbc2c77d08f40a5885a26e5b11f658b093",
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                try {
-                                    Log.i("d", response + "d");
-                                    JSONObject jsonMain = response.getJSONObject("result");
-                                    String timestamp = jsonMain.getString("timestamp");
-
-                                    SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPref.edit();
-
-                                    editor.putString(date + "", response.toString());
-                                    editor.commit();
-
-                                    JSONArray jsonArray = jsonMain.getJSONArray("items");
-                                    for(int i = 0 ; i <jsonArray.length();i++ ) {
-                                        JSONObject vak = jsonArray.getJSONObject(i);
-                                        String title = vak.getString("title");
-                                        String lokaal = vak.getString("subtitle");
-                                        textView.append(title + " " + lokaal + "\n");
-                                    }
-
-
-                                } catch (JSONException e) {
-                                        e.printStackTrace();
-                                }
+                                PJson(response.toString());
                             }
                         },
 
@@ -93,26 +66,14 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                 );
+                Long tsLong = getStartOfDayInMillis() / 1000;
+                final String ts = tsLong.toString();
                 SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-                String result = sharedPref.getString(date + "", "no");
-                Log.i("result", result);
+                String result = sharedPref.getString(ts, "no");
                 if (result != "no") {
                     Log.i("Stored", result);
-                    try {
-                        JSONObject response = new JSONObject(result);
-                        JSONObject jsonMain = response.getJSONObject("result");
-                        String timestamp = jsonMain.getString("timestamp");
+                    PJson(result);
 
-                        JSONArray jsonArray = jsonMain.getJSONArray("items");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject vak = jsonArray.getJSONObject(i);
-                            String title = vak.getString("title");
-                            String lokaal = vak.getString("subtitle");
-                            textView.append(title + " " + lokaal + "\n");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
 
                 } else {
@@ -151,4 +112,35 @@ public class MainActivity extends AppCompatActivity {
             Log.e("error", error.getMessage());
         }
     };
+    public long getStartOfDayInMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+    public void PJson(String result) {
+        Log.i("PJsonResult", result);
+        Long tsLong = getStartOfDayInMillis() / 1000;
+        final String ts = tsLong.toString();
+        try {
+            JSONObject response = new JSONObject(result);
+            JSONObject jsonMain = response.getJSONObject("result");
+            SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+
+            editor.putString(ts, response.toString());
+            editor.commit();
+            JSONArray jsonArray = jsonMain.getJSONArray("items");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject vak = jsonArray.getJSONObject(i);
+                String title = vak.getString("title");
+                String lokaal = vak.getString("subtitle");
+                textView.append(title + " " + lokaal + "\n");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
