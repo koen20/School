@@ -1,13 +1,11 @@
 package com.koenhabets.school;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.Timestamp;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
                                 PJson(response.toString());
                             }
                         },
-
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
@@ -73,9 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 if (result != "no") {
                     Log.i("Stored", result);
                     PJson(result);
-
-
-
                 } else {
                     requestQueue.add(jsonObjectRequest);
                 }
