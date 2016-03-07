@@ -1,16 +1,13 @@
 package com.koenhabets.school;
 
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +31,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     private TextView textView;
     RequestQueue requestQueue;
+    public String not;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 textView.setText("");
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Refreshed", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.scholica.com/2.0/communities/1/calendar/schedule?token=24034d986284f12c2d292c54441b083913b7",
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.scholica.com/2.0/communities/1/calendar/schedule?token=8199bf92485a526da6c64137128b41138c09",
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -110,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("error", error.getMessage());
         }
     };
+
     public long getStartOfDayInMillis() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -131,12 +130,25 @@ public class MainActivity extends AppCompatActivity {
             editor.putString(ts, response.toString());
             editor.commit();
             JSONArray jsonArray = jsonMain.getJSONArray("items");
+
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+            mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
+            mBuilder.setContentTitle("Rooster");
+            mBuilder.setOngoing(true);
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject vak = jsonArray.getJSONObject(i);
                 String title = vak.getString("title");
                 String lokaal = vak.getString("subtitle");
+                not = not + title + " " + lokaal + "\n";
                 textView.append(title + " " + lokaal + "\n");
+                inboxStyle.addLine(title + " " + lokaal);
             }
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder.setStyle(inboxStyle);
+            mNotificationManager.notify(1, mBuilder.build());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
