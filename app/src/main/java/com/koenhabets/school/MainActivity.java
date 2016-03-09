@@ -20,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -27,11 +28,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textView;
     RequestQueue requestQueue;
-    public String not;
+    public String requestToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,41 +43,13 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         textView = (TextView) findViewById(R.id.textView);
-
+        getToken();
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textView.setText("");
-                Snackbar.make(view, "Refreshed", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.scholica.com/2.0/communities/1/calendar/schedule?token=8199bf92485a526da6c64137128b41138c09",
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                PJson(response.toString());
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Error: " + error.getMessage(), Snackbar.LENGTH_LONG);
-                                snackbar.show();
-                                Log.e("error", error.getMessage());
-                            }
-                        }
-                );
-                Long tsLong = getStartOfDayInMillis() / 1000;
-                final String ts = tsLong.toString();
-                SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-                String result = sharedPref.getString(ts, "no");
-                if (result != "no") {
-                    Log.i("Stored", result);
-                    PJson(result);
-                } else {
-                    requestQueue.add(jsonObjectRequest);
-                }
+                getCalendar();
             }
         });
     }
@@ -100,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
     private Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
@@ -117,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
     }
+
     public void PJson(String result) {
         Log.i("PJsonResult", result);
         Long tsLong = getStartOfDayInMillis() / 1000;
@@ -141,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject vak = jsonArray.getJSONObject(i);
                 String title = vak.getString("title");
                 String lokaal = vak.getString("subtitle");
-                not = not + title + " " + lokaal + "\n";
                 textView.append(title + " " + lokaal + "\n");
                 inboxStyle.addLine(title + " " + lokaal);
             }
@@ -152,5 +128,75 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getCalendar(){
+        textView.setText("");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.scholica.com/2.0/communities/1/calendar/schedule?token=" + requestToken,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        PJson(response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Error: " + error.getMessage(), Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                        Log.e("error", error.getMessage());
+                    }
+                }
+        );
+        Long tsLong = getStartOfDayInMillis() / 1000;
+        final String ts = tsLong.toString();
+        SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        String result = sharedPref.getString(ts, "no");
+        if (result != "no") {
+            Log.i("Stored", result);
+            PJson(result);
+        } else {
+            requestQueue.add(jsonObjectRequest);
+        }
+    }
+
+    public void getToken(){
+        String url = "https://api.scholica.com/2.0/communities/1/authenticate";
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Response", response);
+                        String result = response.toString();
+                        try{
+                            JSONObject responsetoken = new JSONObject(result);
+                            JSONObject jsonMain = responsetoken.getJSONObject("result");
+                            requestToken = jsonMain.getString("request_token");
+                            Log.i("requestToken", requestToken);
+                            getCalendar();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username", "407332");
+                params.put("password", "---");
+                params.put("access_token", "470d7d90cae6e34f36bc9110026a4370e8864551b0e7e7b33263163562c362a3d68f1937");
+                return params;
+            }
+        };
+        requestQueue.add(postRequest);
     }
 }
