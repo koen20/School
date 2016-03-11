@@ -33,8 +33,11 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textView;
+    private TextView textView2;
     RequestQueue requestQueue;
     public String requestToken;
+    String access_token = "470d7d90cae6e34f36bc9110026a4370e8864551b0e7e7b33263163562c362a3d68f1937";
+    int currentDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         textView = (TextView) findViewById(R.id.textView);
+        textView2 = (TextView) findViewById(R.id.textView2);
+        Calendar cal = Calendar.getInstance();
+        currentDay = cal.get(Calendar.DAY_OF_MONTH);
         getToken();
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -91,10 +97,13 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, currentDay);
         return calendar.getTimeInMillis();
     }
 
     public void PJson(String result) {
+        textView.setText("");
+        textView2.setText("Current day: " + currentDay);
         Log.i("PJsonResult", result);
         Long tsLong = getStartOfDayInMillis() / 1000;
         final String ts = tsLong.toString();
@@ -115,9 +124,17 @@ public class MainActivity extends AppCompatActivity {
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
             for (int i = 0; i < jsonArray.length(); i++) {
+                int uur = i + 1;
+                String title = uur + ". Onbekend";
+                String lokaal = "";
                 JSONObject vak = jsonArray.getJSONObject(i);
-                String title = vak.getString("title");
-                String lokaal = vak.getString("subtitle");
+                try{
+                    title = vak.getString("title");
+                    lokaal = vak.getString("subtitle");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 textView.append(title + " " + lokaal + "\n");
                 inboxStyle.addLine(title + " " + lokaal);
             }
@@ -131,15 +148,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getCalendar(){
-        textView.setText("");
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.scholica.com/2.0/communities/1/calendar/schedule?token=" + requestToken,
-                new Response.Listener<JSONObject>() {
+        Long tsLong = getStartOfDayInMillis() / 1000;
+        final String ts = tsLong.toString();
+        String url = "https://api.scholica.com/2.0/communities/1/calendar/schedule";
+        Log.i(ts, ts + "");
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(String response) {
                         PJson(response.toString());
                     }
                 },
-                new Response.ErrorListener() {
+                new Response.ErrorListener()
+                {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Error: " + error.getMessage(), Snackbar.LENGTH_LONG);
@@ -147,16 +169,23 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("error", error.getMessage());
                     }
                 }
-        );
-        Long tsLong = getStartOfDayInMillis() / 1000;
-        final String ts = tsLong.toString();
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("token", requestToken);
+                params.put("time", ts);
+                return params;
+            }
+        };
         SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String result = sharedPref.getString(ts, "no");
         if (result != "no") {
             Log.i("Stored", result);
             PJson(result);
         } else {
-            requestQueue.add(jsonObjectRequest);
+            requestQueue.add(postRequest);
         }
     }
 
@@ -193,10 +222,20 @@ public class MainActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("username", "407332");
                 params.put("password", "---");
-                params.put("access_token", "470d7d90cae6e34f36bc9110026a4370e8864551b0e7e7b33263163562c362a3d68f1937");
+                params.put("access_token", access_token);
                 return params;
             }
         };
         requestQueue.add(postRequest);
+    }
+
+    public void nextDay(View view) {
+        currentDay++;
+        getCalendar();
+    }
+
+    public void prevDay(View view) {
+        currentDay--;
+        getCalendar();
     }
 }
