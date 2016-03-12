@@ -1,7 +1,10 @@
 package com.koenhabets.school;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,7 +22,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -30,28 +32,41 @@ import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+    String access_token = "470d7d90cae6e34f36bc9110026a4370e8864551b0e7e7b33263163562c362a3d68f1937";
+    String username = "407332";
+    String password = "---";
+
     private TextView textView;
     private TextView textView2;
     RequestQueue requestQueue;
     public String requestToken;
-    String access_token = "470d7d90cae6e34f36bc9110026a4370e8864551b0e7e7b33263163562c362a3d68f1937";
     int currentDay;
+    private PendingIntent pendingIntent;
+    private AlarmManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestQueue = Volley.newRequestQueue(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         textView = (TextView) findViewById(R.id.textView);
         textView2 = (TextView) findViewById(R.id.textView2);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         Calendar cal = Calendar.getInstance();
         currentDay = cal.get(Calendar.DAY_OF_MONTH);
         getToken();
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+        startAlarm();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPref.edit();
 
             editor.putString(ts, response.toString());
-            editor.commit();
+            editor.apply();
             JSONArray jsonArray = jsonMain.getJSONArray("items");
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -151,13 +166,13 @@ public class MainActivity extends AppCompatActivity {
         Long tsLong = getStartOfDayInMillis() / 1000;
         final String ts = tsLong.toString();
         String url = "https://api.scholica.com/2.0/communities/1/calendar/schedule";
-        Log.i(ts, ts + "");
+        Log.i("Timestamp", ts + "");
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {
                     @Override
                     public void onResponse(String response) {
-                        PJson(response.toString());
+                        PJson(response);
                     }
                 },
                 new Response.ErrorListener()
@@ -173,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams()
             {
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("token", requestToken);
                 params.put("time", ts);
                 return params;
@@ -181,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         };
         SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String result = sharedPref.getString(ts, "no");
-        if (result != "no") {
+        if (!Objects.equals(result, "no")) {
             Log.i("Stored", result);
             PJson(result);
         } else {
@@ -197,13 +212,17 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Response", response);
-                        String result = response.toString();
                         try{
-                            JSONObject responsetoken = new JSONObject(result);
+                            JSONObject responsetoken = new JSONObject(response);
                             JSONObject jsonMain = responsetoken.getJSONObject("result");
                             requestToken = jsonMain.getString("request_token");
                             Log.i("requestToken", requestToken);
                             getCalendar();
+
+                            SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString("request_token", requestToken);
+                            editor.apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -219,9 +238,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams()
             {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("username", "407332");
-                params.put("password", "---");
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("password", password);
                 params.put("access_token", access_token);
                 return params;
             }
@@ -237,5 +256,10 @@ public class MainActivity extends AppCompatActivity {
     public void prevDay(View view) {
         currentDay--;
         getCalendar();
+    }
+    public void startAlarm(){
+        Log.i("Alarm", "set");
+        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
     }
 }
