@@ -22,14 +22,15 @@ import java.util.Objects;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context arg0, Intent intent) {
-
+        final NotificationCompat.Builder mBuilder;
         Log.i("Alarm", "Started");
 
         RequestQueue requestQueue;
-        final String requestToken = "62cb407efe211d9a6248849234191f170353";
+        SharedPreferences sharedPref = arg0.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        final String requestToken = sharedPref.getString("request_token", "no request token");
         Log.i("RequestToken", requestToken);
         requestQueue = Volley.newRequestQueue(arg0);
-
+        mBuilder = new NotificationCompat.Builder(arg0);
         String url = "https://api.scholica.com/2.0/communities/1/module";
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
@@ -37,19 +38,19 @@ public class AlarmReceiver extends BroadcastReceiver {
                     @Override
                     public void onResponse(String response) {
                         boolean b = response.contains("H31");
+
                         if(b){
                             SharedPreferences sharedPref = arg0.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                             String noti = sharedPref.getString("notification", "false");
                             if (Objects.equals(noti, "false")){
-                                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(arg0);
-                                mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
-                                mBuilder.setContentTitle("JAAAA");
-                                mBuilder.setVibrate(new long[] { 100, 100, 100, 100, 100});
-                                mBuilder.setOngoing(true);
-
-                                NotificationManager mNotificationManager = (NotificationManager) arg0.getSystemService(Context.NOTIFICATION_SERVICE);
-                                mNotificationManager.notify(2, mBuilder.build());
+                                mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
                             }
+                            mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
+                            mBuilder.setContentTitle("JAAAA");
+                            mBuilder.setOngoing(true);
+                            NotificationManager mNotificationManager = (NotificationManager) arg0.getSystemService(Context.NOTIFICATION_SERVICE);
+                            mNotificationManager.notify(2, mBuilder.build());
+
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("notification", "true");
                             editor.apply();
@@ -60,6 +61,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("notification", "false");
                             editor.apply();
+                            NotificationManager notificationManager = (NotificationManager) arg0.getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.cancel(2);
                         }
                     }
                 },
