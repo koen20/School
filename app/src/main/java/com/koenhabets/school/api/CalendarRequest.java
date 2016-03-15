@@ -10,6 +10,7 @@ import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.koenhabets.school.AlarmReceiver;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
 
@@ -21,9 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Wouter Habets on 13-3-16.
- */
 public class CalendarRequest extends Request<String> {
 
     private static String url = "https://api.scholica.com/2.0/communities/1/calendar/schedule";
@@ -67,11 +65,14 @@ public class CalendarRequest extends Request<String> {
             String title = uur + ". Onbekend";
             String lokaal = "";
             JSONObject vak = jsonArray.getJSONObject(i);
-            try {
+
+            if (vak.has("title") && vak.has("subtitle")) {
                 title = vak.getString("title");
                 lokaal = vak.getString("subtitle");
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } else if (vak.has("type")) {
+                if (vak.getString("type").equals("divider")) {
+
+                }
             }
 
             resultString += title + " " + lokaal + "\n";

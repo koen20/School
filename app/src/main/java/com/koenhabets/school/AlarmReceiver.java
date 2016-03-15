@@ -14,23 +14,26 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.koenhabets.school.api.BackgroudUpdateService;
+import com.koenhabets.school.api.CalendarRequest;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(final Context arg0, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         final NotificationCompat.Builder mBuilder;
         Log.i("Alarm", "Started");
 
         RequestQueue requestQueue;
-        SharedPreferences sharedPref = arg0.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
         Log.i("RequestToken", requestToken);
-        requestQueue = Volley.newRequestQueue(arg0);
-        mBuilder = new NotificationCompat.Builder(arg0);
+        requestQueue = Volley.newRequestQueue(context);
+        mBuilder = new NotificationCompat.Builder(context);
         String url = "https://api.scholica.com/2.0/communities/1/module";
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
@@ -40,7 +43,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         boolean b = response.contains("H31");
 
                         if(b){
-                            SharedPreferences sharedPref = arg0.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                            SharedPreferences sharedPref = context.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                             String noti = sharedPref.getString("notification", "false");
                             if (Objects.equals(noti, "false")){
                                 mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
@@ -48,7 +51,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                             mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
                             mBuilder.setContentTitle("JAAAA");
                             mBuilder.setOngoing(true);
-                            NotificationManager mNotificationManager = (NotificationManager) arg0.getSystemService(Context.NOTIFICATION_SERVICE);
+                            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                             mNotificationManager.notify(2, mBuilder.build());
 
                             SharedPreferences.Editor editor = sharedPref.edit();
@@ -57,11 +60,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 
                             Log.i("Uitval", "ja");
                         } else {
-                            SharedPreferences sharedPref = arg0.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                            SharedPreferences sharedPref = context.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("notification", "false");
                             editor.apply();
-                            NotificationManager notificationManager = (NotificationManager) arg0.getSystemService(Context.NOTIFICATION_SERVICE);
+                            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                             notificationManager.cancel(2);
                         }
                     }
@@ -83,8 +86,28 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
         };
         requestQueue.add(postRequest);
+        Long tsLong = getStartOfDayInMillis() / 1000;
+        final String ts = tsLong.toString();
+        CalendarRequest request = new CalendarRequest(requestToken, ts, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "" + error.getMessage());
+            }
+        });
+        requestQueue.add(request);
+
 
     }
-
-
+    public long getStartOfDayInMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
 }

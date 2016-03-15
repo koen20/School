@@ -22,7 +22,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.koenhabets.school.api.BackgroudUpdateService;
 import com.koenhabets.school.api.CalendarRequest;
+import com.koenhabets.school.api.PasswordHolder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,9 +38,10 @@ public class MainActivity extends AppCompatActivity {
     public String requestToken;
     String access_token = "470d7d90cae6e34f36bc9110026a4370e8864551b0e7e7b33263163562c362a3d68f1937";
     String username = "407332";
-    String password = "---";
+    String password = PasswordHolder.getPassword();
     RequestQueue requestQueue;
     int currentDay;
+    public int today;
     private TextView textView;
     private TextView textView2;
     private PendingIntent pendingIntent;
@@ -65,8 +68,17 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar cal = Calendar.getInstance();
         currentDay = cal.get(Calendar.DAY_OF_MONTH);
-        getToken();
         setSupportActionBar(toolbar);
+
+        SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        int day = sharedPref.getInt("request_token_day", 99);
+        Calendar now = Calendar.getInstance();
+        today = now.get(Calendar.DAY_OF_YEAR);
+        if (day != today){
+            Log.i("Request token", "Getting new request token.");
+            getToken();
+        }
+        getToken();
 
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
@@ -78,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
                 getCalendar();
             }
         });
+
+        Intent serviceIntent = new Intent(this, BackgroudUpdateService.class);
+        serviceIntent.setAction(BackgroudUpdateService.ACTION_REFRESH);
+        startService(serviceIntent);
     }
 
     @Override
@@ -165,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
                             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("request_token", requestToken);
+                            editor.apply();
+                            editor.putInt("request_token_day", today);
                             editor.apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
