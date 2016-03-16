@@ -90,10 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 getCalendar();
             }
         });
-
-        Intent serviceIntent = new Intent(this, BackgroudUpdateService.class);
-        serviceIntent.setAction(BackgroudUpdateService.ACTION_REFRESH);
-        startService(serviceIntent);
     }
 
     @Override
@@ -221,5 +217,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Alarm", "set");
         manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+    }
+
+    public void grades(View view) {
+        Intent intent = new Intent(this, Main2Activity.class);
+        startActivity(intent);
     }
 }

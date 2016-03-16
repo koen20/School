@@ -31,6 +31,8 @@
                 <action android:name="com.koenhabets.school.api.action.REFRESH" />
             </intent-filter>
         </service>
+
+        <activity android:name=".Main2Activity"></activity>
     </application>
 
 </manifest>

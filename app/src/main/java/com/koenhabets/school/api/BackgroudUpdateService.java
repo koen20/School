@@ -43,7 +43,7 @@ public class BackgroudUpdateService extends IntentService {
     }
 
     private void handleActionRefresh() {
-        Log.d(this.getClass().getSimpleName(), "Hallo, ik ben een service");
+        Log.d(this.getClass().getSimpleName(), "Started service");
         final NotificationCompat.Builder mBuilder;
         Log.i("Alarm", "Started");
 
@@ -61,7 +61,7 @@ public class BackgroudUpdateService extends IntentService {
                     public void onResponse(String response) {
                         boolean b = response.contains("H31");
 
-                        if(!b){
+                        if(b){
                             SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                             String noti = sharedPref.getString("notification", "false");
                             if (Objects.equals(noti, "false")){
