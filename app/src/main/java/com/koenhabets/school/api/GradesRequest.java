@@ -59,7 +59,7 @@ public class GradesRequest extends Request<String> {
             mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
             mBuilder.setContentTitle("Nieuw cijfer");
             NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, mBuilder.build());
+            mNotificationManager.notify(3, mBuilder.build());
         }
 
         SharedPreferences.Editor editor = sharedPref.edit();
