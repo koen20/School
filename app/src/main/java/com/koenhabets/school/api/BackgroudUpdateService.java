@@ -114,7 +114,7 @@ public class BackgroudUpdateService extends IntentService {
 
         Long tsLong = calendar.getTimeInMillis() / 1000;
         final String ts = tsLong.toString();
-        CalendarRequest request = new CalendarRequest(requestToken, ts, new Response.Listener<String>() {
+        CalendarRequest requestCalendar = new CalendarRequest(requestToken, ts, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
             }
@@ -124,6 +124,19 @@ public class BackgroudUpdateService extends IntentService {
                 Log.e("error", "" + error.getMessage());
             }
         });
-        requestQueue.add(request);
+        requestQueue.add(requestCalendar);
+
+        GradesRequest requestGrades = new GradesRequest(requestToken, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "" + error.getMessage());
+            }
+        });
+        requestQueue.add(requestGrades);
+
     }
 }

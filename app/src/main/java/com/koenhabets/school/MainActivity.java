@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
     public void startAlarm() {
         Log.i("Alarm", "set");
         manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_HALF_HOUR, pendingIntent);
     }
 
     public void grades(View view) {

@@ -29,26 +29,42 @@ public class GradesRequest extends Request<String> {
 
     private Response.Listener<String> responListener;
     private String requestToken;
-    private String timeStamp;
+
+    static String[] test = {"Aardrijkskunde","Duitse taal","Economie","Engelse taal","Franse taal","Geschiedenis","Levensbeschouwing","Muziek","Nederlandse taal", "Scheikunde", "Wiskunde", "Natuurkunde","Biologie","Lichamelijke opvoeding","Beeldende vorming"};
 
     public GradesRequest(String requestToken,
-                           String timeStamp,
                            Response.Listener<String> responseListener,
                            Response.ErrorListener errorListener) {
 
         super(Method.POST, url, errorListener);
 
         this.requestToken = requestToken;
-        this.timeStamp = timeStamp;
         this.responListener = responseListener;
     }
 
     public static String parseResponse(String response) throws JSONException {
+        String resultString = "";
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("grades");
+        for (int i = 0; i < test.length; i++) {
+            JSONObject vak = jsonMain.getJSONObject(test[i]);
+            String avg = vak.getString("avg");
+            resultString += test[i] + ": " + avg + "\n";
+        }
+        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        String resultStringOld = sharedPref.getString("grades", "no grades");
+        if (resultString != resultStringOld){
+            Log.i("grades","Nieuw cijfer");
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
+            mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
+            mBuilder.setContentTitle("Nieuw cijfer");
+            NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(1, mBuilder.build());
+        }
 
-
-        String resultString = "";
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("grades",resultString);
+        editor.apply();
         return resultString;
     }
 
