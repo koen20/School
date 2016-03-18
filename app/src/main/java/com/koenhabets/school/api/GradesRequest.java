@@ -15,13 +15,13 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class GradesRequest extends Request<String> {
 
@@ -53,7 +53,14 @@ public class GradesRequest extends Request<String> {
         }
         SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String resultStringOld = sharedPref.getString("grades", "no grades");
-        if (resultString != resultStringOld){
+        if (resultStringOld == "no grades"){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("grades",resultString);
+            editor.apply();
+        }
+        Log.d("old", resultStringOld);
+        Log.d("new", resultString);
+        if (!Objects.equals(resultString, resultStringOld)){
             Log.i("grades","Nieuw cijfer");
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
             mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);

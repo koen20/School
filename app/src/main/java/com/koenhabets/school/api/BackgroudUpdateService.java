@@ -136,7 +136,7 @@ public class BackgroudUpdateService extends IntentService {
                 Log.e("error", "" + error.getMessage());
             }
         });
-        requestQueue.add(requestGrades);
+        //requestQueue.add(requestGrades);
 
     }
 }
