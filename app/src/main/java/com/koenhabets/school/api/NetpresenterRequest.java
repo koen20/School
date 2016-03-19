@@ -53,7 +53,12 @@ public class NetpresenterRequest extends Request<String> {
             mBuilder.setContentTitle("JAAAA");
             mBuilder.setOngoing(true);
             NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(2, mBuilder.build());
+
+            boolean notificatie = sharedPref.getBoolean("notificatie", true);
+
+            if (notificatie) {
+                mNotificationManager.notify(2, mBuilder.build());
+            }
 
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("notification", "true");

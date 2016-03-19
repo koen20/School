@@ -79,7 +79,13 @@ public class CalendarRequest extends Request<String> {
         }
         NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder.setStyle(inboxStyle);
-        mNotificationManager.notify(1, mBuilder.build());
+
+        boolean notificatie = sharedPref.getBoolean("notificatie", true);
+
+        if (notificatie) {
+            mNotificationManager.notify(1, mBuilder.build());
+        }
+
         return resultString;
     }
 

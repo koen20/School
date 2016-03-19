@@ -12,7 +12,7 @@
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Switch"
+        android:text="@string/Settings1"
         android:id="@+id/switch1"
         android:checked="false"
         android:layout_alignParentTop="true"

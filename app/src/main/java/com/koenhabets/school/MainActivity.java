@@ -23,8 +23,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.api.CalendarRequest;
-import com.koenhabets.school.api.GradesRequest;
-import com.koenhabets.school.api.NetpresenterRequest;
 import com.koenhabets.school.api.PasswordHolder;
 
 import org.json.JSONException;
@@ -47,14 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView2;
     private PendingIntent pendingIntent;
     private AlarmManager manager;
-    private Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Error: " + error.getMessage(), Snackbar.LENGTH_LONG);
-            snackbar.show();
-            Log.e("error", error.getMessage());
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +74,13 @@ public class MainActivity extends AppCompatActivity {
 
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-        startAlarm();
 
+        boolean notificatie = sharedPref.getBoolean("notificatie", true);
+
+        if (notificatie) {
+            startAlarm();
+        }
+        Log.i("Notification", notificatie + "");
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         CalendarRequest request = new CalendarRequest(requestToken, ts, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                textView2.setText("Current day: " + currentDay);
+                textView2.setText(getString(R.string.Currentday) + currentDay);
                 textView.setText(response);
             }
         }, new Response.ErrorListener() {
@@ -155,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 resultString = CalendarRequest.parseResponse(result, ts);
                 textView.setText(resultString);
-                textView2.setText("Current day: " + currentDay);
+                textView2.setText(getString(R.string.Currentday) + currentDay);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
