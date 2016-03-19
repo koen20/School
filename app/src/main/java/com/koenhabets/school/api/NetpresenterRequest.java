@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class NetpresenterRequest extends Request<String> {
 
@@ -41,42 +40,29 @@ public class NetpresenterRequest extends Request<String> {
 
     public static String parseResponse(String response) throws JSONException {
         final NotificationCompat.Builder mBuilder;
+        NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
+        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         boolean b = response.contains("H31");
         if (b) {
-            SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-            String noti = sharedPref.getString("notification", "false");
-            if (Objects.equals(noti, "false")) {
-                mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
-            }
+            mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
             mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
             mBuilder.setContentTitle("JAAAA");
             mBuilder.setOngoing(true);
-            NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder.setOnlyAlertOnce(true);
 
             boolean notificatie = sharedPref.getBoolean("notificatie", true);
 
             if (notificatie) {
                 mNotificationManager.notify(2, mBuilder.build());
             }
-
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("notification", "true");
-            editor.apply();
-
             Log.i("Uitval", "ja");
         } else {
-            SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("notification", "false");
-            editor.apply();
-            NotificationManager notificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(2);
+            mNotificationManager.cancel(2);
         }
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("result");
-        String resultString = jsonMain.getString("content");
-        return resultString;
+        return jsonMain.getString("content");
     }
 
     @Override

@@ -175,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("request_token", requestToken);
-                            editor.apply();
                             editor.putInt("request_token_day", today);
                             editor.apply();
                         } catch (JSONException e) {
@@ -203,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void nextDay(View view) {
         currentDay++;
+        if (currentDay > 31) {
+            currentDay = 1;
+        }
         getCalendar();
     }
 
