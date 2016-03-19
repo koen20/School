@@ -45,12 +45,11 @@ public class BackgroudUpdateService extends IntentService {
     private void handleActionRefresh() {
         Log.d(this.getClass().getSimpleName(), "Started service");
         final NotificationCompat.Builder mBuilder;
-        Log.i("Alarm", "Started");
+        Log.i("Service", "Started");
 
         RequestQueue requestQueue;
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
-        Log.i("RequestToken", requestToken);
         requestQueue = Volley.newRequestQueue(this);
         mBuilder = new NotificationCompat.Builder(this);
         String url = "https://api.scholica.com/2.0/communities/1/module";
@@ -59,6 +58,7 @@ public class BackgroudUpdateService extends IntentService {
                 {
                     @Override
                     public void onResponse(String response) {
+                        Log.i("Uitval", response);
                         boolean b = response.contains("H31");
 
                         if(b){
@@ -136,7 +136,7 @@ public class BackgroudUpdateService extends IntentService {
                 Log.e("error", "" + error.getMessage());
             }
         });
-        //requestQueue.add(requestGrades);
+        requestQueue.add(requestGrades);
 
     }
 }

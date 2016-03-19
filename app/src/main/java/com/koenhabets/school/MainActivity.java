@@ -22,8 +22,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.koenhabets.school.api.BackgroudUpdateService;
 import com.koenhabets.school.api.CalendarRequest;
+import com.koenhabets.school.api.GradesRequest;
+import com.koenhabets.school.api.NetpresenterRequest;
 import com.koenhabets.school.api.PasswordHolder;
 
 import org.json.JSONException;
@@ -78,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
             Log.i("Request token", "Getting new request token.");
             getToken();
         }
-        getToken();
+
+        getCalendar();
 
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
@@ -108,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -172,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonMain = responsetoken.getJSONObject("result");
                             requestToken = jsonMain.getString("request_token");
                             Log.i("requestToken", requestToken);
-                            getCalendar();
 
                             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
@@ -221,6 +224,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void grades(View view) {
         Intent intent = new Intent(this, Main2Activity.class);
+        startActivity(intent);
+    }
+
+    public void netpresenter(View view) {
+        Intent intent = new Intent(this, Main3Activity.class);
         startActivity(intent);
     }
 }

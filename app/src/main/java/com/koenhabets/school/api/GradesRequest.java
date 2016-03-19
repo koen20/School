@@ -30,11 +30,11 @@ public class GradesRequest extends Request<String> {
     private Response.Listener<String> responListener;
     private String requestToken;
 
-    static String[] test = {"Aardrijkskunde","Duitse taal","Economie","Engelse taal","Franse taal","Geschiedenis","Levensbeschouwing","Muziek","Nederlandse taal", "Scheikunde", "Wiskunde", "Natuurkunde","Biologie","Lichamelijke opvoeding","Beeldende vorming"};
+    static String[] test = {"Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal", "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde", "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
 
     public GradesRequest(String requestToken,
-                           Response.Listener<String> responseListener,
-                           Response.ErrorListener errorListener) {
+                         Response.Listener<String> responseListener,
+                         Response.ErrorListener errorListener) {
 
         super(Method.POST, url, errorListener);
 
@@ -43,6 +43,8 @@ public class GradesRequest extends Request<String> {
     }
 
     public static String parseResponse(String response) throws JSONException {
+        Log.i("Grades", response);
+
         String resultString = "";
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("grades");
@@ -53,15 +55,15 @@ public class GradesRequest extends Request<String> {
         }
         SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String resultStringOld = sharedPref.getString("grades", "no grades");
-        if (resultStringOld == "no grades"){
+        if (resultStringOld == "no grades") {
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("grades",resultString);
+            editor.putString("grades", resultString);
             editor.apply();
         }
         Log.d("old", resultStringOld);
         Log.d("new", resultString);
-        if (!Objects.equals(resultString, resultStringOld)){
-            Log.i("grades","Nieuw cijfer");
+        if (!Objects.equals(resultString, resultStringOld)) {
+            Log.i("grades", "Nieuw cijfer");
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
             mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
             mBuilder.setContentTitle("Nieuw cijfer");
@@ -70,7 +72,7 @@ public class GradesRequest extends Request<String> {
         }
 
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("grades",resultString);
+        editor.putString("grades", resultString);
         editor.apply();
         return resultString;
     }

@@ -32,7 +32,9 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Main2Activity"></activity>
+        <activity android:name=".Main2Activity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".Main3Activity"></activity>
     </application>
 
 </manifest>
