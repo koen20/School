@@ -62,25 +62,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-        int day = sharedPref.getInt("request_token_day", 99);
-        Calendar now = Calendar.getInstance();
-        today = now.get(Calendar.DAY_OF_YEAR);
-        if (day != today){
-            Log.i("Request token", "Getting new request token.");
-            getToken();
-        }
 
         getCalendar();
 
-        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
-        boolean notificatie = sharedPref.getBoolean("notificatie", true);
-
-        if (notificatie) {
-            startAlarm();
-        }
-        Log.i("Notification", notificatie + "");
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

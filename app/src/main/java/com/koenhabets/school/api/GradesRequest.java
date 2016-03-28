@@ -21,7 +21,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class GradesRequest extends Request<String> {
 
@@ -30,7 +29,10 @@ public class GradesRequest extends Request<String> {
     private Response.Listener<String> responListener;
     private String requestToken;
 
-    static String[] test = {"Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal", "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde", "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
+    static String[] subjects = {
+            "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
+            "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
+            "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
 
     public GradesRequest(String requestToken,
                          Response.Listener<String> responseListener,
@@ -48,21 +50,21 @@ public class GradesRequest extends Request<String> {
         String resultString = "";
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("grades");
-        for (int i = 0; i < test.length; i++) {
-            JSONObject vak = jsonMain.getJSONObject(test[i]);
+        for (int i = 0; i < subjects.length; i++) {
+            JSONObject vak = jsonMain.getJSONObject(subjects[i]);
             String avg = vak.getString("avg");
-            resultString += test[i] + ": " + avg + "\n";
+            resultString += subjects[i] + ": " + avg + "\n";
         }
         SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String resultStringOld = sharedPref.getString("grades", "no grades");
-        if (resultStringOld == "no grades") {
+        if (resultStringOld.equals("no grades")) {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("grades", resultString);
             editor.apply();
         }
         Log.d("old", resultStringOld);
         Log.d("new", resultString);
-        if (!Objects.equals(resultString, resultStringOld)) {
+        if (!resultString.equals(resultStringOld)) {
             Log.i("grades", "Nieuw cijfer");
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
             mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
