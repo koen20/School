@@ -6,13 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,14 +18,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.koenhabets.school.AlarmReceiver;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SettingsActivity;
-import com.koenhabets.school.api.GradesRequest;
 import com.koenhabets.school.api.TokenRequest;
 import com.koenhabets.school.fragments.GradesFragment;
 import com.koenhabets.school.fragments.NetpresenterFragment;
@@ -40,7 +39,8 @@ public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     RequestQueue requestQueue;
     private PendingIntent pendingIntent;
-    private AlarmManager manager;
+    TextView email;
+    TextView name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +49,7 @@ public class DrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         requestQueue = Volley.newRequestQueue(this);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -67,6 +68,17 @@ public class DrawerActivity extends AppCompatActivity
             Log.i("Request token", "Getting new request token.");
             getToken();
         }
+
+        navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+
+        name = (TextView) header.findViewById(R.id.textViewName);
+        email = (TextView) header.findViewById(R.id.textViewMail);
+        name.setText("407332");
+        email.setText("407332@mijnschoolnet.nl");
+
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
         startAlarm();
         replaceFragment(new TimeTableFragment());
     }
@@ -146,7 +158,7 @@ public class DrawerActivity extends AppCompatActivity
 
     public void startAlarm() {
         Log.i("Alarm", "set");
-        manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_HALF_HOUR, pendingIntent);
     }
 }

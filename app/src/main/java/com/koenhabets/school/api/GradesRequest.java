@@ -48,25 +48,26 @@ public class GradesRequest extends Request<String> {
         Log.i("Grades", response);
 
         String resultString = "";
+        String resultStringr = "";
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("grades");
         for (int i = 0; i < subjects.length; i++) {
             JSONObject vak = jsonMain.getJSONObject(subjects[i]);
             String avg = vak.getString("avg");
             resultString += subjects[i] + ": " + avg + "\n";
+            resultStringr = resultStringr + avg;
         }
         SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String resultStringOld = sharedPref.getString("grades", "no grades");
         if (resultStringOld.equals("no grades")) {
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("grades", resultString);
+            editor.putString("grades", resultStringr);
             editor.apply();
         }
-        String resultStringOldr = resultStringOld.replaceAll("\\r|\\n", "");
-        String resultStringr = resultString.replaceAll("\\r|\\n", "");
+
         Log.d("old", resultStringOld);
-        Log.d("new", resultString);
-        if (!resultStringr.equals(resultStringOldr)) {
+        Log.d("new", resultStringr);
+        if (!resultStringr.equals(resultStringOld)) {
             Log.i("grades", "Nieuw cijfer");
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
             mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
@@ -80,7 +81,7 @@ public class GradesRequest extends Request<String> {
         }
 
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("grades", resultString);
+        editor.putString("grades", resultStringr);
         editor.apply();
         return resultString;
     }
