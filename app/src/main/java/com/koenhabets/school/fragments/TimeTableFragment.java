@@ -4,12 +4,12 @@ package com.koenhabets.school.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -33,7 +33,6 @@ public class TimeTableFragment extends Fragment {
     TextView textView5;
 
     public TimeTableFragment() {
-        // Required empty public constructor
     }
 
 
@@ -44,8 +43,27 @@ public class TimeTableFragment extends Fragment {
 
         textViewTimeTable = (TextView) rootView.findViewById(R.id.textViewTimeTable);
         textView5 = (TextView) rootView.findViewById(R.id.textView5);
+        Button button5 = (Button) rootView.findViewById(R.id.button5);
+        Button button6 = (Button) rootView.findViewById(R.id.button6);
+
         textViewTimeTable.setText("hoi");
+        Calendar cal = Calendar.getInstance();
+        currentDay = cal.get(Calendar.DAY_OF_MONTH);
         getCalendar();
+
+        button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prevDay();
+            }
+        });
+
+        button6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nextDay();
+            }
+        });
 
         return rootView;
     }
@@ -66,7 +84,7 @@ public class TimeTableFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("error", error.getMessage());
+                //Log.e("error", error.getMessage());
             }
         });
 
@@ -96,7 +114,7 @@ public class TimeTableFragment extends Fragment {
         return calendar.getTimeInMillis();
     }
 
-    public void nextDay(View view) {
+    public void nextDay() {
         currentDay++;
         if (currentDay > 31) {
             currentDay = 1;
@@ -104,7 +122,7 @@ public class TimeTableFragment extends Fragment {
         getCalendar();
     }
 
-    public void prevDay(View view) {
+    public void prevDay() {
         currentDay--;
         getCalendar();
     }

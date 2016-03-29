@@ -62,9 +62,11 @@ public class GradesRequest extends Request<String> {
             editor.putString("grades", resultString);
             editor.apply();
         }
+        String resultStringOldr = resultStringOld.replaceAll("\\r|\\n", "");
+        String resultStringr = resultString.replaceAll("\\r|\\n", "");
         Log.d("old", resultStringOld);
         Log.d("new", resultString);
-        if (!resultString.equals(resultStringOld)) {
+        if (!resultStringr.equals(resultStringOldr)) {
             Log.i("grades", "Nieuw cijfer");
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
             mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);

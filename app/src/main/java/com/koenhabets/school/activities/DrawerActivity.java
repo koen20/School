@@ -3,6 +3,7 @@ package com.koenhabets.school.activities;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,9 +25,12 @@ import android.view.MenuItem;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
+import com.koenhabets.school.SettingsActivity;
 import com.koenhabets.school.api.GradesRequest;
 import com.koenhabets.school.api.TokenRequest;
+import com.koenhabets.school.fragments.GradesFragment;
 import com.koenhabets.school.fragments.NetpresenterFragment;
 import com.koenhabets.school.fragments.TimeTableFragment;
 
@@ -44,6 +48,7 @@ public class DrawerActivity extends AppCompatActivity
         setContentView(R.layout.activity_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        requestQueue = Volley.newRequestQueue(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -92,6 +97,8 @@ public class DrawerActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -108,7 +115,6 @@ public class DrawerActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_time_table) {
@@ -116,7 +122,7 @@ public class DrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_netpresenter) {
             replaceFragment(new NetpresenterFragment());
         } else if (id == R.id.nav_grades) {
-
+            replaceFragment(new GradesFragment());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
