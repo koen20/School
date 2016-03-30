@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,15 +21,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.AlarmReceiver;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SettingsActivity;
+import com.koenhabets.school.api.ProfileRequest;
 import com.koenhabets.school.api.TokenRequest;
 import com.koenhabets.school.fragments.GradesFragment;
 import com.koenhabets.school.fragments.NetpresenterFragment;
@@ -41,6 +46,7 @@ public class DrawerActivity extends AppCompatActivity
     private PendingIntent pendingIntent;
     TextView email;
     TextView name;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +55,6 @@ public class DrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         requestQueue = Volley.newRequestQueue(this);
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -74,11 +79,24 @@ public class DrawerActivity extends AppCompatActivity
 
         name = (TextView) header.findViewById(R.id.textViewName);
         email = (TextView) header.findViewById(R.id.textViewMail);
-        name.setText("407332");
-        email.setText("407332@mijnschoolnet.nl");
+        imageView = (ImageView) header.findViewById(R.id.imageView);
+
+
+        TokenRequest tokenRequest = new TokenRequest(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "" + error.getMessage());
+            }
+        });
+        requestQueue.add(tokenRequest);
 
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+        getProfile();
         startAlarm();
         replaceFragment(new TimeTableFragment());
     }
@@ -160,5 +178,41 @@ public class DrawerActivity extends AppCompatActivity
         Log.i("Alarm", "set");
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_HALF_HOUR, pendingIntent);
+    }
+
+    public void getProfile() {
+        SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        String requestToken = sharedPref.getString("request_token", "");
+
+        ProfileRequest profileRequest = new ProfileRequest(requestToken, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                String Name = sharedPref.getString("name", "");
+                String Email = sharedPref.getString("email", "");
+                String PictureUrl = sharedPref.getString("picture", "");
+                name.setText(Name);
+                email.setText(Email);
+
+                ImageRequest imgRequest = new ImageRequest(PictureUrl, new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        /// TODO: 30-3-2016 afbeelding werkend maken 
+                        //imageView.setImageBitmap(response);
+                    }
+                }, 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888,
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                            }
+                        });
+                requestQueue.add(imgRequest);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        requestQueue.add(profileRequest);
     }
 }

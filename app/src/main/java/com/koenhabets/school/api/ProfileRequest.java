@@ -1,17 +1,13 @@
 package com.koenhabets.school.api;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
 
 import org.json.JSONException;
@@ -21,16 +17,16 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NetpresenterRequest extends Request<String> {
+public class ProfileRequest extends Request<String> {
 
-    private static String url = "https://api.scholica.com/2.0/communities/1/module";
+    private static String url = "https://api.scholica.com/2.0/communities/1/profile/391";
 
     private Response.Listener<String> responListener;
     private String requestToken;
 
-    public NetpresenterRequest(String requestToken,
-                               Response.Listener<String> responseListener,
-                               Response.ErrorListener errorListener) {
+    public ProfileRequest(String requestToken,
+                          Response.Listener<String> responseListener,
+                          Response.ErrorListener errorListener) {
 
         super(Method.POST, url, errorListener);
 
@@ -39,37 +35,27 @@ public class NetpresenterRequest extends Request<String> {
     }
 
     public static String parseResponse(String response) throws JSONException {
-        final NotificationCompat.Builder mBuilder;
-        NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
-        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-        String klas = sharedPref.getString("class", "");
-        boolean b = response.contains(klas);
-        if (b) {
-            mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
-            mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
-            mBuilder.setContentTitle("JAAAA");
-            mBuilder.setOngoing(true);
-            mBuilder.setOnlyAlertOnce(true);
-
-            boolean notificatie = sharedPref.getBoolean("notificatie", true);
-
-            if (notificatie) {
-                mNotificationManager.notify(2, mBuilder.build());
-            }
-            Log.i("Uitval", "ja");
-        } else {
-            mNotificationManager.cancel(2);
-        }
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("result");
-        return jsonMain.getString("content");
+
+        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putString("name", jsonMain.getString("name"));
+        editor.putString("picture", jsonMain.getString("picture"));
+        editor.apply();
+        JSONObject jsonMain2 = jsonMain.getJSONObject("info");
+        editor.putString("email", jsonMain2.getString("email"));
+        editor.putString("class", jsonMain2.getString("class"));
+        editor.putString("username", jsonMain2.getString("username"));
+        editor.apply();
+
+        return "";
     }
 
     @Override
     protected Map<String, String> getParams() {
         Map<String, String> params = new HashMap<>();
-        params.put("path", "/netpresenter");
         params.put("token", requestToken);
         return params;
     }
