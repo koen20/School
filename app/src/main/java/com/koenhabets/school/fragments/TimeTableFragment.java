@@ -74,17 +74,17 @@ public class TimeTableFragment extends Fragment {
         final String requestToken = sharedPref.getString("request_token", "no request token");
         Long tsLong = getStartOfDayInMillis() / 1000;
         final String ts = tsLong.toString();
+        textView5.setText(getString(R.string.Currentday) + currentDay);
         Log.i("Timestamp", ts + "");
         CalendarRequest request = new CalendarRequest(requestToken, ts, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                textView5.setText(getString(R.string.Currentday) + currentDay);
+
                 textViewTimeTable.setText(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Log.e("error", error.getMessage());
             }
         });
 
@@ -95,7 +95,6 @@ public class TimeTableFragment extends Fragment {
             try {
                 resultString = CalendarRequest.parseResponse(result, ts);
                 textViewTimeTable.setText(resultString);
-                textView5.setText(getString(R.string.Currentday) + currentDay);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -124,6 +123,9 @@ public class TimeTableFragment extends Fragment {
 
     public void prevDay() {
         currentDay--;
+        if (currentDay < 1) {
+            currentDay = 31;
+        }
         getCalendar();
     }
 }

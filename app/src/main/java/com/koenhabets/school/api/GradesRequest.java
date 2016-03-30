@@ -50,39 +50,44 @@ public class GradesRequest extends Request<String> {
         String resultString = "";
         String resultStringr = "";
         JSONObject jsonObject = new JSONObject(response);
-        JSONObject jsonMain = jsonObject.getJSONObject("grades");
-        for (int i = 0; i < subjects.length; i++) {
-            JSONObject vak = jsonMain.getJSONObject(subjects[i]);
-            String avg = vak.getString("avg");
-            resultString += subjects[i] + ": " + avg + "\n";
-            resultStringr = resultStringr + avg;
-        }
-        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-        String resultStringOld = sharedPref.getString("grades", "no grades");
-        if (resultStringOld.equals("no grades")) {
+        if (jsonObject.has("grades")) {
+            JSONObject jsonMain = jsonObject.getJSONObject("grades");
+
+            for (int i = 0; i < subjects.length; i++) {
+                JSONObject vak = jsonMain.getJSONObject(subjects[i]);
+                String avg = vak.getString("avg");
+                resultString += subjects[i] + ": " + avg + "\n";
+                resultStringr = resultStringr + avg;
+            }
+            SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+            String resultStringOld = sharedPref.getString("grades", "no grades");
+            if (resultStringOld.equals("no grades")) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("grades", resultStringr);
+                editor.apply();
+            }
+
+            Log.d("old", resultStringOld);
+            Log.d("new", resultStringr);
+            if (!resultStringr.equals(resultStringOld)) {
+                Log.i("grades", "Nieuw cijfer");
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
+                mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
+                mBuilder.setContentTitle("Nieuw cijfer");
+                NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                boolean notificatie = sharedPref.getBoolean("notificatie", true);
+
+                if (notificatie) {
+                    mNotificationManager.notify(3, mBuilder.build());
+                }
+            }
+
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("grades", resultStringr);
             editor.apply();
+        } else if (jsonObject.has("announcement")) {
+            resultString = jsonObject.getString("announcement");
         }
-
-        Log.d("old", resultStringOld);
-        Log.d("new", resultStringr);
-        if (!resultStringr.equals(resultStringOld)) {
-            Log.i("grades", "Nieuw cijfer");
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
-            mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
-            mBuilder.setContentTitle("Nieuw cijfer");
-            NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            boolean notificatie = sharedPref.getBoolean("notificatie", true);
-
-            if (notificatie) {
-                mNotificationManager.notify(3, mBuilder.build());
-            }
-        }
-
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("grades", resultStringr);
-        editor.apply();
         return resultString;
     }
 
