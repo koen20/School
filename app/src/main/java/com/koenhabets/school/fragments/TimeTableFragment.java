@@ -46,7 +46,6 @@ public class TimeTableFragment extends Fragment {
         Button button5 = (Button) rootView.findViewById(R.id.button5);
         Button button6 = (Button) rootView.findViewById(R.id.button6);
 
-        textViewTimeTable.setText("hoi");
         Calendar cal = Calendar.getInstance();
         currentDay = cal.get(Calendar.DAY_OF_MONTH);
         getCalendar();

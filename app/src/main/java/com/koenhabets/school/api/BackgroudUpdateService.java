@@ -11,7 +11,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+
 import java.util.Calendar;
+import java.util.Objects;
 
 
 public class BackgroudUpdateService extends IntentService {
@@ -62,7 +65,18 @@ public class BackgroudUpdateService extends IntentService {
                 Log.e("error", "" + error.getMessage());
             }
         });
-        requestQueue.add(requestCalendar);
+
+        String result = sharedPref.getString(ts, "no");
+        if (!Objects.equals(result, "no")) {
+            Log.i("Stored", result);
+            try {
+                CalendarRequest.parseResponse(result, ts);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            requestQueue.add(requestCalendar);
+        }
 
         NetpresenterRequest netpresenterRequest = new NetpresenterRequest(requestToken, new Response.Listener<String>() {
             @Override
