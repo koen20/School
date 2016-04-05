@@ -38,7 +38,6 @@ public class BackgroudUpdateService extends IntentService {
 
     private void handleActionRefresh() {
         Log.d(this.getClass().getSimpleName(), "Started service");
-        Log.i("Service", "Started");
 
         RequestQueue requestQueue;
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);

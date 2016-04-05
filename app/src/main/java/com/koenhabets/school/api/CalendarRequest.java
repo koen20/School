@@ -49,8 +49,6 @@ public class CalendarRequest extends Request<String> {
 
         editor.putString(timeStamp, jsonObject.toString());
         editor.apply();
-
-
         JSONArray jsonArray = jsonMain.getJSONArray("items");
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());

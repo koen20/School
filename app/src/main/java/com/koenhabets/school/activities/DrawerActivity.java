@@ -80,22 +80,32 @@ public class DrawerActivity extends AppCompatActivity
         email = (TextView) header.findViewById(R.id.textViewMail);
         imageView = (ImageView) header.findViewById(R.id.imageView);
 
-
-        TokenRequest tokenRequest = new TokenRequest(new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error", "" + error.getMessage());
-            }
-        });
-        requestQueue.add(tokenRequest);
-
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-        getProfile();
+        if (!sharedPref.contains("name")) {
+            Log.d("Request", "Getting profile info.");
+            getProfile();
+        } else {
+            String Name = sharedPref.getString("name", "");
+            String Email = sharedPref.getString("email", "");
+            String PictureUrl = sharedPref.getString("picture", "");
+            name.setText(Name);
+            email.setText(Email);
+
+            ImageRequest imgRequest = new ImageRequest(PictureUrl, new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap response) {
+                    ///TODO: 30-3-2016 afbeelding werkend maken
+                    //imageView.setImageBitmap(response);
+                }
+            }, 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888,
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    });
+            //requestQueue.add(imgRequest);
+        }
         startAlarm();
         replaceFragment(new TimeTableFragment());
     }
@@ -186,26 +196,6 @@ public class DrawerActivity extends AppCompatActivity
         ProfileRequest profileRequest = new ProfileRequest(requestToken, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-                String Name = sharedPref.getString("name", "");
-                String Email = sharedPref.getString("email", "");
-                String PictureUrl = sharedPref.getString("picture", "");
-                name.setText(Name);
-                email.setText(Email);
-
-                ImageRequest imgRequest = new ImageRequest(PictureUrl, new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        /// TODO: 30-3-2016 afbeelding werkend maken 
-                        //imageView.setImageBitmap(response);
-                    }
-                }, 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888,
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                            }
-                        });
-                requestQueue.add(imgRequest);
             }
         }, new Response.ErrorListener() {
             @Override
