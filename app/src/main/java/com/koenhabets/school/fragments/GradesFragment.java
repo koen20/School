@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,8 @@ public class GradesFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 Log.i("grades", response);
-                textView.setText(response);
+                textView.setTextSize(17);
+                textView.setText(Html.fromHtml(response));
             }
         }, new Response.ErrorListener() {
             @Override

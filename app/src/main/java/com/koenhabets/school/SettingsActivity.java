@@ -22,7 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
         mySwitch = (Switch) findViewById(R.id.switch1);
 
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-        final boolean notificatie = sharedPref.getBoolean("notificatie", false);
+        final boolean notificatie = sharedPref.getBoolean("notificatie", true);
         final SharedPreferences.Editor editor = sharedPref.edit();
 
         if (notificatie) {

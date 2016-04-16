@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class GradesRequest extends Request<String> {
 
-    private static String url = "https://api.scholica.com/2.0/communities/1/module?json=1&term=2";
+    private static String url = "https://api.scholica.com/2.0/communities/1/module";
 
     private Response.Listener<String> responListener;
     private String requestToken;
@@ -51,13 +51,23 @@ public class GradesRequest extends Request<String> {
         String resultStringr = "";
         JSONObject jsonObject = new JSONObject(response);
         if (jsonObject.has("grades")) {
+            double loose = jsonObject.getDouble("loose");
             JSONObject jsonMain = jsonObject.getJSONObject("grades");
 
-            for (int i = 0; i < subjects.length; i++) {
-                JSONObject vak = jsonMain.getJSONObject(subjects[i]);
-                String avg = vak.getString("avg");
-                resultString += subjects[i] + ": " + avg + "\n";
+            for (String subject : subjects) {
+                JSONObject vak = jsonMain.getJSONObject(subject);
+                double avg = vak.getDouble("avg");
+                if (avg < 6) {
+                    resultString += subject + ": " + "<font color=red>" + avg + "</font><br>";
+                } else {
+                    resultString += subject + ": " + "<font color=green>" + avg + "</font><br>";
+                }
                 resultStringr = resultStringr + avg;
+            }
+            if (loose > 2) {
+                resultString += "<br>" + "Verlisepunten: " + "<font color=red>" + loose + "</font>";
+            } else {
+                resultString += "<br>" + "Verlisepunten: " + "<font color=green>" + loose + "</font>";
             }
             SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
             String resultStringOld = sharedPref.getString("grades", "no grades");
