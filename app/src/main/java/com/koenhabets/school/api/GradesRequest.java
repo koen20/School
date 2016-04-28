@@ -86,9 +86,9 @@ public class GradesRequest extends Request<String> {
                 mBuilder.setContentTitle("Nieuw cijfer");
                 mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
                 NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                boolean notificatie = sharedPref.getBoolean("notificatie", true);
+                boolean notificatiecijfer = sharedPref.getBoolean("notificatie-cijfers", true);
 
-                if (notificatie) {
+                if (notificatiecijfer) {
                     mNotificationManager.notify(3, mBuilder.build());
                 }
             }

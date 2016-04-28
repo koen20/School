@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.koenhabets.school.SettingsActivity">
+    tools:context=".activities.SettingsActivity">
 
     <Switch
         android:layout_width="wrap_content"
@@ -16,6 +16,33 @@
         android:id="@+id/switch1"
         android:checked="false"
         android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cijfers"
+        android:id="@+id/switch2"
+        android:layout_below="@+id/switch3"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/switch3" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/netpresenter"
+        android:id="@+id/switch3"
+        android:layout_below="@+id/switch4"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/switch4" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/calendar"
+        android:id="@+id/switch4"
+        android:layout_below="@+id/switch1"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 </RelativeLayout>

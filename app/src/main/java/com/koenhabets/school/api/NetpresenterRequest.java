@@ -52,9 +52,9 @@ public class NetpresenterRequest extends Request<String> {
             mBuilder.setOngoing(true);
             mBuilder.setOnlyAlertOnce(true);
 
-            boolean notificatie = sharedPref.getBoolean("notificatie", true);
+            boolean notificatienet = sharedPref.getBoolean("notificatie-netpresenter", true);
 
-            if (notificatie) {
+            if (notificatienet) {
                 mNotificationManager.notify(2, mBuilder.build());
             }
             Log.i("Uitval", "ja");

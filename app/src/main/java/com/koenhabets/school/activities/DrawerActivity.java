@@ -30,7 +30,6 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.AlarmReceiver;
 import com.koenhabets.school.R;
-import com.koenhabets.school.SettingsActivity;
 import com.koenhabets.school.api.ProfileRequest;
 import com.koenhabets.school.api.TokenRequest;
 import com.koenhabets.school.fragments.GradesFragment;
