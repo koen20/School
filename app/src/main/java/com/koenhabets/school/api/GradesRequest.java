@@ -84,6 +84,7 @@ public class GradesRequest extends Request<String> {
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
                 mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
                 mBuilder.setContentTitle("Nieuw cijfer");
+                mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
                 NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
                 boolean notificatie = sharedPref.getBoolean("notificatie", true);
 
