@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
+import android.text.Html;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -49,6 +50,7 @@ public class GradesRequest extends Request<String> {
 
         String resultString = "";
         String resultStringr = "";
+        String looset;
         JSONObject jsonObject = new JSONObject(response);
         if (jsonObject.has("grades")) {
             double loose = jsonObject.getDouble("loose");
@@ -65,9 +67,11 @@ public class GradesRequest extends Request<String> {
                 resultStringr = resultStringr + avg;
             }
             if (loose > 2) {
-                resultString += "<br>" + "Verlisepunten: " + "<font color=red>" + loose + "</font>";
+                looset = "<br>" + "Verlisepunten: " + "<font color=red>" + loose + "</font>";
+                resultString += looset;
             } else {
-                resultString += "<br>" + "Verlisepunten: " + "<font color=green>" + loose + "</font>";
+                looset = "<br>" + "Verlisepunten: " + "<font color=green>" + loose + "</font>";
+                resultString += looset;
             }
             SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
             String resultStringOld = sharedPref.getString("grades", "no grades");
@@ -84,6 +88,7 @@ public class GradesRequest extends Request<String> {
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
                 mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
                 mBuilder.setContentTitle("Nieuw cijfer");
+                mBuilder.setContentText(Html.fromHtml(looset));
                 mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
                 NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
                 boolean notificatiecijfer = sharedPref.getBoolean("notificatie-cijfers", true);
