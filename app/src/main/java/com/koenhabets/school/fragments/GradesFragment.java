@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -22,6 +24,10 @@ import com.koenhabets.school.api.GradesRequest;
 public class GradesFragment extends Fragment {
     RequestQueue requestQueue;
     TextView textView;
+    static String[] subjects = {
+            "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
+            "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
+            "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
 
     public GradesFragment() {
     }
