@@ -66,8 +66,11 @@ public class GradesRequest extends Request<String> {
                 }
                 resultStringr = resultStringr + avg;
             }
-            if (loose > 2) {
+            if (loose > 4) {
                 looset = "<br>" + "Verlisepunten: " + "<font color=red>" + loose + "</font>";
+                resultString += looset;
+            } else if (loose > 2 & loose < 4) {
+                looset = "<br>" + "Verlisepunten: " + "<font color=#FF9800>" + loose + "</font>";
                 resultString += looset;
             } else {
                 looset = "<br>" + "Verlisepunten: " + "<font color=green>" + loose + "</font>";

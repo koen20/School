@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -36,6 +38,9 @@ import com.koenhabets.school.fragments.GradesFragment;
 import com.koenhabets.school.fragments.NetpresenterFragment;
 import com.koenhabets.school.fragments.TimeTableFragment;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 
 public class DrawerActivity extends AppCompatActivity
@@ -94,16 +99,23 @@ public class DrawerActivity extends AppCompatActivity
             ImageRequest imgRequest = new ImageRequest(PictureUrl, new Response.Listener<Bitmap>() {
                 @Override
                 public void onResponse(Bitmap response) {
-                    ///TODO: 30-3-2016 afbeelding werkend maken
-                    //imageView.setImageBitmap(response);
+                    imageView.setImageBitmap(response);
+                    saveBitmap(response);
                 }
             }, 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888,
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            Log.e("Image request", error.getMessage());
                         }
                     });
-            //requestQueue.add(imgRequest);
+            Bitmap bitmap = getBitmap();
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            } else {
+                Log.i("Image", "Downloading image");
+                requestQueue.add(imgRequest);
+            }
         }
         startAlarm();
         replaceFragment(new TimeTableFragment());
@@ -203,4 +215,33 @@ public class DrawerActivity extends AppCompatActivity
         });
         requestQueue.add(profileRequest);
     }
+
+    public void saveBitmap(Bitmap image) {
+        Log.i("bitmap", "saving bitmap");
+        try {
+            FileOutputStream fos = this.openFileOutput("user.png", Context.MODE_PRIVATE);
+
+            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+
+        } catch (Exception e) {
+            Log.e("Save bitmap", e.getMessage());
+        }
+    }
+
+    public Bitmap getBitmap() {
+        Log.i("Bitmap", "Loading bitmap from internal storage");
+        String filename = "user.png";
+        Bitmap bitmap = null;
+
+        try {
+            File filePath = this.getFileStreamPath(filename);
+            FileInputStream fi = new FileInputStream(filePath);
+            bitmap = BitmapFactory.decodeStream(fi);
+        } catch (Exception ex) {
+            Log.e("get Bitmap", ex.getMessage());
+        }
+        return bitmap;
+    }
+
 }
