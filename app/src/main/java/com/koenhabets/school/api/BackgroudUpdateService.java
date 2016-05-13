@@ -38,15 +38,20 @@ public class BackgroudUpdateService extends IntentService {
 
     private void handleActionRefresh() {
         Log.d(this.getClass().getSimpleName(), "Started service");
-
         RequestQueue requestQueue;
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
         requestQueue = Volley.newRequestQueue(this);
 
-
+        Calendar now = Calendar.getInstance();
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int day = now.get(Calendar.DAY_OF_MONTH);
+        if (hour > 15) {
+            day += 1;
+        }
 
         Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);

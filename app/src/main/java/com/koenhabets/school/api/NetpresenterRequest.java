@@ -47,7 +47,7 @@ public class NetpresenterRequest extends Request<String> {
         boolean b = response.contains(klas);
         if (b) {
             mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
-            mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
+            mBuilder.setSmallIcon(R.drawable.ic_netpresenter_black_24dp);
             mBuilder.setContentTitle("JAAAA");
             mBuilder.setOngoing(true);
             mBuilder.setOnlyAlertOnce(true);

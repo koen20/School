@@ -46,8 +46,13 @@ public class TimeTableFragment extends Fragment {
         Button button5 = (Button) rootView.findViewById(R.id.button5);
         Button button6 = (Button) rootView.findViewById(R.id.button6);
 
-        Calendar cal = Calendar.getInstance();
-        currentDay = cal.get(Calendar.DAY_OF_MONTH);
+        Calendar now = Calendar.getInstance();
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        currentDay = now.get(Calendar.DAY_OF_MONTH);
+        if (hour > 15) {
+            currentDay += 1;
+        }
+
         getCalendar();
 
         button5.setOnClickListener(new View.OnClickListener() {

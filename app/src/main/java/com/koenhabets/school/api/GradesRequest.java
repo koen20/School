@@ -89,7 +89,7 @@ public class GradesRequest extends Request<String> {
             if (!resultStringr.equals(resultStringOld)) {
                 Log.i("grades", "Nieuw cijfer");
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
-                mBuilder.setSmallIcon(R.drawable.ic_stat_action_list);
+                mBuilder.setSmallIcon(R.drawable.ic_grades_black_24dp);
                 mBuilder.setContentTitle("Nieuw cijfer");
                 mBuilder.setContentText(Html.fromHtml(looset));
                 mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
