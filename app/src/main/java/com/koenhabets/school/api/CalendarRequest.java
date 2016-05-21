@@ -52,7 +52,7 @@ public class CalendarRequest extends Request<String> {
         JSONArray jsonArray = jsonMain.getJSONArray("items");
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
-        mBuilder.setSmallIcon(R.drawable.ic_calendar_black_24dp);
+        mBuilder.setSmallIcon(R.drawable.ic_time_table_black_24dp);
         mBuilder.setContentTitle("Rooster");
         mBuilder.setOngoing(true);
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
