@@ -38,9 +38,9 @@ public class NetpresenterFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_netpresenter, container, false);
 
         textView = (TextView) rootView.findViewById(R.id.textViewNetpresenter);
-        requestQueue = Volley.newRequestQueue(SchoolApp.getContext());
+        requestQueue = Volley.newRequestQueue(getContext());
 
-        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
 
         NetpresenterRequest netpresenterRequest = new NetpresenterRequest(requestToken, new Response.Listener<String>() {

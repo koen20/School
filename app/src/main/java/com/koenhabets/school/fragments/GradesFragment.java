@@ -20,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
+import com.koenhabets.school.activities.GradesActivity;
 import com.koenhabets.school.adapters.GradesAdapter;
 import com.koenhabets.school.api.GradeItem;
 import com.koenhabets.school.api.GradesRequest;
@@ -32,7 +33,6 @@ import java.util.List;
 
 public class GradesFragment extends Fragment {
     private RequestQueue requestQueue;
-    private TextView textView;
     private ListView listView;
     private GradesAdapter adapter;
     private List<GradeItem> gradeItems = new ArrayList<>();
@@ -40,6 +40,7 @@ public class GradesFragment extends Fragment {
             "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
             "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
             "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
+    public final static String EXTRA_MESSAGE = "com.koenhabets.school.MESSAGE";
 
     public GradesFragment() {
     }
@@ -62,21 +63,21 @@ public class GradesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(getContext(),
-                        "Click ListItem Number " + position, Toast.LENGTH_LONG)
-                        .show();
+                TextView textView = (TextView) view.findViewById(R.id.textView_subject);
+                String subject = textView.getText() + "";
+                Intent intent = new Intent(getContext(), GradesActivity.class);
+                intent.putExtra("subject", subject);
+                startActivity(intent);
             }
         });
 
-        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
 
         GradesRequest request = new GradesRequest(requestToken, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("grades", response);
-                //textView.setTextSize(17);
-                //textView.setText(Html.fromHtml(response));
                 try {
                     parseResponse(response);
                 } catch (JSONException e) {
@@ -95,9 +96,8 @@ public class GradesFragment extends Fragment {
 
     public void parseResponse(String response) throws JSONException {
         gradeItems.clear();
-        List<String> resultString = new ArrayList<>();
-        JSONObject jsonMain = new JSONObject(response);
-        double loose = 3;//jsonMain.getDouble("loose");
+        JSONObject jsonObject = new JSONObject(response);
+        JSONObject jsonMain = jsonObject.getJSONObject("grades");
         for (String subject : subjects) {
             JSONObject vak = jsonMain.getJSONObject(subject);
             double avg = vak.getDouble("avg");
@@ -105,8 +105,10 @@ public class GradesFragment extends Fragment {
             gradeItems.add(item);
         }
 
-        GradeItem item = new GradeItem("Verliespunten", loose);
+        GradeItem item = new GradeItem("Verliespunten", jsonObject.getDouble("loose"));
         gradeItems.add(item);
+        GradeItem itemAvg = new GradeItem("Gemiddelde", jsonObject.getDouble("average"));
+        gradeItems.add(itemAvg);
         adapter.notifyDataSetChanged();
     }
 }

@@ -73,8 +73,8 @@ public class TimeTableFragment extends Fragment {
     }
 
     public void getCalendar() {
-        requestQueue = Volley.newRequestQueue(SchoolApp.getContext());
-        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        requestQueue = Volley.newRequestQueue(getContext());
+        SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
         Long tsLong = getStartOfDayInMillis() / 1000;
         final String ts = tsLong.toString();

@@ -137,7 +137,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         editor.putBoolean("notificatie-cijfers", false);
         editor.apply();
-        NotificationManager notificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(3);
         switch2.setChecked(false);
     }
@@ -148,7 +148,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         editor.putBoolean("notificatie-calendar", false);
         editor.apply();
-        NotificationManager notificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(1);
         switch4.setChecked(false);
     }
@@ -159,9 +159,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         editor.putBoolean("notificatie", true);
         editor.apply();
-        Intent serviceIntent = new Intent(SchoolApp.getContext(), BackgroudUpdateService.class);
+        Intent serviceIntent = new Intent(this, BackgroudUpdateService.class);
         serviceIntent.setAction(BackgroudUpdateService.ACTION_REFRESH);
-        SchoolApp.getContext().startService(serviceIntent);
+        this.startService(serviceIntent);
         switch1.setChecked(true);
     }
 }

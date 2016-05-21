@@ -107,7 +107,7 @@ public class GradesRequest extends Request<String> {
         } else if (jsonObject.has("announcement")) {
             resultString = jsonObject.getString("announcement");
         }
-        resultString = jsonObject.getString("grades");
+        resultString = jsonObject.toString();
         return resultString;
     }
 

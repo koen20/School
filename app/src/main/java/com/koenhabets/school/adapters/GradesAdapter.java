@@ -29,19 +29,20 @@ public class GradesAdapter extends ArrayAdapter<GradeItem> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.grade_item, parent, false);
         }
+        String subject = gradeItem.getSubject();
+        double avg = gradeItem.getGrade();
 
         TextView textViewSubject = (TextView) convertView.findViewById(R.id.textView_subject);
         TextView textViewGrade = (TextView) convertView.findViewById(R.id.textView_grade);
-        textViewSubject.setText(gradeItem.getSubject());
-        textViewGrade.setText(gradeItem.getGrade() + "");
+        textViewSubject.setText(subject);
+        textViewGrade.setText(avg + "");
 
-        double avg = gradeItem.getGrade();
         if (avg < 6) {
             textViewGrade.setTextColor(Color.parseColor("#F44336"));
         } else if (avg > 5.9) {
             textViewGrade.setTextColor(Color.parseColor("#4CAF50"));
         }
-        String subject = gradeItem.getSubject();
+
         if (subject == "Verliespunten") {
             if (avg < 2) {
                 textViewGrade.setTextColor(Color.parseColor("#4CAF50"));
