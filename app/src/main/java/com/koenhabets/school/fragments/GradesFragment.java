@@ -12,14 +12,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
-import com.koenhabets.school.SchoolApp;
 import com.koenhabets.school.activities.GradesActivity;
 import com.koenhabets.school.adapters.GradesAdapter;
 import com.koenhabets.school.api.GradeItem;
@@ -40,7 +38,7 @@ public class GradesFragment extends Fragment {
             "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
             "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
             "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
-    public final static String EXTRA_MESSAGE = "com.koenhabets.school.MESSAGE";
+    String result;
 
     public GradesFragment() {
     }
@@ -67,6 +65,7 @@ public class GradesFragment extends Fragment {
                 String subject = textView.getText() + "";
                 Intent intent = new Intent(getContext(), GradesActivity.class);
                 intent.putExtra("subject", subject);
+                intent.putExtra("response", result);
                 startActivity(intent);
             }
         });
@@ -78,6 +77,7 @@ public class GradesFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 Log.i("grades", response);
+                result = response;
                 try {
                     parseResponse(response);
                 } catch (JSONException e) {

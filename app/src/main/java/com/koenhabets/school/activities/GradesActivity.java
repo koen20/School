@@ -19,6 +19,7 @@ public class GradesActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String subject = intent.getStringExtra("subject");
+        String response = intent.getStringExtra("response");
 
         textView.setText(subject);
     }
