@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -18,19 +20,27 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
+import com.koenhabets.school.adapters.TimeTableAdapter;
 import com.koenhabets.school.api.CalendarRequest;
+import com.koenhabets.school.api.TimeTableItem;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 public class TimeTableFragment extends Fragment {
 
-    private TextView textViewTimeTable;
     int currentDay;
     RequestQueue requestQueue;
     TextView textView5;
+    ListView listView;
+    private TimeTableAdapter adapter;
+    private List<TimeTableItem> timeTableItem = new ArrayList<>();
 
     public TimeTableFragment() {
     }
@@ -41,10 +51,13 @@ public class TimeTableFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_time_table, container, false);
 
-        textViewTimeTable = (TextView) rootView.findViewById(R.id.textViewTimeTable);
         textView5 = (TextView) rootView.findViewById(R.id.textView5);
         Button button5 = (Button) rootView.findViewById(R.id.button5);
         Button button6 = (Button) rootView.findViewById(R.id.button6);
+        listView = (ListView) rootView.findViewById(R.id.listView2);
+
+        adapter = new TimeTableAdapter(getContext(), timeTableItem);
+        listView.setAdapter(adapter);
 
         Calendar now = Calendar.getInstance();
         int hour = now.get(Calendar.HOUR_OF_DAY);
@@ -83,8 +96,7 @@ public class TimeTableFragment extends Fragment {
         CalendarRequest request = new CalendarRequest(requestToken, ts, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
-                textViewTimeTable.setText(response);
+                ParseResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -95,13 +107,7 @@ public class TimeTableFragment extends Fragment {
         String result = sharedPref.getString(ts, "no");
         if (!Objects.equals(result, "no")) {
             Log.i("Stored", result);
-            String resultString = null;
-            try {
-                resultString = CalendarRequest.parseResponse(result, ts);
-                textViewTimeTable.setText(resultString);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            ParseResponse(result);
         } else {
             requestQueue.add(request);
         }
@@ -131,5 +137,34 @@ public class TimeTableFragment extends Fragment {
             currentDay = 31;
         }
         getCalendar();
+    }
+
+    public void ParseResponse(String response) {
+        timeTableItem.clear();
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONObject jsonMain = jsonObject.getJSONObject("result");
+            JSONArray jsonArray = jsonMain.getJSONArray("items");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                int uur = i + 1;
+                String subject = uur + ". Onbekend";
+                String lokaal = "";
+                JSONObject vak = jsonArray.getJSONObject(i);
+
+                if (vak.has("title") && vak.has("subtitle")) {
+                    subject = vak.getString("title");
+                    lokaal = vak.getString("subtitle");
+                } else if (vak.has("type")) {
+                    if (vak.getString("type").equals("divider")) {
+
+                    }
+                }
+                TimeTableItem item = new TimeTableItem(subject, lokaal);
+                timeTableItem.add(item);
+                adapter.notifyDataSetChanged();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

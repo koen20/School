@@ -86,7 +86,7 @@ public class CalendarRequest extends Request<String> {
             mNotificationManager.notify(1, mBuilder.build());
         }
 
-        return resultString;
+        return response;
     }
 
     @Override
