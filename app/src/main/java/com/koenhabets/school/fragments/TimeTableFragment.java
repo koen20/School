@@ -2,6 +2,7 @@ package com.koenhabets.school.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
+import com.koenhabets.school.activities.TimeTableActivity;
 import com.koenhabets.school.adapters.TimeTableAdapter;
 import com.koenhabets.school.api.CalendarRequest;
 import com.koenhabets.school.api.TimeTableItem;
@@ -39,6 +42,7 @@ public class TimeTableFragment extends Fragment {
     RequestQueue requestQueue;
     TextView textView5;
     ListView listView;
+    String re;
     private TimeTableAdapter adapter;
     private List<TimeTableItem> timeTableItem = new ArrayList<>();
 
@@ -82,6 +86,19 @@ public class TimeTableFragment extends Fragment {
             }
         });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                TextView textView = (TextView) view.findViewById(R.id.textView_subject);
+                String subject = textView.getText() + "";
+                Intent intent = new Intent(getContext(), TimeTableActivity.class);
+                intent.putExtra("subject", subject);
+                intent.putExtra("response", re);
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 
@@ -97,6 +114,7 @@ public class TimeTableFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 ParseResponse(response);
+                re = response;
             }
         }, new Response.ErrorListener() {
             @Override
@@ -107,6 +125,7 @@ public class TimeTableFragment extends Fragment {
         String result = sharedPref.getString(ts, "no");
         if (!Objects.equals(result, "no")) {
             Log.i("Stored", result);
+            re = result;
             ParseResponse(result);
         } else {
             requestQueue.add(request);

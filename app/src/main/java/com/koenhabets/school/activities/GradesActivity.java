@@ -41,9 +41,9 @@ public class GradesActivity extends AppCompatActivity {
                 String title = grade.getString("title");
                 Double avg = grade.getDouble("grade");
                 if (avg > 5.9) {
-                    text += title + ": " + "<font color=green>" + avg + "</font><br>";
+                    text += title + ": " + "<font color=#4CAF50>" + avg + "</font><br>";
                 } else if (avg < 6) {
-                    text += title + ": " + "<font color=red>" + avg + "</font><br>";
+                    text += title + ": " + "<font color=#F44336\n>" + avg + "</font><br>";
                 }
 
             }
