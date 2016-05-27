@@ -93,7 +93,7 @@ public class TimeTableFragment extends Fragment {
                 TextView textView = (TextView) view.findViewById(R.id.textView_subject);
                 String subject = textView.getText() + "";
                 Intent intent = new Intent(getContext(), TimeTableActivity.class);
-                intent.putExtra("subject", subject);
+                intent.putExtra("subject", position);
                 intent.putExtra("response", re);
                 startActivity(intent);
             }

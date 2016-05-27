@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -42,6 +43,7 @@ public class CalendarRequest extends Request<String> {
     }
 
     public static String parseResponse(String response, String timeStamp) throws JSONException {
+        Log.i("Result", response);
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("result");
         SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
@@ -94,6 +96,7 @@ public class CalendarRequest extends Request<String> {
         Map<String, String> params = new HashMap<>();
         params.put("token", requestToken);
         params.put("time", timeStamp);
+        params.put("show_tasks", "1");
         return params;
     }
 

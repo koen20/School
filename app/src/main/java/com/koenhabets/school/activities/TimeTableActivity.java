@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 import com.koenhabets.school.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class TimeTableActivity extends AppCompatActivity {
     TextView textView;
     TextView textView2;
@@ -20,10 +24,24 @@ public class TimeTableActivity extends AppCompatActivity {
         textView2 = (TextView) findViewById(R.id.textView4);
 
         Intent intent = getIntent();
-        String subject = intent.getStringExtra("subject");
+        int subject = intent.getIntExtra("subject", 1);
         String response = intent.getStringExtra("response");
 
-        textView.setText(response);
-        textView2.setText(subject);
+        //textView.setText(subject);
+        textView2.setText(response);
+
+        JSONObject jsonObject;
+
+        try {
+            jsonObject = new JSONObject(response);
+            JSONObject jsonMain = jsonObject.getJSONObject("result");
+            JSONArray jsonArray = jsonMain.getJSONArray("items");
+            JSONObject vak = jsonArray.getJSONObject(subject);
+            JSONObject todos = vak.getJSONObject("todos");
+            textView2.setText(todos.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
