@@ -166,17 +166,13 @@ public class TimeTableFragment extends Fragment {
             JSONArray jsonArray = jsonMain.getJSONArray("items");
             for (int i = 0; i < jsonArray.length(); i++) {
                 int uur = i + 1;
-                String subject = uur + ". Onbekend";
+                String subject = uur + getString(R.string.Onbekend);
                 String lokaal = "";
                 JSONObject vak = jsonArray.getJSONObject(i);
 
                 if (vak.has("title") && vak.has("subtitle")) {
                     subject = vak.getString("title");
                     lokaal = vak.getString("subtitle");
-                } else if (vak.has("type")) {
-                    if (vak.getString("type").equals("divider")) {
-
-                    }
                 }
                 TimeTableItem item = new TimeTableItem(subject, lokaal);
                 timeTableItem.add(item);

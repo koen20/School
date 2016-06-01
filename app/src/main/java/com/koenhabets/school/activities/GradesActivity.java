@@ -40,11 +40,13 @@ public class GradesActivity extends AppCompatActivity {
                 JSONObject grade = grades.getJSONObject(i);
                 String title = grade.getString("title");
                 Double avg = grade.getDouble("grade");
+                Double weight = grade.getDouble("weight");
                 if (avg > 5.9) {
                     text += title + ": " + "<font color=#4CAF50>" + avg + "</font><br>";
                 } else if (avg < 6) {
                     text += title + ": " + "<font color=#F44336\n>" + avg + "</font><br>";
                 }
+                text += getString(R.string.Gewicht) + weight + "<br><br>";
 
             }
         } catch (JSONException e) {

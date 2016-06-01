@@ -5,15 +5,15 @@
         <item
             android:id="@+id/nav_time_table"
             android:icon="@drawable/ic_time_table_black_24dp"
-            android:title="Rooster" />
+            android:title="@string/Rooster" />
         <item
             android:id="@+id/nav_netpresenter"
             android:icon="@drawable/ic_netpresenter_black_24dp"
-            android:title="Netpresenter" />
+            android:title="@string/netpresenter" />
         <item
             android:id="@+id/nav_grades"
             android:icon="@drawable/ic_grades_black_24dp"
-            android:title="Cijfers" />
+            android:title="@string/cijfers" />
     </group>
 
 </menu>
