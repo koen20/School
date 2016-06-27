@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">School</string>
-    <string name="Currentday">Day:</string>
+    <string name="Currentday">Day: </string>
     <string name="Gewicht">Weight:</string>
     <string name="Settings1">Notification</string>
     <string name="action_settings">Settings</string>

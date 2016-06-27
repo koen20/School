@@ -12,10 +12,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class GradesActivity extends AppCompatActivity {
     TextView textView;
     TextView textView2;
     String text = "";
+    Double avg;
+    String l;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +43,20 @@ public class GradesActivity extends AppCompatActivity {
             for (int i = 0; i < grades.length(); i++) {
                 JSONObject grade = grades.getJSONObject(i);
                 String title = grade.getString("title");
-                Double avg = grade.getDouble("grade");
+                l = "hoi";
+                if (Objects.equals(grade.getString("grade"), "V") || Objects.equals(grade.getString("grade"), "T") || Objects.equals(grade.getString("grade"), "G")) {
+                    l = grade.getString("grade");
+                } else {
+                    avg = grade.getDouble("grade");
+                }
+
                 Double weight = grade.getDouble("weight");
-                if (avg > 5.9) {
+                if (l != "hoi") {
+                    text += title + ": " + "<font color=#4CAF50>" + l + "</font><br>";
+                } else if (avg > 5.9) {
                     text += title + ": " + "<font color=#4CAF50>" + avg + "</font><br>";
                 } else if (avg < 6) {
-                    text += title + ": " + "<font color=#F44336\n>" + avg + "</font><br>";
+                    text += title + ": " + "<font color=#F44336>" + avg + "</font><br>";
                 }
                 text += getString(R.string.Gewicht) + weight + "<br><br>";
 
