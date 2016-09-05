@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,8 +58,6 @@ public class TimeTableFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_time_table, container, false);
 
         textView5 = (TextView) rootView.findViewById(R.id.textView5);
-        Button button5 = (Button) rootView.findViewById(R.id.button5);
-        Button button6 = (Button) rootView.findViewById(R.id.button6);
         listView = (ListView) rootView.findViewById(R.id.listView2);
 
         adapter = new TimeTableAdapter(getContext(), timeTableItem);
@@ -72,20 +72,6 @@ public class TimeTableFragment extends Fragment {
 
         getCalendar();
 
-        button5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                prevDay();
-            }
-        });
-
-        button6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                nextDay();
-            }
-        });
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -98,7 +84,20 @@ public class TimeTableFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nextDay();
+            }
+        });
+        FloatingActionButton fab2 = (FloatingActionButton) rootView.findViewById(R.id.fab2);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prevDay();
+            }
+        });
         return rootView;
     }
 
