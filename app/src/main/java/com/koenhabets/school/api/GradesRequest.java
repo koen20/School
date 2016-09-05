@@ -29,6 +29,7 @@ public class GradesRequest extends Request<String> {
 
     private Response.Listener<String> responListener;
     private String requestToken;
+    static String looset;
 
     static String[] subjects = {
             "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
@@ -50,7 +51,6 @@ public class GradesRequest extends Request<String> {
 
         String resultString = "";
         String resultStringr = "";
-        String looset;
         JSONObject jsonObject = new JSONObject(response);
         if (jsonObject.has("grades")) {
             double loose = jsonObject.getDouble("loose");
@@ -139,6 +139,10 @@ public class GradesRequest extends Request<String> {
     @Override
     protected void deliverResponse(String response) {
         responListener.onResponse(response);
+    }
+
+    public static java.lang.String getLooset() {
+        return looset;
     }
 }
 
