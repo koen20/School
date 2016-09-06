@@ -14,6 +14,9 @@
             android:id="@+id/nav_grades"
             android:icon="@drawable/ic_grades_black_24dp"
             android:title="@string/cijfers" />
+        <item
+            android:id="@+id/signout"
+            android:title="Sign out" />
     </group>
 
 </menu>

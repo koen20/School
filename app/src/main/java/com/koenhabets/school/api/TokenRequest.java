@@ -60,8 +60,9 @@ public class TokenRequest extends Request<String> {
     @Override
     protected Map<String, String> getParams() {
         Map<String, String> params = new HashMap<>();
-        params.put("username", "407332");
-        params.put("password", PasswordHolder.getPassword());
+        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        params.put("username", sharedPref.getString("username", ""));
+        params.put("password", sharedPref.getString("password",""));
         params.put("access_token", "470d7d90cae6e34f36bc9110026a4370e8864551b0e7e7b33263163562c362a3d68f1937");
         return params;
     }

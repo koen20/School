@@ -46,7 +46,7 @@ public class ProfileRequest extends Request<String> {
         editor.apply();
         JSONObject jsonMain2 = jsonMain.getJSONObject("info");
         editor.putString("email", jsonMain2.getString("email"));
-        editor.putString("class", jsonMain2.getString("class"));
+        //editor.putString("class", jsonMain2.getString("class"));
         editor.putString("username", jsonMain2.getString("username"));
         editor.apply();
 

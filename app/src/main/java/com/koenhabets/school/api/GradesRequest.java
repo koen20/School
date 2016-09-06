@@ -31,7 +31,7 @@ public class GradesRequest extends Request<String> {
     private String requestToken;
     static String looset;
 
-    static String[] subjects = {
+    static String[] subjdects = {
             "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
             "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
             "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
@@ -56,7 +56,7 @@ public class GradesRequest extends Request<String> {
             double loose = jsonObject.getDouble("loose");
             JSONObject jsonMain = jsonObject.getJSONObject("grades");
 
-            for (String subject : subjects) {
+            /**for (String subject : subjects) {
                 JSONObject vak = jsonMain.getJSONObject(subject);
                 double avg = vak.getDouble("avg");
                 if (avg < 6) {
@@ -65,7 +65,7 @@ public class GradesRequest extends Request<String> {
                     resultString += subject + ": " + "<font color=green>" + avg + "</font><br>";
                 }
                 resultStringr = resultStringr + avg;
-            }
+            } */
             if (loose > 4) {
                 looset = "<br>" + "Verlisepunten: " + "<font color=red>" + loose + "</font>";
                 resultString += looset;
