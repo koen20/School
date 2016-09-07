@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText editText_username;
     EditText editText_password;
     EditText editText_class;
+    TextView textView;
     RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         editText_username = (EditText) findViewById(R.id.editText2);
         editText_password = (EditText) findViewById(R.id.editText);
         editText_class = (EditText) findViewById(R.id.editText3);
+        textView = (TextView) findViewById(R.id.textView6);
 
     }
     public void login(View view){
@@ -42,6 +45,20 @@ public class LoginActivity extends AppCompatActivity {
         TokenRequest tokenRequest = new TokenRequest(new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                //if (response == "200"){
+                    SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putBoolean("Logged-in", true);
+                    editor.commit();
+                    Intent intent = new Intent(SchoolApp.getContext(), DrawerActivity.class);
+                    startActivity(intent);
+                /*} else {
+                    textView.setText(R.string.incorrect);
+                    SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.clear();
+                    editor.commit();
+                }*/
             }
         }, new Response.ErrorListener() {
             @Override
@@ -50,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(tokenRequest);
-        Intent intent = new Intent(this, DrawerActivity.class);
-        startActivity(intent);
+
     }
 }

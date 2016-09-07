@@ -15,4 +15,5 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="Rooster">Rooster</string>
+    <string name="incorrect">Incorrect email or password.</string>
 </resources>
