@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +49,6 @@ public class CalendarRequest extends Request<String> {
         JSONObject jsonMain = jsonObject.getJSONObject("result");
         SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-
         editor.putString(timeStamp, jsonObject.toString());
         editor.apply();
         JSONArray jsonArray = jsonMain.getJSONArray("items");
@@ -58,7 +58,6 @@ public class CalendarRequest extends Request<String> {
         mBuilder.setContentTitle("Rooster");
         mBuilder.setOngoing(true);
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-
         String resultString = "";
 
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -75,9 +74,15 @@ public class CalendarRequest extends Request<String> {
 
                 }
             }
-
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if (hour >= 10 && hour <= 16 && i == 0) {
+            } else if(hour >= 10 && hour <= 16 && i == 1) {
+            } else if (hour >= 12 && hour <= 16 && i == 2){
+            } else {
+                inboxStyle.addLine(title + " " + lokaal);
+            }
             resultString += title + " " + lokaal + "\n";
-            inboxStyle.addLine(title + " " + lokaal);
         }
         NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder.setStyle(inboxStyle);
@@ -87,7 +92,7 @@ public class CalendarRequest extends Request<String> {
         if (notificatiecalendar) {
             mNotificationManager.notify(1, mBuilder.build());
         }
-
+        editor.putString("calnow", resultString);
         return response;
     }
 

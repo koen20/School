@@ -56,7 +56,6 @@ public class TimeTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_time_table, container, false);
-
         textView5 = (TextView) rootView.findViewById(R.id.textView5);
         listView = (ListView) rootView.findViewById(R.id.listView2);
 
