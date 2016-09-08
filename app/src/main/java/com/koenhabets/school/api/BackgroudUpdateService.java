@@ -46,7 +46,7 @@ public class BackgroudUpdateService extends IntentService {
         Calendar now = Calendar.getInstance();
         int hour = now.get(Calendar.HOUR_OF_DAY);
         int day = now.get(Calendar.DAY_OF_MONTH);
-        if (hour > 15) {
+        if (hour > 16) {
             day += 1;
         }
 

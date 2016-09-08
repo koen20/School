@@ -31,11 +31,6 @@ public class GradesRequest extends Request<String> {
     private String requestToken;
     static String looset;
 
-    static String[] subjdects = {
-            "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
-            "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
-            "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
-
     public GradesRequest(String requestToken,
                          Response.Listener<String> responseListener,
                          Response.ErrorListener errorListener) {
