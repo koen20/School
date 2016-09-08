@@ -45,7 +45,7 @@
         android:layout_below="@+id/editText"
         android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/editText"
-        android:hint="Klass (Met hoofdletters!)" />
+        android:hint="Klass" />
 
     <TextView
         android:layout_width="wrap_content"

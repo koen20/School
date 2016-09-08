@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         editText_username = (EditText) findViewById(R.id.editText2);
         editText_password = (EditText) findViewById(R.id.editText);
         editText_class = (EditText) findViewById(R.id.editText3);
+        editText_class.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         textView = (TextView) findViewById(R.id.textView6);
 
     }
@@ -57,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("error", "" + error.getMessage());
-                Log.i("d", "400");
                 textView.setText(R.string.incorrect);
                 SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();

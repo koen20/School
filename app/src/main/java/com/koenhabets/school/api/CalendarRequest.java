@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CalendarRequest extends Request<String> {
 
@@ -74,10 +75,13 @@ public class CalendarRequest extends Request<String> {
 
                 }
             }
+            if(Objects.equals(title.substring(1), ". Culturele en kunstzinnige vorming")){
+                title = i + "CKV";
+            }
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour >= 10 && hour <= 16 && i == 0) {
-            } else if (hour >= 10 && hour <= 16 && i == 1) {
+            if (hour >= 10 && hour <= 16 && i == 0 && uur != 1) {
+            } else if (hour >= 10 && hour <= 16 && i == 1 && uur!= 2) {
             } else if (hour >= 12 && hour <= 16 && i == 2) {
             } else {
                 inboxStyle.addLine(title + " " + lokaal);

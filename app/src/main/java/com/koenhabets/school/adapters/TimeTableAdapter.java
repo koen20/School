@@ -11,6 +11,7 @@ import com.koenhabets.school.R;
 import com.koenhabets.school.api.TimeTableItem;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by koenh on 26-5-2016.
@@ -25,6 +26,9 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
         TimeTableItem timeTableItem = getItem(position);
         String subject = timeTableItem.getSubject();
         String lokaal = timeTableItem.getLokaal();
+        if(Objects.equals(subject.substring(1), ". Culturele en kunstzinnige vorming")){
+            subject = (position + 1) + ". CKV";
+        }
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.timetable_item, parent, false);

@@ -86,7 +86,7 @@ public class GradesRequest extends Request<String> {
 
             Log.d("old", resultStringOld);
             Log.d("new", resultStringr);
-            if (!resultStringr.equals(resultStringOld)) {
+            if (!resultStringr.equals(resultStringOld) && resultStringOld != "no grades") {
                 Log.i("grades", "Nieuw cijfer");
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
                 mBuilder.setSmallIcon(R.drawable.ic_grades_black_24dp);
