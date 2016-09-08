@@ -40,15 +40,11 @@ public class TokenRequest extends Request<String> {
         Calendar now = Calendar.getInstance();
         int today = now.get(Calendar.DAY_OF_YEAR);
         String requestToken = "";
-        String status = "400";
         try {
             JSONObject responsetoken = new JSONObject(response);
             JSONObject jsonMain = responsetoken.getJSONObject("result");
             requestToken = jsonMain.getString("request_token");
             Log.i("requestToken", requestToken);
-
-            JSONObject jsonMain2 = responsetoken.getJSONObject("meta");
-            status = jsonMain2.getString("status");
 
             SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -58,7 +54,7 @@ public class TokenRequest extends Request<String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return status;
+        return requestToken;
     }
 
     @Override
@@ -92,4 +88,5 @@ public class TokenRequest extends Request<String> {
     protected void deliverResponse(String response) {
         responListener.onResponse(response);
     }
+
 }

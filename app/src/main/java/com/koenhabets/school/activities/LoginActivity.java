@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
     public void login(View view){
-        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("username", editText_username.getText().toString());
         editor.putString("password", editText_password.getText().toString());
@@ -45,25 +46,23 @@ public class LoginActivity extends AppCompatActivity {
         TokenRequest tokenRequest = new TokenRequest(new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //if (response == "200"){
-                    SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putBoolean("Logged-in", true);
-                    editor.commit();
-                    Intent intent = new Intent(SchoolApp.getContext(), DrawerActivity.class);
-                    startActivity(intent);
-                /*} else {
-                    textView.setText(R.string.incorrect);
-                    SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.clear();
-                    editor.commit();
-                }*/
+                SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean("Logged-in", true);
+                editor.apply();
+                Intent intent = new Intent(SchoolApp.getContext(), DrawerActivity.class);
+                startActivity(intent);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("error", "" + error.getMessage());
+                Log.i("d", "400");
+                textView.setText(R.string.incorrect);
+                SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.clear();
+                editor.apply();
             }
         });
         requestQueue.add(tokenRequest);
