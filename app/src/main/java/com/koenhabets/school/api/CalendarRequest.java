@@ -11,6 +11,7 @@ import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.firebase.crash.FirebaseCrash;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
 
@@ -19,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,33 +62,37 @@ public class CalendarRequest extends Request<String> {
         mBuilder.setOngoing(true);
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         String resultString = "";
+        for (int k = 0; k< jsonArray.length(); k++){
+            JSONObject vak = jsonArray.getJSONObject(k);
+            if(vak.has("custom_str")){
+                jsonArray = RemoveJSONArray(jsonArray, k);
+            }
+        }
 
         for (int i = 0; i < jsonArray.length(); i++) {
             int uur = i + 1;
             String title = uur + ". Onbekend";
             String lokaal = "";
             JSONObject vak = jsonArray.getJSONObject(i);
-
-            if (vak.has("title") && vak.has("subtitle")) {
-                title = vak.getString("title");
-                lokaal = vak.getString("subtitle");
-            } else if (vak.has("type")) {
-                if (vak.getString("type").equals("divider")) {
-
+            if(!vak.has("custom_str")) {
+                if (vak.has("title") && vak.has("subtitle")) {
+                    title = vak.getString("title");
+                    lokaal = vak.getString("subtitle");
+                } else if (vak.has("type")) {
                 }
+                if (Objects.equals(title.substring(1), ". Culturele en kunstzinnige vorming")) {
+                    title = i + "CKV";
+                }
+                Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                if (hour >= 12 && hour <= 16 && i == 0) {
+                } else if (hour >= 12 && hour <= 16 && i == 1) {
+                } else if (hour >= 13 && hour <= 16 && i == 2) {
+                } else {
+                    inboxStyle.addLine(title + " " + lokaal);
+                }
+                resultString += title + " " + lokaal + "\n";
             }
-            if(Objects.equals(title.substring(1), ". Culturele en kunstzinnige vorming")){
-                title = i + "CKV";
-            }
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour >= 12 && hour <= 16 && i == 0) {
-            } else if (hour >= 12 && hour <= 16 && i == 1) {
-            } else if (hour >= 13 && hour <= 16 && i == 2) {
-            } else {
-                inboxStyle.addLine(title + " " + lokaal);
-            }
-            resultString += title + " " + lokaal + "\n";
         }
         NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder.setStyle(inboxStyle);
@@ -122,6 +128,7 @@ public class CalendarRequest extends Request<String> {
             return Response.success(resultString, null);
         } catch (JSONException e) {
             e.printStackTrace();
+            FirebaseCrash.report(new Exception(e));
             return Response.error(new ParseError(e));
         }
     }
@@ -129,5 +136,17 @@ public class CalendarRequest extends Request<String> {
     @Override
     protected void deliverResponse(String response) {
         responListener.onResponse(response);
+    }
+    public static JSONArray RemoveJSONArray( JSONArray jarray,int pos) {
+
+        JSONArray Njarray=new JSONArray();
+        try{
+            for(int i=0;i<jarray.length();i++){
+                if(i!=pos)
+                    Njarray.put(jarray.get(i));
+            }
+        }catch (Exception e){e.printStackTrace();}
+        return Njarray;
+
     }
 }
