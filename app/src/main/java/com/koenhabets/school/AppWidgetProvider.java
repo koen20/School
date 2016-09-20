@@ -18,15 +18,11 @@ import org.json.JSONException;
 import java.util.Calendar;
 import java.util.Objects;
 
-/**
- * Created by koenh on 9/5/2016.
- */
 public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
 
 
-        // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i = 0; i < N; i++) {
             RequestQueue requestQueue;
             requestQueue = Volley.newRequestQueue(context);
@@ -62,11 +58,11 @@ public class AppWidgetProvider extends android.appwidget.AppWidgetProvider {
                     Log.e("error", "" + error.getMessage());
                 }
             });
-
             String result = sharedPref.getString(ts, "no");
             if (!Objects.equals(result, "no")) {
                 Log.i("Stored", result);
-                    views.setTextViewText(R.id.textView_widget, sharedPref.getString("calnow", ""));
+                Log.i("calnow", sharedPref.getString("calnow", ""));
+                views.setTextViewText(R.id.textView_widget, sharedPref.getString("calnow", ""));
             } else {
                 requestQueue.add(requestCalendar);
             }

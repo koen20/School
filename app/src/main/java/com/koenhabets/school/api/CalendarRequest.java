@@ -61,17 +61,11 @@ public class CalendarRequest extends Request<String> {
         mBuilder.setContentTitle("Rooster");
         mBuilder.setOngoing(true);
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        String resultString = "";
-        for (int k = 0; k< jsonArray.length(); k++){
-            JSONObject vak = jsonArray.getJSONObject(k);
-            if(vak.has("custom_str")){
-                jsonArray = RemoveJSONArray(jsonArray, k);
-            }
-        }
+        String resultString = "tada";
 
         for (int i = 0; i < jsonArray.length(); i++) {
             int uur = i + 1;
-            String title = uur + ". Onbekend";
+            String title = uur + ". Tussenuur";
             String lokaal = "";
             JSONObject vak = jsonArray.getJSONObject(i);
             if(!vak.has("custom_str")) {
@@ -90,8 +84,8 @@ public class CalendarRequest extends Request<String> {
                 } else if (hour >= 13 && hour <= 16 && i == 2) {
                 } else {
                     inboxStyle.addLine(title + " " + lokaal);
+                    resultString += title + " " + lokaal + "\n";
                 }
-                resultString += title + " " + lokaal + "\n";
             }
         }
         NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -103,6 +97,7 @@ public class CalendarRequest extends Request<String> {
             mNotificationManager.notify(1, mBuilder.build());
         }
         editor.putString("calnow", resultString);
+        editor.apply();
         return response;
     }
 
@@ -136,17 +131,5 @@ public class CalendarRequest extends Request<String> {
     @Override
     protected void deliverResponse(String response) {
         responListener.onResponse(response);
-    }
-    public static JSONArray RemoveJSONArray( JSONArray jarray,int pos) {
-
-        JSONArray Njarray=new JSONArray();
-        try{
-            for(int i=0;i<jarray.length();i++){
-                if(i!=pos)
-                    Njarray.put(jarray.get(i));
-            }
-        }catch (Exception e){e.printStackTrace();}
-        return Njarray;
-
     }
 }

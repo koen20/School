@@ -3,6 +3,7 @@ package com.koenhabets.school.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.koenhabets.school.R;
@@ -37,8 +38,11 @@ public class TimeTableActivity extends AppCompatActivity {
             JSONObject jsonMain = jsonObject.getJSONObject("result");
             JSONArray jsonArray = jsonMain.getJSONArray("items");
             JSONObject vak = jsonArray.getJSONObject(subject);
-            JSONObject todos = vak.getJSONObject("todos");
+            JSONArray todos = vak.getJSONArray("todos");
             textView2.setText(todos.toString());
+            for (int i = 0; i < todos.length(); i++) {
+                Log.d("Type", todos.getJSONObject(i).toString());
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
