@@ -92,8 +92,9 @@ public class CalendarRequest extends Request<String> {
         mBuilder.setStyle(inboxStyle);
 
         boolean notificatiecalendar = sharedPref.getBoolean("notificatie-calendar", true);
-
-        if (notificatiecalendar) {
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        if (notificatiecalendar && day != 6 && day != 7) {
             mNotificationManager.notify(1, mBuilder.build());
         }
         editor.putString("calnow", resultString);

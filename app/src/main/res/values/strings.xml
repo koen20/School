@@ -36,4 +36,5 @@
     <string name="password">Wachtwoord</string>
     <string name="username">Gebruikersnaam</string>
     <string name="incorrect">Het opgegeven e-mailadres en wachtwoord komen niet overeen</string>
+    <string name="notificationnetpresnter">Staat in de netpresenter.</string>
 </resources>

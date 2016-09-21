@@ -43,23 +43,25 @@ public class NetpresenterRequest extends Request<String> {
         NotificationManager mNotificationManager = (NotificationManager) SchoolApp.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new NotificationCompat.Builder(SchoolApp.getContext());
         SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
         String klas = sharedPref.getString("class", "");
         boolean b = response.contains(klas);
         if (b) {
             mBuilder.setVibrate(new long[]{50, 50, 50, 50, 50, 50, 50, 50, 50, 50});
             mBuilder.setSmallIcon(R.drawable.ic_netpresenter_black_24dp);
-            mBuilder.setContentTitle("JAAAA");
-            mBuilder.setOngoing(true);
-            mBuilder.setOnlyAlertOnce(true);
+            mBuilder.setContentTitle(klas + " Staat in de netpresenter");
 
             boolean notificatienet = sharedPref.getBoolean("notificatie-netpresenter", true);
+            Boolean notified = sharedPref.getBoolean("notified", false);
 
-            if (notificatienet) {
+            if (notificatienet && !notified) {
                 mNotificationManager.notify(2, mBuilder.build());
+                editor.putBoolean("notified", true);
             }
             Log.i("Uitval", "ja");
         } else {
             mNotificationManager.cancel(2);
+            editor.putBoolean("notified", false);
         }
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("result");
