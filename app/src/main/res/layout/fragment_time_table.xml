@@ -15,26 +15,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="184dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/vorige_dag"
-        android:id="@+id/button5"
-        android:layout_gravity="left|bottom"
-        android:layout_alignTop="@+id/button6"
-        android:visibility="invisible"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/volgende_dag"
-        android:id="@+id/button6"
-        android:layout_alignTop="@+id/textView5"
-        android:layout_centerHorizontal="true"
-        android:visibility="invisible"
-        android:layout_marginTop="64dp" />
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,7 +29,9 @@
         android:src="@drawable/ic_arrow_forward_black_24dp"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
-        android:layout_below="@+id/button6"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab2"
@@ -59,7 +41,9 @@
         android:src="@drawable/ic_arrow_back_black_24dp"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
-        android:layout_below="@+id/button5"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true" />
 
 </RelativeLayout>

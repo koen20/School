@@ -65,6 +65,8 @@ public class NetpresenterRequest extends Request<String> {
         }
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("result");
+        String asdf = jsonMain.getString("content");
+        Log.i("content", jsonMain.getString("content"));
         return jsonMain.getString("content");
     }
 

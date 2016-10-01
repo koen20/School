@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -22,6 +23,7 @@ import com.koenhabets.school.api.NetpresenterRequest;
 public class NetpresenterFragment extends Fragment {
     RequestQueue requestQueue;
     TextView textView;
+    WebView webView;
 
     public NetpresenterFragment() {
     }
@@ -38,6 +40,7 @@ public class NetpresenterFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_netpresenter, container, false);
 
         textView = (TextView) rootView.findViewById(R.id.textViewNetpresenter);
+        webView = (WebView) rootView.findViewById(R.id.webView);
         requestQueue = Volley.newRequestQueue(getContext());
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
@@ -46,6 +49,9 @@ public class NetpresenterFragment extends Fragment {
         NetpresenterRequest netpresenterRequest = new NetpresenterRequest(requestToken, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                //webView.getSettings().setJavaScriptEnabled(true);
+                //webView.loadData("<!DOCTYPE html <html>" + response + "</html>", "text/html", null);
+                //webView.loadUrl("https://koenhabets.tk/test.html");
                 textView.setText(Html.fromHtml(response));
             }
         }, new Response.ErrorListener() {

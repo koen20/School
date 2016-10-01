@@ -96,6 +96,8 @@ public class CalendarRequest extends Request<String> {
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         if (notificatiecalendar && day != 6 && day != 7) {
             mNotificationManager.notify(1, mBuilder.build());
+        } else {
+            mNotificationManager.cancel(1);
         }
         editor.putString("calnow", resultString);
         editor.apply();
