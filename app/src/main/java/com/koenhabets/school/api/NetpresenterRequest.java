@@ -63,10 +63,9 @@ public class NetpresenterRequest extends Request<String> {
             mNotificationManager.cancel(2);
             editor.putBoolean("notified", false);
         }
+        editor.apply();
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("result");
-        String asdf = jsonMain.getString("content");
-        Log.i("content", jsonMain.getString("content"));
         return jsonMain.getString("content");
     }
 
