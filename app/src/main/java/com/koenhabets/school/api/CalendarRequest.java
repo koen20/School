@@ -20,9 +20,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -92,9 +94,12 @@ public class CalendarRequest extends Request<String> {
         mBuilder.setStyle(inboxStyle);
 
         boolean notificatiecalendar = sharedPref.getBoolean("notificatie-calendar", true);
+        String weekDay;
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+
         Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-        if (notificatiecalendar && day != 6 && day != 7) {
+        weekDay = dayFormat.format(calendar.getTime());
+        if (notificatiecalendar && !Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday")) {
             mNotificationManager.notify(1, mBuilder.build());
         } else {
             mNotificationManager.cancel(1);
