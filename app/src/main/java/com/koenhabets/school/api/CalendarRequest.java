@@ -77,7 +77,7 @@ public class CalendarRequest extends Request<String> {
                 } else if (vak.has("type")) {
                 }
                 if (Objects.equals(title.substring(1), ". Culturele en kunstzinnige vorming")) {
-                    title = i + "CKV";
+                    title = i + 1 + ". CKV";
                 }
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
