@@ -23,10 +23,12 @@ import com.koenhabets.school.adapters.GradesAdapter;
 import com.koenhabets.school.api.GradeItem;
 import com.koenhabets.school.api.GradesRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class GradesFragment extends Fragment {
@@ -37,7 +39,9 @@ public class GradesFragment extends Fragment {
     static String[] subjects = {
             "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
             "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
-            "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming"};
+            "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming",
+            "Informatica", "Maatschappijleer", "Nederlandse taal en literatuur", "Wiskunde B",
+            "Wiskunde A", "Engelse taal en literatuur", "Culturele en kunstzinnige vorming"};
     String result;
 
     public GradesFragment() {
