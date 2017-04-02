@@ -23,19 +23,13 @@ import com.koenhabets.school.adapters.GradesAdapter;
 import com.koenhabets.school.api.GradeItem;
 import com.koenhabets.school.api.GradesRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class GradesFragment extends Fragment {
-    private RequestQueue requestQueue;
-    private ListView listView;
-    private GradesAdapter adapter;
-    private List<GradeItem> gradeItems = new ArrayList<>();
     static String[] subjects = {
             "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
             "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
@@ -43,6 +37,10 @@ public class GradesFragment extends Fragment {
             "Informatica", "Maatschappijleer", "Nederlandse taal en literatuur", "Wiskunde B",
             "Wiskunde A", "Engelse taal en literatuur", "Culturele en kunstzinnige vorming"};
     String result;
+    private RequestQueue requestQueue;
+    private ListView listView;
+    private GradesAdapter adapter;
+    private List<GradeItem> gradeItems = new ArrayList<>();
 
     public GradesFragment() {
     }
@@ -103,10 +101,15 @@ public class GradesFragment extends Fragment {
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("grades");
         for (String subject : subjects) {
-            JSONObject vak = jsonMain.getJSONObject(subject);
-            double avg = vak.getDouble("avg");
-            GradeItem item = new GradeItem(subject, avg);
-            gradeItems.add(item);
+            try {
+                JSONObject vak = jsonMain.getJSONObject(subject);
+                double avg = vak.getDouble("avg");
+                GradeItem item = new GradeItem(subject, avg);
+                gradeItems.add(item);
+            } catch (JSONException e) {
+                //e.printStackTrace();
+            }
+
         }
 
         GradeItem item = new GradeItem("Verliespunten", jsonObject.getDouble("loose"));

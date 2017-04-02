@@ -27,7 +27,7 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
         String subject = timeTableItem.getSubject();
         String lokaal = timeTableItem.getLokaal();
         if(Objects.equals(subject.substring(1), ". Culturele en kunstzinnige vorming")){
-            subject = (position + 1) + ". CKV";
+            subject = subject.charAt(0) + ". CKV";
         }
 
         if (convertView == null) {
