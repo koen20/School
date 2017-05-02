@@ -25,11 +25,11 @@ import java.util.Map;
 
 public class GradesRequest extends Request<String> {
 
-    private static String url = "https://api.scholica.com/2.0/communities/1/module";
+    private static String url = "https://api.scholica.com/2.0/communities/1/module?term=4";
 
     private Response.Listener<String> responListener;
     private String requestToken;
-    static String looset;
+    private static String looset;
 
     public GradesRequest(String requestToken,
                          Response.Listener<String> responseListener,

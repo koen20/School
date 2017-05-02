@@ -30,12 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GradesFragment extends Fragment {
-    static String[] subjects = {
-            "Aardrijkskunde", "Duitse taal", "Economie", "Engelse taal", "Franse taal",
-            "Geschiedenis", "Levensbeschouwing", "Muziek", "Nederlandse taal", "Scheikunde",
-            "Wiskunde", "Natuurkunde", "Biologie", "Lichamelijke opvoeding", "Beeldende vorming",
-            "Informatica", "Maatschappijleer", "Nederlandse taal en literatuur", "Wiskunde B",
-            "Wiskunde A", "Engelse taal en literatuur", "Culturele en kunstzinnige vorming"};
     String result;
     private RequestQueue requestQueue;
     private ListView listView;
@@ -100,16 +94,16 @@ public class GradesFragment extends Fragment {
         gradeItems.clear();
         JSONObject jsonObject = new JSONObject(response);
         JSONObject jsonMain = jsonObject.getJSONObject("grades");
-        for (String subject : subjects) {
+        for (int i = 0; i < jsonMain.names().length(); i++) {
             try {
-                JSONObject vak = jsonMain.getJSONObject(subject);
-                double avg = vak.getDouble("avg");
-                GradeItem item = new GradeItem(subject, avg);
+                JSONObject jObj = new JSONObject(jsonMain.get(jsonMain.names().getString(i)).toString());
+                double avg = jObj.getDouble("avg");
+                Log.i("subject", jsonMain.names().getString(i));
+                GradeItem item = new GradeItem(jsonMain.names().getString(i), avg);
                 gradeItems.add(item);
             } catch (JSONException e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
-
         }
 
         GradeItem item = new GradeItem("Verliespunten", jsonObject.getDouble("loose"));
