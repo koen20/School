@@ -13,9 +13,6 @@ import com.koenhabets.school.api.TimeTableItem;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Created by koenh on 26-5-2016.
- */
 public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
     public TimeTableAdapter(Context context, List<TimeTableItem> timeTableItems) {
         super(context, 0, timeTableItems);
