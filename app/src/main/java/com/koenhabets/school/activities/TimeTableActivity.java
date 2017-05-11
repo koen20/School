@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.widget.TextView;
 
+import com.koenhabets.school.HtmlCompat;
 import com.koenhabets.school.R;
 
 import org.json.JSONArray;
@@ -29,7 +30,7 @@ public class TimeTableActivity extends AppCompatActivity {
         int subject = intent.getIntExtra("subject", 1);
         String response = intent.getStringExtra("response");
 
-        textView2.setText(response);
+        textView2.setText("Geen huiswerk");
 
         JSONObject jsonObject;
 
@@ -46,7 +47,7 @@ public class TimeTableActivity extends AppCompatActivity {
                 textView.setText(jObj.getString("subject"));
                 text = text + "<br>" + content;
             }
-            textView2.setText(Html.fromHtml(text));
+            textView2.setText(HtmlCompat.fromHtml(text));
 
         } catch (JSONException e) {
             e.printStackTrace();

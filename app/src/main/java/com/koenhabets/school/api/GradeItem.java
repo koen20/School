@@ -1,8 +1,5 @@
 package com.koenhabets.school.api;
 
-/**
- * Created by koen on 21-5-16.
- */
 public class GradeItem {
 
     private String subject;

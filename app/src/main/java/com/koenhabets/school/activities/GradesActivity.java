@@ -3,23 +3,30 @@ package com.koenhabets.school.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.koenhabets.school.HtmlCompat;
 import com.koenhabets.school.R;
+import com.koenhabets.school.adapters.GradeAdapter2;
+import com.koenhabets.school.api.GradeItem2;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class GradesActivity extends AppCompatActivity {
     TextView textView;
-    TextView textView2;
+    ListView listView;
     String text = "";
     Double avg;
     String l;
+    private List<GradeItem2> gradeItems = new ArrayList<>();
+    private GradeAdapter2 adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +34,9 @@ public class GradesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_grades);
 
         textView = (TextView) findViewById(R.id.textView);
-        textView2 = (TextView) findViewById(R.id.textView2);
+        adapter = new GradeAdapter2(this, gradeItems);
+        listView = (ListView) findViewById(R.id.listView2);
+        listView.setAdapter(adapter);
 
         Intent intent = getIntent();
         String subject = intent.getStringExtra("subject");
@@ -35,6 +44,7 @@ public class GradesActivity extends AppCompatActivity {
 
 
         try {
+            gradeItems.clear();
             JSONObject jsonObject = new JSONObject(response);
             JSONObject jsonMain = jsonObject.getJSONObject("grades");
             JSONObject vak = jsonMain.getJSONObject(subject);
@@ -43,27 +53,23 @@ public class GradesActivity extends AppCompatActivity {
             for (int i = 0; i < grades.length(); i++) {
                 JSONObject grade = grades.getJSONObject(i);
                 String title = grade.getString("title");
+                Double weight = grade.getDouble("weight");
+                String date = grade.getString("date");
                 l = "hoi";
                 if (Objects.equals(grade.getString("grade"), "V") || Objects.equals(grade.getString("grade"), "T") || Objects.equals(grade.getString("grade"), "G")) {
-                    l = grade.getString("grade");
+                    //l = grade.getString("grade");
+                    avg = 0.0;
                 } else {
                     avg = grade.getDouble("grade");
                 }
+                GradeItem2 item = new GradeItem2(title, Double.toString(weight), date, avg);
+                gradeItems.add(item);
 
-                Double weight = grade.getDouble("weight");
-                if (l != "hoi") {
-                    text += title + ": " + "<font color=#4CAF50>" + l + "</font><br>";
-                } else if (avg > 5.9) {
-                    text += title + ": " + "<font color=#4CAF50>" + avg + "</font><br>";
-                } else if (avg < 6) {
-                    text += title + ": " + "<font color=#F44336>" + avg + "</font><br>";
-                }
-                text += getString(R.string.Gewicht) + weight + "<br><br>";
+                adapter.notifyDataSetChanged();
 
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        textView2.setText(Html.fromHtml(text));
     }
 }
