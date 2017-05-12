@@ -1,16 +1,15 @@
 package com.koenhabets.school.api;
 
-/**
- * Created by koenh on 26-5-2016.
- */
 public class TimeTableItem {
 
     private String subject;
     private String lokaal;
+    private boolean homework;
 
-    public TimeTableItem(String subject, String lokaal) {
+    public TimeTableItem(String subject, String lokaal, boolean homework) {
         this.subject = subject;
         this.lokaal = lokaal;
+        this.homework = homework;
     }
 
     public String getSubject() {
@@ -19,5 +18,9 @@ public class TimeTableItem {
 
     public String getLokaal() {
         return lokaal;
+    }
+
+    public boolean getHomework() {
+        return homework;
     }
 }

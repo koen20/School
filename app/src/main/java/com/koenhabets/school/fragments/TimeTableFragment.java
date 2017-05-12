@@ -6,15 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,7 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
-import com.koenhabets.school.SchoolApp;
 import com.koenhabets.school.activities.TimeTableActivity;
 import com.koenhabets.school.adapters.TimeTableAdapter;
 import com.koenhabets.school.api.CalendarRequest;
@@ -102,7 +98,7 @@ public class TimeTableFragment extends Fragment {
 
     public void getCalendar() {
         requestQueue = Volley.newRequestQueue(getContext());
-        SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        final SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
         Long tsLong = getStartOfDayInMillis() / 1000;
         final String ts = tsLong.toString();
@@ -117,17 +113,16 @@ public class TimeTableFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                String result = sharedPref.getString(ts, "no");
+                if (!Objects.equals(result, "no")) {
+                    Log.i("Stored", result);
+                    re = result;
+                    ParseResponse(result);
+                }
             }
         });
 
-        String result = sharedPref.getString(ts, "no");
-        if (!Objects.equals(result, "no")) {
-            Log.i("Stored", result);
-            re = result;
-            ParseResponse(result);
-        } else {
-            requestQueue.add(request);
-        }
+        requestQueue.add(request);
     }
 
     public long getStartOfDayInMillis() {
@@ -166,13 +161,20 @@ public class TimeTableFragment extends Fragment {
                 int uur = i + 1;
                 String subject = uur + getString(R.string.Onbekend);
                 String lokaal = "";
+                boolean homework = false;
                 JSONObject vak = jsonArray.getJSONObject(i);
+                try {
+                    JSONObject todos = vak.getJSONObject("todos");
+                    homework = !Objects.equals(todos.toString(), "");
+                } catch (JSONException e) {
+
+                }
 
                 if (vak.has("title") && vak.has("subtitle")) {
                     subject = vak.getString("title");
                     lokaal = vak.getString("subtitle");
                 }
-                TimeTableItem item = new TimeTableItem(subject, lokaal);
+                TimeTableItem item = new TimeTableItem(subject, lokaal, homework);
                 timeTableItem.add(item);
                 adapter.notifyDataSetChanged();
             }

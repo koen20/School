@@ -70,17 +70,7 @@ public class BackgroudUpdateService extends IntentService {
             }
         });
 
-        String result = sharedPref.getString(ts, "no");
-        if (!Objects.equals(result, "no")) {
-            Log.i("Stored", result);
-            try {
-                CalendarRequest.parseResponse(result, ts);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            requestQueue.add(requestCalendar);
-        }
+        requestQueue.add(requestCalendar);
 
         NetpresenterRequest netpresenterRequest = new NetpresenterRequest(requestToken, new Response.Listener<String>() {
             @Override
@@ -92,7 +82,7 @@ public class BackgroudUpdateService extends IntentService {
                 Log.e("error", "" + error.getMessage());
             }
         });
-        requestQueue.add(netpresenterRequest);
+        //requestQueue.add(netpresenterRequest);
 
         GradesRequest requestGrades = new GradesRequest(requestToken, new Response.Listener<String>() {
             @Override
@@ -104,7 +94,7 @@ public class BackgroudUpdateService extends IntentService {
                 Log.e("error", "" + error.getMessage());
             }
         });
-        requestQueue.add(requestGrades);
+        //requestQueue.add(requestGrades);
 
     }
 }
