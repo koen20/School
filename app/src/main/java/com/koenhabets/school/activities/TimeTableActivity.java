@@ -3,11 +3,10 @@ package com.koenhabets.school.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.koenhabets.school.HtmlCompat;
 import com.koenhabets.school.R;
 import com.koenhabets.school.adapters.TodoAdapter;
 import com.koenhabets.school.api.TodoItem;
@@ -54,7 +53,8 @@ public class TimeTableActivity extends AppCompatActivity {
                 String content = jObj.getString("content");
                 boolean completed = jObj.getBoolean("completed");
                 textView.setText(jObj.getString("subject"));
-                TodoItem item = new TodoItem(content, completed);
+                Log.i("name", todos.names().getString(i));
+                TodoItem item = new TodoItem(content, completed, todos.names().getString(i));
                 todoItems.add(item);
             }
 

@@ -13,9 +13,6 @@ import com.koenhabets.school.api.GradeItem;
 
 import java.util.List;
 
-/**
- * Created by koen on 21-5-16.
- */
 public class GradesAdapter extends ArrayAdapter<GradeItem> {
 
     public GradesAdapter(Context context, List<GradeItem> gradeItems) {

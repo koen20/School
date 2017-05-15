@@ -71,8 +71,6 @@ public class TimeTableFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                TextView textView = (TextView) view.findViewById(R.id.textView_subject);
-                String subject = textView.getText() + "";
                 Intent intent = new Intent(getContext(), TimeTableActivity.class);
                 intent.putExtra("subject", position);
                 intent.putExtra("response", re);
