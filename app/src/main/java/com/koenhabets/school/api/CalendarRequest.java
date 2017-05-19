@@ -138,6 +138,10 @@ public class CalendarRequest extends Request<String> {
 
     @Override
     protected void deliverResponse(String response) {
-        responListener.onResponse(response);
+        try {
+            responListener.onResponse(response);
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+        }
     }
 }

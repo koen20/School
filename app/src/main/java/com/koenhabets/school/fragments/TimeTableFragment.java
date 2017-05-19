@@ -102,6 +102,12 @@ public class TimeTableFragment extends Fragment {
         final String ts = tsLong.toString();
         textView5.setText(getString(R.string.Currentday) + currentDay);
         Log.i("Timestamp", ts + "");
+        String result = sharedPref.getString(ts, "no");
+        if (!Objects.equals(result, "no")) {
+            Log.i("Stored", result);
+            re = result;
+            ParseResponse(result);
+        }
         CalendarRequest request = new CalendarRequest(requestToken, ts, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
