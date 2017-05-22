@@ -2,8 +2,10 @@ package com.koenhabets.school.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +35,15 @@ public class TimeTableActivity extends AppCompatActivity {
         adapter = new TodoAdapter(this, todoItems);
         listView = (ListView) findViewById(R.id.listViewTodo);
         listView.setAdapter(adapter);
+
+        FloatingActionButton fabAdd = (FloatingActionButton)findViewById(R.id.fabAdd);
+
+        fabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //add task
+            }
+        });
 
         Intent intent = getIntent();
         int subject = intent.getIntExtra("subject", 1);
