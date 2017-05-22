@@ -74,6 +74,8 @@ public class TimeTableFragment extends Fragment {
                 Intent intent = new Intent(getContext(), TimeTableActivity.class);
                 intent.putExtra("subject", position);
                 intent.putExtra("response", re);
+                intent.putExtra("subject2", timeTableItem.get(position).getSubject().substring(3));
+                intent.putExtra("date", timeTableItem.get(position).getDate());
                 startActivity(intent);
             }
         });
@@ -165,6 +167,7 @@ public class TimeTableFragment extends Fragment {
                 int uur = i + 1;
                 String subject = uur + getString(R.string.Onbekend);
                 String lokaal = "";
+                String date = "";
                 boolean homework = false;
                 JSONObject vak = jsonArray.getJSONObject(i);
                 try {
@@ -177,8 +180,9 @@ public class TimeTableFragment extends Fragment {
                 if (vak.has("title") && vak.has("subtitle")) {
                     subject = vak.getString("title");
                     lokaal = vak.getString("subtitle");
+                    date = vak.getString("start");
                 }
-                TimeTableItem item = new TimeTableItem(subject, lokaal, homework);
+                TimeTableItem item = new TimeTableItem(subject, lokaal, homework, date);
                 timeTableItem.add(item);
                 adapter.notifyDataSetChanged();
             }

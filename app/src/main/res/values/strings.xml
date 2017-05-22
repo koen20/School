@@ -38,4 +38,7 @@
     <string name="incorrect">Het opgegeven e-mailadres en wachtwoord komen niet overeen</string>
     <string name="notificationnetpresnter">Staat in de netpresenter.</string>
     <string name="klas">Klas</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_task">Add task</string>
 </resources>
