@@ -105,7 +105,11 @@ public class TimeTableFragment extends Fragment {
         final String requestToken = sharedPref.getString("request_token", "no request token");
         Long tsLong = getStartOfDayInMillis() / 1000;
         final String ts = tsLong.toString();
-        textView5.setText(getString(R.string.Currentday) + currentDay);
+        Date dateObj = new Date(tsLong * 1000);
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        String dateString = df.format(dateObj);
+        textView5.setText(dateString);
         Log.i("Timestamp", ts + "");
         String result = sharedPref.getString(ts, "no");
         if (!Objects.equals(result, "no")) {
