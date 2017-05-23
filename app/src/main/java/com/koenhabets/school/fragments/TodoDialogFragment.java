@@ -1,8 +1,8 @@
 package com.koenhabets.school.fragments;
 
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -21,12 +21,12 @@ public class TodoDialogFragment extends DialogFragment {
     NoticeDialogListener mListener;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            mListener = (NoticeDialogListener) activity;
+            mListener = (NoticeDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement NoticeDialogListener");
         }
     }
@@ -41,7 +41,6 @@ public class TodoDialogFragment extends DialogFragment {
         builder.setTitle(R.string.add_task);
 
         builder
-                // Add action buttons
                 .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

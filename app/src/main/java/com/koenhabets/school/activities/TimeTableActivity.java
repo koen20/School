@@ -66,30 +66,7 @@ public class TimeTableActivity extends AppCompatActivity implements TodoDialogFr
                 newFragment.show(getSupportFragmentManager(), "Homework");
             }
         });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-                final String requestToken = sharedPref.getString("request_token", "no request token");
-                RemoveTaskRequest request = new RemoveTaskRequest(requestToken, todoItems.get(position).getId(), new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("error", "" + error.getMessage());
-                    }
-                });
-                requestQueue.add(request);
-                todoItems.remove(position);
-                adapter.notifyDataSetChanged();
-                return true;
-            }
-        });
-
+        listView.setLongClickable(true);
         Intent intent = getIntent();
         int subject = intent.getIntExtra("subject", 1);
         String response = intent.getStringExtra("response");
@@ -123,6 +100,29 @@ public class TimeTableActivity extends AppCompatActivity implements TodoDialogFr
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int pos, long id) {
+                SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                final String requestToken = sharedPref.getString("request_token", "no request token");
+                RemoveTaskRequest request = new RemoveTaskRequest(requestToken, todoItems.get(pos).getId(), new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("error", "" + error.getMessage());
+                    }
+                });
+                requestQueue.add(request);
+                todoItems.remove(pos);
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 
     @Override
