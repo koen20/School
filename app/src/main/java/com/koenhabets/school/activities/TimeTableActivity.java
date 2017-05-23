@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
 import com.koenhabets.school.adapters.TodoAdapter;
 import com.koenhabets.school.api.AddTaskRequest;
+import com.koenhabets.school.api.RemoveTaskRequest;
 import com.koenhabets.school.api.TodoItem;
 import com.koenhabets.school.fragments.TodoDialogFragment;
 
@@ -62,6 +64,29 @@ public class TimeTableActivity extends AppCompatActivity implements TodoDialogFr
             public void onClick(View view) {
                 DialogFragment newFragment = new TodoDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "Homework");
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                final String requestToken = sharedPref.getString("request_token", "no request token");
+                RemoveTaskRequest request = new RemoveTaskRequest(requestToken, todoItems.get(position).getId(), new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("error", "" + error.getMessage());
+                    }
+                });
+                requestQueue.add(request);
+                todoItems.remove(position);
+                adapter.notifyDataSetChanged();
+                return true;
             }
         });
 
