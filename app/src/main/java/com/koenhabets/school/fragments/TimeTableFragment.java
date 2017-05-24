@@ -39,7 +39,7 @@ import java.util.Objects;
 
 public class TimeTableFragment extends Fragment {
 
-    int currentDay;
+    long milis;
     RequestQueue requestQueue;
     TextView textView5;
     ListView listView;
@@ -55,18 +55,12 @@ public class TimeTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_time_table, container, false);
+        getStartOfDayInMillis();
         textView5 = (TextView) rootView.findViewById(R.id.textView5);
         listView = (ListView) rootView.findViewById(R.id.listView2);
 
         adapter = new TimeTableAdapter(getContext(), timeTableItem);
         listView.setAdapter(adapter);
-
-        Calendar now = Calendar.getInstance();
-        int hour = now.get(Calendar.HOUR_OF_DAY);
-        currentDay = now.get(Calendar.DAY_OF_MONTH);
-        if (hour > 15) {
-            currentDay += 1;
-        }
 
         getCalendar();
 
@@ -103,12 +97,11 @@ public class TimeTableFragment extends Fragment {
         requestQueue = Volley.newRequestQueue(getContext());
         final SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
-        Long tsLong = getStartOfDayInMillis() / 1000;
-        final String ts = tsLong.toString();
-        Date dateObj = new Date(tsLong * 1000);
+        final String ts = Long.toString(milis / 1000);
+        Date dateObj = new Date(milis);
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
         String dateString = df.format(dateObj);
+
         textView5.setText(dateString);
         Log.i("Timestamp", ts + "");
         String result = sharedPref.getString(ts, "no");
@@ -144,23 +137,17 @@ public class TimeTableFragment extends Fragment {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        calendar.set(Calendar.DAY_OF_MONTH, currentDay);
+        milis = calendar.getTimeInMillis();
         return calendar.getTimeInMillis();
     }
 
     public void nextDay() {
-        currentDay++;
-        if (currentDay > 31) {
-            currentDay = 1;
-        }
+        milis = milis + 86400000;
         getCalendar();
     }
 
     public void prevDay() {
-        currentDay--;
-        if (currentDay < 1) {
-            currentDay = 31;
-        }
+        milis = milis - 86400000;
         getCalendar();
     }
 
