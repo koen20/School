@@ -124,6 +124,7 @@ public class TimeTableActivity extends AppCompatActivity implements TodoDialogFr
         adapter.notifyDataSetChanged();
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final String requestToken = sharedPref.getString("request_token", "no request token");
+        textView.setText(sub);
 
         Date dateObj = new Date(Long.parseLong(date) * 1000);
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");

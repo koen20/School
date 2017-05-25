@@ -18,7 +18,8 @@
     <string name="incorrect">Incorrect email or password.</string>
     <string name="klas">Class</string>
     <string name="notificationnetpresnter">Is in the Netpresenter</string>
-    <string name="add">Toevoegen</string>
-    <string name="add_task">Taak toevoegen</string>
-    <string name="cancel">Annuleren</string>
+    <string name="add">Add</string>
+    <string name="add_task">Add task</string>
+    <string name="cancel">Cancel</string>
+    <string name="Remove">Remove</string>
 </resources>
