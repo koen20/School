@@ -22,6 +22,7 @@ import com.koenhabets.school.adapters.TodoAdapter;
 import com.koenhabets.school.api.AddTaskRequest;
 import com.koenhabets.school.api.RemoveTaskRequest;
 import com.koenhabets.school.api.TodoItem;
+import com.koenhabets.school.fragments.RemoveTaskDialogFragment;
 import com.koenhabets.school.fragments.TodoDialogFragment;
 
 import org.json.JSONArray;
@@ -36,7 +37,7 @@ import java.util.List;
 
 import static com.koenhabets.school.SchoolApp.getContext;
 
-public class TimeTableActivity extends AppCompatActivity implements TodoDialogFragment.NoticeDialogListener {
+public class TimeTableActivity extends AppCompatActivity implements TodoDialogFragment.NoticeDialogListener, RemoveTaskDialogFragment.NoticeDialogListener {
     TextView textView;
     ListView listView;
     private List<TodoItem> todoItems = new ArrayList<>();
@@ -44,6 +45,8 @@ public class TimeTableActivity extends AppCompatActivity implements TodoDialogFr
     RequestQueue requestQueue;
     String sub;
     String date;
+    static int subject;
+    static int positionL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +71,7 @@ public class TimeTableActivity extends AppCompatActivity implements TodoDialogFr
         });
         listView.setLongClickable(true);
         Intent intent = getIntent();
-        int subject = intent.getIntExtra("subject", 1);
+        subject = intent.getIntExtra("subject", 1);
         String response = intent.getStringExtra("response");
         sub = intent.getStringExtra("subject2");
         date = intent.getStringExtra("date");
@@ -105,21 +108,10 @@ public class TimeTableActivity extends AppCompatActivity implements TodoDialogFr
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int pos, long id) {
-                SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-                final String requestToken = sharedPref.getString("request_token", "no request token");
-                RemoveTaskRequest request = new RemoveTaskRequest(requestToken, todoItems.get(pos).getId(), new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("error", "" + error.getMessage());
-                    }
-                });
-                requestQueue.add(request);
-                todoItems.remove(pos);
-                adapter.notifyDataSetChanged();
+                Log.i("click", "long");
+                positionL = pos;/////////////////
+                DialogFragment newFragment = new RemoveTaskDialogFragment();
+                newFragment.show(getSupportFragmentManager(), "Homework");
                 return true;
             }
         });
@@ -148,5 +140,24 @@ public class TimeTableActivity extends AppCompatActivity implements TodoDialogFr
             }
         });
         requestQueue.add(request);
+    }
+
+    @Override
+    public void onDialogRemoveClick(DialogFragment dialog) {
+        SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        final String requestToken = sharedPref.getString("request_token", "no request token");
+        RemoveTaskRequest request = new RemoveTaskRequest(requestToken, todoItems.get(positionL).getId(), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "" + error.getMessage());
+            }
+        });
+        requestQueue.add(request);
+        todoItems.remove(positionL);
+        adapter.notifyDataSetChanged();
     }
 }

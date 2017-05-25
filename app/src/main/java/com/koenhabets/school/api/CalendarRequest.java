@@ -131,7 +131,6 @@ public class CalendarRequest extends Request<String> {
             return Response.success(resultString, null);
         } catch (JSONException e) {
             e.printStackTrace();
-            FirebaseCrash.report(new Exception(e));
             return Response.error(new ParseError(e));
         }
     }
