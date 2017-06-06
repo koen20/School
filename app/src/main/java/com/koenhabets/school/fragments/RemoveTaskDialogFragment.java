@@ -31,7 +31,7 @@ public class RemoveTaskDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Remove task")
+            builder.setTitle("Remove task")
                     .setPositiveButton(R.string.Remove, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             mListener.onDialogRemoveClick(RemoveTaskDialogFragment.this);
