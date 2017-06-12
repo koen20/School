@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -124,7 +125,14 @@ public class DrawerActivity extends AppCompatActivity
             }
         }
         startAlarm();
+
         replaceFragment(new TimeTableFragment());
+        try {
+            if(Objects.equals(getIntent().getAction(), "grades")){
+                replaceFragment(new GradesFragment());
+            }
+        } catch (NullPointerException ignored){
+        }
     }
 
     @Override
