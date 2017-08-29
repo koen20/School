@@ -31,7 +31,8 @@
     <string name="add_task">Taak toevoegen</string>
     <string name="Remove">Verwijderen</string>
 
-    <string name="compose_shortcut_short_label1">Grades</string>
-    <string name="compose_shortcut_long_label1">Grades</string>
-    <string name="compose_disabled_message1">Disabled</string>
+    <string name="compose_shortcut_short_label1">Cijfers</string>
+    <string name="compose_shortcut_long_label1">Cijfers</string>
+    <string name="compose_disabled_message1">Uitgeschakeld</string>
+    <string name="zermelo_access_code">zermelo access code</string>
 </resources>

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -20,9 +19,8 @@ import com.koenhabets.school.SchoolApp;
 import com.koenhabets.school.api.TokenRequest;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText editText_username;
-    EditText editText_password;
-    EditText editText_class;
+    EditText editText_zermelo;
+
     TextView textView;
     RequestQueue requestQueue;
     @Override
@@ -30,26 +28,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         requestQueue = Volley.newRequestQueue(this);
-        editText_username = (EditText) findViewById(R.id.editText2);
-        editText_password = (EditText) findViewById(R.id.editText);
-        editText_class = (EditText) findViewById(R.id.editText3);
-        editText_class.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-        textView = (TextView) findViewById(R.id.textView6);
 
+        editText_zermelo = findViewById(R.id.editTextZermelo);
     }
     public void login(View view){
-        final SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("username", editText_username.getText().toString());
-        editor.putString("password", editText_password.getText().toString());
-        editor.putString("class", editText_class.getText().toString());
-        editor.apply();
-        TokenRequest tokenRequest = new TokenRequest(new Response.Listener<String>() {
+
+        TokenRequest tokenRequest = new TokenRequest(editText_zermelo.getText().toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean("Logged-in", true);
+                editor.putString("zermeloAccessToken", response);
                 editor.apply();
                 Intent intent = new Intent(SchoolApp.getContext(), DrawerActivity.class);
                 startActivity(intent);

@@ -1,7 +1,5 @@
 package com.koenhabets.school.api;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -9,61 +7,34 @@ import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.koenhabets.school.SchoolApp;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TokenRequest extends Request<String> {
 
-    private static String url = "https://api.scholica.com/2.0/communities/1/authenticate";
+    private static String url = "https://bernardinuscollege.zportal.nl/api/v2/oauth/token?grant_type=authorization_code&code=";
 
     private Response.Listener<String> responListener;
 
-    public TokenRequest(
+    public TokenRequest(String authCode,
             Response.Listener<String> responseListener,
             Response.ErrorListener errorListener) {
 
-        super(Method.POST, url, errorListener);
+        super(Method.POST, url + authCode, errorListener);
 
         this.responListener = responseListener;
     }
 
     public static String parseResponse(String response) throws JSONException {
         Log.d("Response", response);
-        Calendar now = Calendar.getInstance();
-        int today = now.get(Calendar.DAY_OF_YEAR);
-        String requestToken = "";
-        try {
-            JSONObject responsetoken = new JSONObject(response);
-            JSONObject jsonMain = responsetoken.getJSONObject("result");
-            requestToken = jsonMain.getString("request_token");
-            Log.i("requestToken", requestToken);
 
-            SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("request_token", requestToken);
-            editor.putInt("request_token_day", today);
-            editor.apply();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JSONObject jsonObject = new JSONObject(response);
+        String requestToken = jsonObject.getString("access_token");
+
         return requestToken;
-    }
-
-    @Override
-    protected Map<String, String> getParams() {
-        Map<String, String> params = new HashMap<>();
-        SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-        params.put("username", sharedPref.getString("username", ""));
-        params.put("password", sharedPref.getString("password",""));
-        params.put("access_token", "470d7d90cae6e34f36bc9110026a4370e8864551b0e7e7b33263163562c362a3d68f1937");
-        return params;
     }
 
     @Override
