@@ -22,8 +22,8 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         TimeTableItem timeTableItem = getItem(position);
         String subject = timeTableItem.getSubject();
-        String lokaal = timeTableItem.getLokaal();
-        boolean homework = timeTableItem.getHomework();
+        int lokaal = timeTableItem.getLokaal();
+        int hour = timeTableItem.getHour();
         if (Objects.equals(subject.substring(1), ". Culturele en kunstzinnige vorming")) {
             subject = subject.charAt(0) + ". CKV";
         }
@@ -35,13 +35,8 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
         TextView textViewSubject = (TextView) convertView.findViewById(R.id.textView_subject);
         TextView textViewLokaal = (TextView) convertView.findViewById(R.id.textView_lokaal);
 
-        textViewLokaal.setText(lokaal);
-
-        if (homework) {
-            textViewSubject.setText(subject + "(H)");
-        } else {
-            textViewSubject.setText(subject);
-        }
+        textViewSubject.setText(hour + subject);
+        textViewLokaal.setText(lokaal + "");
 
         return convertView;
     }

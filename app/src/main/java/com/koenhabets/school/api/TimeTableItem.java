@@ -3,30 +3,24 @@ package com.koenhabets.school.api;
 public class TimeTableItem {
 
     private String subject;
-    private String lokaal;
-    private boolean homework;
-    private String date;
+    private int lokaal;
+    private int hour;
 
-    public TimeTableItem(String subject, String lokaal, boolean homework, String date) {
+    public TimeTableItem(String subject, int lokaal, int hour) {
         this.subject = subject;
         this.lokaal = lokaal;
-        this.homework = homework;
-        this.date = date;
+        this.hour = hour;
     }
 
     public String getSubject() {
         return subject;
     }
 
-    public String getLokaal() {
+    public int getLokaal() {
         return lokaal;
     }
 
-    public boolean getHomework() {
-        return homework;
-    }
-
-    public String getDate() {
-        return date;
+    public int getHour() {
+        return hour;
     }
 }

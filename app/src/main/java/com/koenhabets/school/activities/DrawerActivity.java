@@ -63,6 +63,8 @@ public class DrawerActivity extends AppCompatActivity
         name = (TextView) header.findViewById(R.id.textViewName);
         email = (TextView) header.findViewById(R.id.textViewMail);
         imageView = (ImageView) header.findViewById(R.id.imageView);
+
+        replaceFragment(new TimeTableFragment());
     }
 
     @Override
