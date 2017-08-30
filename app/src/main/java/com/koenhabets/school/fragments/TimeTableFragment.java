@@ -3,6 +3,7 @@ package com.koenhabets.school.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +35,8 @@ public class TimeTableFragment extends Fragment {
     ListView listView;
     int day;
     RequestQueue requestQueue;
+    long start;
+    long end;
 
     public TimeTableFragment() {
     }
@@ -55,6 +58,20 @@ public class TimeTableFragment extends Fragment {
         Log.i("ajsdl;f", "ajsdloifhjawef");
         getCalendar(getStartOfDay(day), getEndOfDay(day));
 
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nextDay();
+            }
+        });
+        FloatingActionButton fab2 = (FloatingActionButton) rootView.findViewById(R.id.fab2);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prevDay();
+            }
+        });
         return rootView;
     }
 
@@ -62,6 +79,7 @@ public class TimeTableFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, d);
         cal.set(Calendar.HOUR_OF_DAY, 1);
+        start = cal.getTimeInMillis() / 1000;
         return cal.getTimeInMillis() / 1000;
     }
 
@@ -69,7 +87,20 @@ public class TimeTableFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, d);
         cal.set(Calendar.HOUR_OF_DAY, 23);
+        end = cal.getTimeInMillis() / 1000;
         return cal.getTimeInMillis() / 1000;
+    }
+
+    private void nextDay() {
+        start = start + 86400;
+        end = end + 86400;
+        getCalendar(start, end);
+    }
+
+    private void prevDay() {
+        start = start - 86400;
+        end = end - 86400;
+        getCalendar(start, end);
     }
 
     public void getCalendar(long startTime, long endTime) {
@@ -100,21 +131,26 @@ public class TimeTableFragment extends Fragment {
     }
 
     private void parseResponse(String response) {
+        timeTableItem.clear();
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject jsonResp = jsonObject.getJSONObject("response");
             JSONArray jsonArray = jsonResp.getJSONArray("data");
 
+            int lastHour = 0;
 
             for (int w = 1; w < 12; w++) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject lesson = jsonArray.getJSONObject(i);
                         if (lesson.getInt("startTimeSlot") == w) {
-                            JSONArray subjects = lesson.getJSONArray("subjects");
-                            JSONArray locations = lesson.getJSONArray("locations");
-                            TimeTableItem item = new TimeTableItem(subjects.getString(0), locations.getInt(0), lesson.getInt("startTimeSlot"));
-                            timeTableItem.add(item);
+                            if (lastHour != lesson.getInt("startTimeSlot")) {
+                                JSONArray subjects = lesson.getJSONArray("subjects");
+                                JSONArray locations = lesson.getJSONArray("locations");
+                                TimeTableItem item = new TimeTableItem(subjects.getString(0), locations.getInt(0), lesson.getInt("startTimeSlot"), lesson.getBoolean("cancelled"));
+                                timeTableItem.add(item);
+                            }
+                            lastHour = lesson.getInt("startTimeSlot");
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -122,10 +158,9 @@ public class TimeTableFragment extends Fragment {
                 }
             }
 
-
-            adapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        adapter.notifyDataSetChanged();
     }
 }
