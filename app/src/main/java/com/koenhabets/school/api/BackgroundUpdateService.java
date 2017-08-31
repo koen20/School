@@ -27,8 +27,8 @@ public class BackgroundUpdateService extends IntentService {
 
     int day;
 
-    public BackgroundUpdateService(String name) {
-        super(name);
+    public BackgroundUpdateService() {
+        super("BackgroundUpdateService");
     }
 
     @Override
@@ -45,7 +45,8 @@ public class BackgroundUpdateService extends IntentService {
         AppointmentsRequest request = new AppointmentsRequest(requestToken, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                createNotification(parseResponse(response));
+                Log.i("serviceee", response);
+                parseResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -57,8 +58,13 @@ public class BackgroundUpdateService extends IntentService {
         requestQueue.add(request);
     }
 
-    private String parseResponse(String response) {
-        String text = "";
+    private void parseResponse(String response) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this, "schedule")
+                        .setSmallIcon(R.drawable.ic_time_table_black_24dp)
+                        .setContentTitle("Rooster")
+                        .setChannelId("schedule");
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject jsonResp = jsonObject.getJSONObject("response");
@@ -74,7 +80,7 @@ public class BackgroundUpdateService extends IntentService {
                             if (lastHour != lesson.getInt("startTimeSlot")) {
                                 JSONArray subjects = lesson.getJSONArray("subjects");
                                 JSONArray locations = lesson.getJSONArray("locations");
-                                text = text + "\n" + lesson.getInt("startTimeSlot") + "." + subjects.getString(0) + " " + locations.getString(0);
+                                inboxStyle.addLine(lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0));
                             }
                             lastHour = lesson.getInt("startTimeSlot");
                         }
@@ -87,16 +93,8 @@ public class BackgroundUpdateService extends IntentService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return text;
-    }
 
-    private void createNotification(String text) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this, "schedule")
-                        .setSmallIcon(R.drawable.ic_time_table_black_24dp)
-                        .setContentTitle("Rooster")
-                        .setContentText("text")
-                        .setChannelId("schedule");
+        mBuilder.setStyle(inboxStyle);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(555, mBuilder.build());
     }

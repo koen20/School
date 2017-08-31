@@ -21,7 +21,6 @@ import com.koenhabets.school.api.TokenRequest;
 public class LoginActivity extends AppCompatActivity {
     EditText editText_zermelo;
 
-    TextView textView;
     RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("error", "" + error.getMessage());
-                textView.setText(R.string.incorrect);
+                Log.e("error", "" + error.getMessage());//// TODO: 8/31/2017 add message for user
                 SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.clear();

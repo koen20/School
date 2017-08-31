@@ -13,7 +13,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".activities.DrawerActivity"
             android:label="@string/app_name"
@@ -24,8 +23,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity"
-            android:noHistory="true" android:excludeFromRecents="true"/>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true" />
+
+        <service
+            android:name=".api.BackgroundUpdateService"
+            android:exported="false" />
+
+        <receiver android:name=".AlarmReceiver" />
+
+        <activity android:name=".activities.SettingsActivity"></activity>
     </application>
 
 </manifest>
