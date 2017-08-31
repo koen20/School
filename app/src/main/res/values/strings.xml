@@ -35,4 +35,5 @@
     <string name="compose_shortcut_long_label1">Cijfers</string>
     <string name="compose_disabled_message1">Uitgeschakeld</string>
     <string name="zermelo_access_code">zermelo access code</string>
+    <string name="notificatie">Notificatie</string>
 </resources>

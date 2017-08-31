@@ -24,6 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -55,17 +59,16 @@ public class TimeTableFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         day = cal.get(Calendar.DAY_OF_MONTH);
 
-        Log.i("ajsdl;f", "ajsdloifhjawef");
         getCalendar(getStartOfDay(day), getEndOfDay(day));
 
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        FloatingActionButton fab = rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 nextDay();
             }
         });
-        FloatingActionButton fab2 = (FloatingActionButton) rootView.findViewById(R.id.fab2);
+        FloatingActionButton fab2 = rootView.findViewById(R.id.fab2);
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,27 +106,27 @@ public class TimeTableFragment extends Fragment {
         getCalendar(start, end);
     }
 
-    public void getCalendar(long startTime, long endTime) {
+    public void getCalendar(final long startTime, long endTime) {
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String requestToken = sharedPref.getString("zermeloAccessToken", "no request token");
-        Log.i("start,End", startTime + "end" + endTime);
         AppointmentsRequest request = new AppointmentsRequest(requestToken, startTime, endTime, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);
                 parseResponse(response);
-                //re = response;
+                addDayToFile(startTime, response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("getCalendar", error.toString());
-                //String result = sharedPref.getString(ts, "no");
-                //if (!Objects.equals(result, "no")) {
-                //  Log.i("Stored", result);
-                //re = result;
-                //   /ParseResponse(result);
-                //}
+                Log.i("errrooor", "jaaa");
+                JSONObject jsonObject = readSchedule();
+                try {
+                    String response = jsonObject.getString(Long.toString(startTime));
+                    parseResponse(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -162,5 +165,50 @@ public class TimeTableFragment extends Fragment {
             e.printStackTrace();
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private void addDayToFile(long day, String dayString){
+        JSONObject jsonObject = readSchedule();
+        if(jsonObject == null){
+            jsonObject = new JSONObject();
+        }
+        try {
+            jsonObject.put(Long.toString(day), dayString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        saveSchedule(jsonObject);
+    }
+    private void saveSchedule(JSONObject schedule){
+        FileOutputStream outputStream;
+        try {
+            outputStream = getContext().openFileOutput("schedule", Context.MODE_PRIVATE);
+            outputStream.write(schedule.toString().getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JSONObject readSchedule(){
+        JSONObject jsonObject = null;
+        try {
+            BufferedReader inputReader = new BufferedReader(new InputStreamReader(
+                    getContext().openFileInput("schedule")));
+            String inputString;
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((inputString = inputReader.readLine()) != null) {
+                stringBuffer.append(inputString + "\n");
+            }
+            try {
+                jsonObject = new JSONObject(stringBuffer.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("read", jsonObject.toString());
+        return jsonObject;
     }
 }

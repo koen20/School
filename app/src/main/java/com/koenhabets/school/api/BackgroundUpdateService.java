@@ -45,7 +45,6 @@ public class BackgroundUpdateService extends IntentService {
         AppointmentsRequest request = new AppointmentsRequest(requestToken, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i("serviceee", response);
                 parseResponse(response);
             }
         }, new Response.ErrorListener() {
@@ -95,6 +94,7 @@ public class BackgroundUpdateService extends IntentService {
         }
 
         mBuilder.setStyle(inboxStyle);
+        mBuilder.setOngoing(true);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(555, mBuilder.build());
     }
