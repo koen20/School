@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +83,8 @@ public class TimeTableFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, d);
         cal.set(Calendar.HOUR_OF_DAY, 1);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         start = cal.getTimeInMillis() / 1000;
         return cal.getTimeInMillis() / 1000;
     }
@@ -90,6 +93,8 @@ public class TimeTableFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, d);
         cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         end = cal.getTimeInMillis() / 1000;
         return cal.getTimeInMillis() / 1000;
     }
@@ -107,6 +112,15 @@ public class TimeTableFragment extends Fragment {
     }
 
     public void getCalendar(final long startTime, long endTime) {
+        JSONObject jsonObject = readSchedule();
+        try {
+            String response = jsonObject.getString(Long.toString(startTime));
+            parseResponse(response);
+        } catch (JSONException e) {
+            timeTableItem.clear();
+            adapter.notifyDataSetChanged();
+        }
+
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String requestToken = sharedPref.getString("zermeloAccessToken", "no request token");
         AppointmentsRequest request = new AppointmentsRequest(requestToken, startTime, endTime, new Response.Listener<String>() {
@@ -120,13 +134,6 @@ public class TimeTableFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i("errrooor", "jaaa");
-                JSONObject jsonObject = readSchedule();
-                try {
-                    String response = jsonObject.getString(Long.toString(startTime));
-                    parseResponse(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
         });
 
@@ -182,7 +189,7 @@ public class TimeTableFragment extends Fragment {
     private void saveSchedule(JSONObject schedule){
         FileOutputStream outputStream;
         try {
-            outputStream = getContext().openFileOutput("schedule", Context.MODE_PRIVATE);
+            outputStream = getContext().openFileOutput("appointment", Context.MODE_PRIVATE);
             outputStream.write(schedule.toString().getBytes());
             outputStream.close();
         } catch (Exception e) {
@@ -194,7 +201,7 @@ public class TimeTableFragment extends Fragment {
         JSONObject jsonObject = null;
         try {
             BufferedReader inputReader = new BufferedReader(new InputStreamReader(
-                    getContext().openFileInput("schedule")));
+                    getContext().openFileInput("appointment")));
             String inputString;
             StringBuffer stringBuffer = new StringBuffer();
             while ((inputString = inputReader.readLine()) != null) {
@@ -208,7 +215,9 @@ public class TimeTableFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.i("read", jsonObject.toString());
+        if (jsonObject != null) {
+            Log.i("read", jsonObject.toString());
+        }
         return jsonObject;
     }
 }
