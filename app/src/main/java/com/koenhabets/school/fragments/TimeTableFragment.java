@@ -5,12 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,9 +29,14 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class TimeTableFragment extends Fragment {
 
@@ -42,6 +47,7 @@ public class TimeTableFragment extends Fragment {
     RequestQueue requestQueue;
     long start;
     long end;
+    TextView textView;
 
     public TimeTableFragment() {
     }
@@ -56,6 +62,8 @@ public class TimeTableFragment extends Fragment {
 
         adapter = new TimeTableAdapter(getContext(), timeTableItem);
         listView.setAdapter(adapter);
+
+        textView = rootView.findViewById(R.id.textView5);
 
         Calendar cal = Calendar.getInstance();
         day = cal.get(Calendar.DAY_OF_MONTH);
@@ -100,18 +108,43 @@ public class TimeTableFragment extends Fragment {
     }
 
     private void nextDay() {
-        start = start + 86400;
-        end = end + 86400;
+        String weekDayy;
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+        weekDayy = dayFormat.format(start * 1000);
+
+        if(Objects.equals(weekDayy, "Friday")){
+            start = start + 86400 * 3;
+            end = end + 86400 * 3;
+        } else {
+            start = start + 86400;
+            end = end + 86400;
+        }
+
         getCalendar(start, end);
     }
 
     private void prevDay() {
-        start = start - 86400;
-        end = end - 86400;
+        String weekDay;
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+        weekDay = dayFormat.format(start * 1000);
+
+        if(Objects.equals(weekDay, "Monday")){
+            start = start - 86400 * 3;
+            end = end - 86400 * 3;
+        } else {
+            start = start - 86400;
+            end = end - 86400;
+        }
         getCalendar(start, end);
     }
 
     public void getCalendar(final long startTime, long endTime) {
+        Date dateObj = new Date(startTime * 1000);
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy EEEE", Locale.US);
+        String dateString = df.format(dateObj);
+
+        textView.setText(dateString);
+
         JSONObject jsonObject = readSchedule();
         try {
             String response = jsonObject.getString(Long.toString(startTime));

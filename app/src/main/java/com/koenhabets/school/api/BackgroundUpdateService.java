@@ -2,11 +2,11 @@ package com.koenhabets.school.api;
 
 
 import android.app.IntentService;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
@@ -22,7 +22,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.Objects;
 
 public class BackgroundUpdateService extends IntentService {
 
@@ -55,7 +58,18 @@ public class BackgroundUpdateService extends IntentService {
             }
         });
 
-        requestQueue.add(request);
+        String weekDay;
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+
+        Calendar calendar = Calendar.getInstance();
+        weekDay = dayFormat.format(calendar.getTime());
+        if(!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday")){
+            requestQueue.add(request);
+        } else {
+            NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(555);
+        }
+
     }
 
     private void parseResponse(String response) {
@@ -81,7 +95,11 @@ public class BackgroundUpdateService extends IntentService {
                                 JSONArray subjects = lesson.getJSONArray("subjects");
                                 JSONArray locations = lesson.getJSONArray("locations");
                                 if(lesson.getBoolean("cancelled")) {
-                                    inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>"));
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>", Html.FROM_HTML_MODE_LEGACY));
+                                    } else {
+                                        inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>"));
+                                    }
                                 } else {
                                     inboxStyle.addLine(lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0));
                                 }
