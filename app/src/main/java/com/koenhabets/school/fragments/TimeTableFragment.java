@@ -174,9 +174,9 @@ public class TimeTableFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void addDayToFile(long day, String dayString){
+    private void addDayToFile(long day, String dayString) {
         JSONObject jsonObject = readSchedule();
-        if(jsonObject == null){
+        if (jsonObject == null) {
             jsonObject = new JSONObject();
         }
         try {
@@ -186,7 +186,8 @@ public class TimeTableFragment extends Fragment {
         }
         saveSchedule(jsonObject);
     }
-    private void saveSchedule(JSONObject schedule){
+
+    private void saveSchedule(JSONObject schedule) {
         FileOutputStream outputStream;
         try {
             outputStream = getContext().openFileOutput("appointment", Context.MODE_PRIVATE);
@@ -197,7 +198,7 @@ public class TimeTableFragment extends Fragment {
         }
     }
 
-    private JSONObject readSchedule(){
+    private JSONObject readSchedule() {
         JSONObject jsonObject = null;
         try {
             BufferedReader inputReader = new BufferedReader(new InputStreamReader(
@@ -214,6 +215,7 @@ public class TimeTableFragment extends Fragment {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException ignored) {
         }
         if (jsonObject != null) {
             Log.i("read", jsonObject.toString());

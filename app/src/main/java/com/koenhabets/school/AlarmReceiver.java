@@ -9,7 +9,7 @@ import com.koenhabets.school.api.BackgroundUpdateService;
 
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(final Context context, Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         Intent serviceIntent = new Intent(context, BackgroundUpdateService.class);
         context.startService(serviceIntent);
     }

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.text.Html;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -40,6 +41,7 @@ public class BackgroundUpdateService extends IntentService {
         if (cal.get(Calendar.HOUR_OF_DAY) > 16) {
             da = 86400;
         }
+        da = 86400 * 2;
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String requestToken = sharedPref.getString("zermeloAccessToken", "no request token");
         AppointmentsRequest request = new AppointmentsRequest(requestToken, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
@@ -79,7 +81,11 @@ public class BackgroundUpdateService extends IntentService {
                             if (lastHour != lesson.getInt("startTimeSlot")) {
                                 JSONArray subjects = lesson.getJSONArray("subjects");
                                 JSONArray locations = lesson.getJSONArray("locations");
-                                inboxStyle.addLine(lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0));
+                                if(lesson.getBoolean("cancelled")) {
+                                    inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>"));
+                                } else {
+                                    inboxStyle.addLine(lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0));
+                                }
                             }
                             lastHour = lesson.getInt("startTimeSlot");
                         }
