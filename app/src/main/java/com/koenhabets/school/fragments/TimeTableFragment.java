@@ -119,6 +119,7 @@ public class TimeTableFragment extends Fragment {
         } catch (JSONException e) {
             timeTableItem.clear();
             adapter.notifyDataSetChanged();
+        } catch (NullPointerException ignored) {
         }
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);

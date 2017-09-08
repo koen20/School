@@ -41,7 +41,6 @@ public class BackgroundUpdateService extends IntentService {
         if (cal.get(Calendar.HOUR_OF_DAY) > 16) {
             da = 86400;
         }
-        da = 86400 * 2;
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String requestToken = sharedPref.getString("zermeloAccessToken", "no request token");
         AppointmentsRequest request = new AppointmentsRequest(requestToken, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
