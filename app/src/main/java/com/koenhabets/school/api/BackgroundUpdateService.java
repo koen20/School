@@ -63,7 +63,7 @@ public class BackgroundUpdateService extends IntentService {
 
         Calendar calendar = Calendar.getInstance();
         weekDay = dayFormat.format(calendar.getTime());
-        if(!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday")){
+        if (!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday")) {
             requestQueue.add(request);
         } else {
             NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -94,7 +94,7 @@ public class BackgroundUpdateService extends IntentService {
                             if (lastHour != lesson.getInt("startTimeSlot")) {
                                 JSONArray subjects = lesson.getJSONArray("subjects");
                                 JSONArray locations = lesson.getJSONArray("locations");
-                                if(lesson.getBoolean("cancelled")) {
+                                if (lesson.getBoolean("cancelled")) {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                         inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>", Html.FROM_HTML_MODE_LEGACY));
                                     } else {

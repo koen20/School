@@ -20,21 +20,19 @@ public class TokenRequest extends Request<String> {
     private Response.Listener<String> responListener;
 
     public TokenRequest(String authCode,
-            Response.Listener<String> responseListener,
-            Response.ErrorListener errorListener) {
+                        Response.Listener<String> responseListener,
+                        Response.ErrorListener errorListener) {
 
         super(Method.POST, url + authCode, errorListener);
 
         this.responListener = responseListener;
     }
 
-    public static String parseResponse(String response) throws JSONException {
+    private static String parseResponse(String response) throws JSONException {
         Log.d("Response", response);
-
         JSONObject jsonObject = new JSONObject(response);
-        String requestToken = jsonObject.getString("access_token");
 
-        return requestToken;
+        return jsonObject.getString("access_token");
     }
 
     @Override

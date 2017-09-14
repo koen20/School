@@ -36,4 +36,6 @@
     <string name="compose_disabled_message1">Uitgeschakeld</string>
     <string name="zermelo_access_code">zermelo access code</string>
     <string name="notificatie">Notificatie</string>
+    <string name="sign_out">Sign out</string>
+    <string name="huiswerk">Huiswerk</string>
 </resources>

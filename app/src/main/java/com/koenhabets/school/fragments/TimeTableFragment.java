@@ -112,7 +112,7 @@ public class TimeTableFragment extends Fragment {
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
         weekDayy = dayFormat.format(start * 1000);
 
-        if(Objects.equals(weekDayy, "Friday")){
+        if (Objects.equals(weekDayy, "Friday")) {
             start = start + 86400 * 3;
             end = end + 86400 * 3;
         } else {
@@ -128,7 +128,7 @@ public class TimeTableFragment extends Fragment {
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
         weekDay = dayFormat.format(start * 1000);
 
-        if(Objects.equals(weekDay, "Monday")){
+        if (Objects.equals(weekDay, "Monday")) {
             start = start - 86400 * 3;
             end = end - 86400 * 3;
         } else {

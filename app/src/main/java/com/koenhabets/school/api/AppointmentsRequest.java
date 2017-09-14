@@ -16,7 +16,7 @@ public class AppointmentsRequest extends Request<String> {
                                long startTime,
                                long endTime,
                                Response.Listener<String> responseListener,
-                      Response.ErrorListener errorListener) {
+                               Response.ErrorListener errorListener) {
 
         super(Method.GET, url + accessToken + "&start=" + startTime + "&end=" + endTime, errorListener);
 

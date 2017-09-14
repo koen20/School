@@ -8,10 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +27,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.AlarmReceiver;
 import com.koenhabets.school.R;
+import com.koenhabets.school.fragments.HomeworkFragment;
 import com.koenhabets.school.fragments.TimeTableFragment;
 
 public class DrawerActivity extends AppCompatActivity
@@ -41,7 +42,7 @@ public class DrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         createNotificationChannel();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         requestQueue = Volley.newRequestQueue(this);
 
@@ -122,15 +123,13 @@ public class DrawerActivity extends AppCompatActivity
 
         if (id == R.id.nav_time_table) {
             replaceFragment(new TimeTableFragment());
-        } else if (id == R.id.nav_netpresenter) {
-            //replaceFragment(new NetpresenterFragment());
-        } else if (id == R.id.nav_grades) {
-            //replaceFragment(new GradesFragment());
+        } else if (id == R.id.nav_homework) {
+            replaceFragment(new HomeworkFragment());
         } else if (id == R.id.signout) {
             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.clear();
-            editor.commit();
+            editor.apply();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();

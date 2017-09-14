@@ -6,8 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -35,11 +35,11 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
 
-                if(isChecked){
+                if (isChecked) {
                     startAlarm();
                     editor.putBoolean("scheduleNotifcation", true);
                     editor.apply();
-                }else{
+                } else {
                     editor.putBoolean("scheduleNotifcation", false);
                     editor.apply();
                     NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -50,11 +50,11 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    private void startAlarm(){
+    private void startAlarm() {
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         this.startService(alarmIntent);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, 1, AlarmManager.INTERVAL_HOUR, pendingIntent);
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, 5000, AlarmManager.INTERVAL_HOUR, pendingIntent);
     }
 }

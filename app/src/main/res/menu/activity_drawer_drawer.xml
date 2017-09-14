@@ -7,16 +7,12 @@
             android:icon="@drawable/ic_time_table_black_24dp"
             android:title="@string/Rooster" />
         <item
-            android:id="@+id/nav_netpresenter"
-            android:icon="@drawable/ic_netpresenter_black_24dp"
-            android:title="@string/netpresenter" />
-        <item
-            android:id="@+id/nav_grades"
-            android:icon="@drawable/ic_grades_black_24dp"
-            android:title="@string/cijfers" />
+            android:id="@+id/nav_homework"
+            android:icon="@drawable/ic_assignment_black_24dp"
+            android:title="@string/huiswerk" />
         <item
             android:id="@+id/signout"
-            android:title="Sign out" />
+            android:title="@string/sign_out" />
     </group>
 
 </menu>
