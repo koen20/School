@@ -89,7 +89,6 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putBoolean("Logged-in", true);
-                    Log.i("somaccess", jsonObject.getString("access_token"));
                     editor.putString("somAccessToken", jsonObject.getString("access_token"));
                     editor.putString("somRefreshToken", jsonObject.getString("refresh_token"));
                     editor.apply();

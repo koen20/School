@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +25,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.AlarmReceiver;
 import com.koenhabets.school.R;
+import com.koenhabets.school.SchoolApp;
+import com.koenhabets.school.api.som.RefreshTokenRequest;
 import com.koenhabets.school.fragments.HomeworkFragment;
 import com.koenhabets.school.fragments.TimeTableFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,6 +73,8 @@ public class DrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
 
+        refreshSomToken();
+
         //drawer top
         name = header.findViewById(R.id.textViewName);
         email = header.findViewById(R.id.textViewMail);
@@ -78,6 +88,34 @@ public class DrawerActivity extends AppCompatActivity
         }
 
         replaceFragment(new TimeTableFragment());
+    }
+
+    private void refreshSomToken(){
+        SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+
+        RefreshTokenRequest accessTokenRequest = new RefreshTokenRequest(sharedPref.getString("somRefreshToken", ""), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putBoolean("Logged-in", true);
+                    editor.putString("somAccessToken", jsonObject.getString("access_token"));
+                    editor.putString("somRefreshToken", jsonObject.getString("refresh_token"));
+                    editor.apply();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "" + error.getMessage());
+
+            }
+        });
+        requestQueue.add(accessTokenRequest);
     }
 
     @Override

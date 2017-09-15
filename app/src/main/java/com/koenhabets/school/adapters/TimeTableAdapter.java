@@ -22,15 +22,12 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = null;
         TimeTableItem timeTableItem = getItem(position);
         String subject = timeTableItem.getSubject();
         int lokaal = timeTableItem.getLokaal();
         int hour = timeTableItem.getHour();
 
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.timetable_item, parent, false);
-        }
+        convertView = LayoutInflater.from(getContext()).inflate(R.layout.timetable_item, parent, false);
 
         TextView textViewSubject = convertView.findViewById(R.id.textView_subject);
         TextView textViewLokaal = convertView.findViewById(R.id.textView_lokaal);
