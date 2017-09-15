@@ -1,9 +1,11 @@
 package com.koenhabets.school.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,10 +18,15 @@ import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
 import com.koenhabets.school.api.TokenRequest;
+import com.koenhabets.school.api.som.AccessTokenRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText editText_zermelo;
-
+    EditText editTextZermelo;
+    EditText editTextUsername;
+    EditText editTextPassword;
     RequestQueue requestQueue;
 
     @Override
@@ -28,12 +35,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         requestQueue = Volley.newRequestQueue(this);
 
-        editText_zermelo = findViewById(R.id.editTextZermelo);
+        editTextZermelo = findViewById(R.id.editTextZermelo);
+        editTextUsername = findViewById(R.id.editTextSomUsername);
+        editTextPassword = findViewById(R.id.editTextSomPassword);
     }
 
     public void login(View view) {
-
-        TokenRequest tokenRequest = new TokenRequest(editText_zermelo.getText().toString(), new Response.Listener<String>() {
+        TokenRequest tokenRequest = new TokenRequest(editTextZermelo.getText().toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
@@ -47,7 +55,17 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("error", "" + error.getMessage());//// TODO: 8/31/2017 add message for user
+                Log.e("error", "" + error.getMessage());
+                AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext()).create();
+                alertDialog.setTitle(getString(R.string.login_failed));
+                alertDialog.setMessage(getString(R.string.incorrect_zermelo));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
                 SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.clear();
@@ -56,5 +74,45 @@ public class LoginActivity extends AppCompatActivity {
         });
         requestQueue.add(tokenRequest);
 
+        AccessTokenRequest accessTokenRequest = new AccessTokenRequest(editTextUsername.getText().toString(),
+                editTextPassword.getText().toString(), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putBoolean("Logged-in", true);
+                    editor.putString("somAccessToken", jsonObject.getString("access_token"));
+                    editor.putString("somRefreshToken", jsonObject.getString("refresh_token"));
+                    editor.apply();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(SchoolApp.getContext(), DrawerActivity.class);
+                startActivity(intent);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "" + error.getMessage());
+                SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.clear();
+                editor.apply();
+                AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext()).create();
+                alertDialog.setTitle(getString(R.string.login_failed));
+                alertDialog.setMessage(getString(R.string.incorrect_som));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "getString(R.string.ok)",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+        requestQueue.add(accessTokenRequest);
     }
 }

@@ -3,7 +3,7 @@
     <string name="action_settings">Instellingen</string>
     <string name="Settings1">Notificatie</string>
     <string name="Currentday">"Dag: "</string>
-    <string name="loading">Laden...</string>
+    <string name="loading">Laden…</string>
     <string name="title_activity_drawer" translatable="false">DrawerActivity</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
@@ -38,4 +38,10 @@
     <string name="notificatie">Notificatie</string>
     <string name="sign_out">Sign out</string>
     <string name="huiswerk">Huiswerk</string>
+    <string name="incorrect_zermelo">Onjuiste zermelo toegangscode</string>
+    <string name="incorrect_som">Onjuist somtoday gebruikersnaam of wachtwoord</string>
+    <string name="login_failed">Inloggen mislukt</string>
+    <string name="ok">OK</string>
+    <string name="somtoday_gebruikersnaam">Somtoday gebruikersnaam</string>
+    <string name="somtoday_wachtwoord">Somtoday wachtwoord</string>
 </resources>

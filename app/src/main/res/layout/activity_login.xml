@@ -22,7 +22,8 @@
             android:id="@+id/editTextZermelo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/zermelo_access_code" />
+            android:hint="@string/zermelo_access_code"
+            android:inputType="number" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
@@ -31,12 +32,51 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="32dp"
         android:onClick="login"
         android:text="@string/login"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:id="@+id/textInputLayout2">
+
+        <EditText
+            android:id="@+id/editTextSomUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/somtoday_gebruikersnaam" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
+        android:id="@+id/textInputLayout3">
+
+        <EditText
+            android:id="@+id/editTextSomPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/somtoday_wachtwoord"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
 </android.support.constraint.ConstraintLayout>
