@@ -1,6 +1,7 @@
 package com.koenhabets.school.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.RequestQueue;
@@ -15,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
+import com.koenhabets.school.activities.TaskDetailsActivity;
 import com.koenhabets.school.adapters.HomeworkAdapter;
 import com.koenhabets.school.api.som.HomeworkItem;
 import com.koenhabets.school.api.som.HomeworkRequest;
@@ -46,6 +49,18 @@ public class HomeworkFragment extends Fragment {
 
         adapter = new HomeworkAdapter(getContext(), homeworkItems);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                HomeworkItem item = homeworkItems.get(position);
+                Intent intent = new Intent(getContext(), TaskDetailsActivity.class);
+                intent.putExtra("taskSubject", item.getTaskSubject());
+                intent.putExtra("taskDescription", item.getDescription());
+                startActivity(intent);
+            }
+        });
 
         getHomework();
         return rootView;

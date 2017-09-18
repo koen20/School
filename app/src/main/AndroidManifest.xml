@@ -33,7 +33,6 @@
             android:exported="false" />
 
         <receiver android:name=".AlarmReceiver" />
-
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
@@ -43,7 +42,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.SettingsActivity"></activity>
+        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.TaskDetailsActivity"></activity>
     </application>
 
 </manifest>
