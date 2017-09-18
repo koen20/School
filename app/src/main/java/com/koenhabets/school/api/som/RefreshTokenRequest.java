@@ -38,7 +38,7 @@ public class RefreshTokenRequest extends Request<String> {
 
     @Override
     public Map<String, String> getHeaders() {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("Content-Type", "application/x-www-form-urlencoded");
 
         return params;

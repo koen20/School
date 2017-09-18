@@ -91,20 +91,23 @@ public class BackgroundUpdateService extends IntentService {
                     try {
                         JSONObject lesson = jsonArray.getJSONObject(i);
                         if (lesson.getInt("startTimeSlot") == w) {
-                            if (lastHour != lesson.getInt("startTimeSlot")) {
-                                JSONArray subjects = lesson.getJSONArray("subjects");
-                                JSONArray locations = lesson.getJSONArray("locations");
-                                if (lesson.getBoolean("cancelled")) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>", Html.FROM_HTML_MODE_LEGACY));
+                            if (lesson.getBoolean("valid")) {
+                                if (lastHour != lesson.getInt("startTimeSlot")) {
+                                    JSONArray subjects = lesson.getJSONArray("subjects");
+                                    JSONArray locations = lesson.getJSONArray("locations");
+                                    if (lesson.getBoolean("cancelled")) {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                            inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>", Html.FROM_HTML_MODE_LEGACY));
+                                        } else {
+                                            inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>"));
+                                        }
                                     } else {
-                                        inboxStyle.addLine(Html.fromHtml("<del>" + lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0) + "</del>"));
+                                        inboxStyle.addLine(lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0));
                                     }
-                                } else {
-                                    inboxStyle.addLine(lesson.getInt("startTimeSlot") + ". " + subjects.getString(0) + " " + locations.getString(0));
                                 }
+                                lastHour = lesson.getInt("startTimeSlot");
                             }
-                            lastHour = lesson.getInt("startTimeSlot");
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

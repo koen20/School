@@ -12,6 +12,7 @@ import com.koenhabets.school.R;
 import com.koenhabets.school.api.TimeTableItem;
 
 import java.util.List;
+import java.util.Objects;
 
 import static android.graphics.Color.parseColor;
 
@@ -31,12 +32,18 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
 
         TextView textViewSubject = convertView.findViewById(R.id.textView_subject);
         TextView textViewLokaal = convertView.findViewById(R.id.textView_lokaal);
+        TextView textViewChange = convertView.findViewById(R.id.textViewChange);
 
         textViewSubject.setText(hour + ". " + subject);
         textViewLokaal.setText(lokaal + "");
+        if (Objects.equals(timeTableItem.getChangeDescription(), "")) {
+            textViewChange.setVisibility(View.GONE);
+        } else {
+            textViewChange.setText(timeTableItem.getChangeDescription());
+        }
 
-        if(timeTableItem.isModified()){
-            convertView.setBackgroundColor(parseColor("#0E0E0E"));
+        if (timeTableItem.isModified()) {
+            convertView.setBackgroundColor(parseColor("#FF9800"));
         }
 
         if (timeTableItem.isCancelled()) {

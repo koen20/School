@@ -23,4 +23,11 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="8dp" />
+
+    <TextView
+        android:id="@+id/textViewChange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/textView_subject" />
 </RelativeLayout>
