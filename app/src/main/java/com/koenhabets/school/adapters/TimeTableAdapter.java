@@ -35,6 +35,10 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
         textViewSubject.setText(hour + ". " + subject);
         textViewLokaal.setText(lokaal + "");
 
+        if(timeTableItem.isModified()){
+            convertView.setBackgroundColor(parseColor("#0E0E0E"));
+        }
+
         if (timeTableItem.isCancelled()) {
             textViewSubject.setPaintFlags(textViewSubject.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             convertView.setBackgroundColor(parseColor("#E57373"));
