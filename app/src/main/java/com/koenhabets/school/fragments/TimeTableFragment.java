@@ -181,7 +181,6 @@ public class TimeTableFragment extends Fragment {
             JSONObject jsonResp = jsonObject.getJSONObject("response");
             JSONArray jsonArray = jsonResp.getJSONArray("data");
 
-
             int lastHour = 0;
 
             for (int w = 1; w < 12; w++) {
@@ -193,7 +192,6 @@ public class TimeTableFragment extends Fragment {
                                 if (lastHour != lesson.getInt("startTimeSlot")) {
                                     JSONArray subjects = lesson.getJSONArray("subjects");
                                     JSONArray locations = lesson.getJSONArray("locations");
-                                    Log.i("modified", subjects.getString(0) + locations.getInt(0) + lesson.getBoolean("modified"));
                                     TimeTableItem item = new TimeTableItem(subjects.getString(0), locations.getInt(0), lesson.getInt("startTimeSlot"),
                                             lesson.getBoolean("cancelled"), lesson.getBoolean("modified"), lesson.getString("changeDescription"));
                                     timeTableItem.add(item);
