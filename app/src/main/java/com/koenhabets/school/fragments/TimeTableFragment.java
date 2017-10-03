@@ -148,7 +148,7 @@ public class TimeTableFragment extends Fragment {
         JSONObject jsonObject = readSchedule();
         try {
             String response = jsonObject.getString(Long.toString(startTime));
-            //parseResponse(response);
+            parseResponse(response);
         } catch (JSONException e) {
             timeTableItem.clear();
             adapter.notifyDataSetChanged();

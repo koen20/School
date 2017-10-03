@@ -121,8 +121,11 @@ public class BackgroundUpdateService extends IntentService {
 
         mBuilder.setStyle(inboxStyle);
         mBuilder.setOngoing(true);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(555, mBuilder.build());
+        SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        if (sharedPref.getBoolean("scheduleNotifcation", true)) {
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(555, mBuilder.build());
+        }
     }
 
     private long getStartOfDay(int d) {
