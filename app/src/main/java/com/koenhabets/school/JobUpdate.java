@@ -17,7 +17,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.api.AppointmentsRequest;
-import com.koenhabets.school.api.BackgroundUpdateService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +32,7 @@ public class JobUpdate extends JobService {
     int day;
 
     @Override
-    public boolean onStartJob(JobParameters params) {
+    public boolean onStartJob(final JobParameters params) {
         Log.i("JOB", "Start");
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         Calendar cal = Calendar.getInstance();
@@ -48,6 +47,7 @@ public class JobUpdate extends JobService {
             @Override
             public void onResponse(String response) {
                 parseResponse(response);
+                jobFinished(params, false);
             }
         }, new Response.ErrorListener() {
             @Override
