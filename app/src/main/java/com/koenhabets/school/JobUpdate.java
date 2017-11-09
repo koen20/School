@@ -1,13 +1,13 @@
-package com.koenhabets.school.api;
+package com.koenhabets.school;
 
-
-import android.app.IntentService;
+import android.annotation.TargetApi;
 import android.app.NotificationManager;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
@@ -16,7 +16,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.koenhabets.school.R;
+import com.koenhabets.school.api.AppointmentsRequest;
+import com.koenhabets.school.api.BackgroundUpdateService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,17 +28,13 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
-public class BackgroundUpdateService extends IntentService {
-
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+public class JobUpdate extends JobService {
     int day;
 
-    public BackgroundUpdateService() {
-        super("BackgroundUpdateService");
-    }
-
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        Log.i("BackgroundUpdateService", "Start");
+    public boolean onStartJob(JobParameters params) {
+        Log.i("JOB", "Start");
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         Calendar cal = Calendar.getInstance();
         day = cal.get(Calendar.DAY_OF_MONTH);
@@ -70,7 +67,12 @@ public class BackgroundUpdateService extends IntentService {
             NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.cancel(555);
         }
+        return true;
+    }
 
+    @Override
+    public boolean onStopJob(JobParameters params) {
+        return true;
     }
 
     private void parseResponse(String response) {

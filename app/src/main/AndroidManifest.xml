@@ -31,6 +31,9 @@
         <service
             android:name=".api.BackgroundUpdateService"
             android:exported="false" />
+        <service
+            android:name=".JobUpdate"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver android:name=".AlarmReceiver" />
         <receiver
@@ -43,7 +46,7 @@
         </receiver>
 
         <activity android:name=".activities.SettingsActivity" />
-        <activity android:name=".activities.TaskDetailsActivity"></activity>
+        <activity android:name=".activities.TaskDetailsActivity" />
     </application>
 
 </manifest>
