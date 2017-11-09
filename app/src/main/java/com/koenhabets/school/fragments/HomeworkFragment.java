@@ -26,7 +26,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HomeworkFragment extends Fragment {
@@ -62,14 +64,16 @@ public class HomeworkFragment extends Fragment {
             }
         });
 
-        getHomework();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = format.format(new Date());
+        getHomework(date);
         return rootView;
     }
 
-    private void getHomework() {
+    private void getHomework(String date) {
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
 
-        HomeworkRequest request = new HomeworkRequest(sharedPref.getString("somAccessToken", ""), new Response.Listener<String>() {
+        HomeworkRequest request = new HomeworkRequest(sharedPref.getString("somAccessToken", ""), date, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);

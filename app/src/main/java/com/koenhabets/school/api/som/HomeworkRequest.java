@@ -17,10 +17,11 @@ public class HomeworkRequest extends Request<String> {
     private String accessToken;
 
     public HomeworkRequest(String accessToken,
+                           String date,//yyyy-MM-dd
                                Response.Listener<String> responseListener,
                                Response.ErrorListener errorListener) {
 
-        super(Request.Method.GET, url, errorListener);
+        super(Request.Method.GET, url + "?vanafDatum=" + date, errorListener);
 
         this.responListener = responseListener;
         this.accessToken = accessToken;
