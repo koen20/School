@@ -3,13 +3,13 @@ package com.koenhabets.school.api;
 public class TimeTableItem {
 
     private String subject;
-    private int lokaal;
+    private String lokaal;
     private int hour;
     private boolean cancelled;
     private boolean modified;
     private String changeDescription;
 
-    public TimeTableItem(String subject, int lokaal, int hour, boolean cancelled, boolean modified, String changeDescription) {
+    public TimeTableItem(String subject, String lokaal, int hour, boolean cancelled, boolean modified, String changeDescription) {
         this.subject = subject;
         this.lokaal = lokaal;
         this.hour = hour;
@@ -22,7 +22,7 @@ public class TimeTableItem {
         return subject;
     }
 
-    public int getLokaal() {
+    public String getLokaal() {
         return lokaal;
     }
 

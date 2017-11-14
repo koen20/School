@@ -25,7 +25,7 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         TimeTableItem timeTableItem = getItem(position);
         String subject = timeTableItem.getSubject();
-        int lokaal = timeTableItem.getLokaal();
+        String lokaal = timeTableItem.getLokaal();
         int hour = timeTableItem.getHour();
 
         convertView = LayoutInflater.from(getContext()).inflate(R.layout.timetable_item, parent, false);
@@ -35,7 +35,7 @@ public class TimeTableAdapter extends ArrayAdapter<TimeTableItem> {
         TextView textViewChange = convertView.findViewById(R.id.textViewChange);
 
         textViewSubject.setText(hour + ". " + subject);
-        textViewLokaal.setText(lokaal + "");
+        textViewLokaal.setText(lokaal);
         if (Objects.equals(timeTableItem.getChangeDescription(), "")) {
             textViewChange.setVisibility(View.GONE);
         } else {
