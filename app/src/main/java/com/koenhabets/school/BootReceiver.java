@@ -34,7 +34,5 @@ public class BootReceiver extends BroadcastReceiver {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
             manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR, pendingIntent);
         }
-        Intent serviceIntent = new Intent(context, BackgroundUpdateService.class);
-        context.startService(serviceIntent);
     }
 }
