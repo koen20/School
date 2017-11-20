@@ -11,6 +11,10 @@
             android:icon="@drawable/ic_assignment_black_24dp"
             android:title="@string/huiswerk" />
         <item
+            android:id="@+id/nav_grades"
+            android:icon="@drawable/ic_action_grades"
+            android:title="@string/cijfers" />
+        <item
             android:id="@+id/signout"
             android:title="@string/sign_out" />
     </group>

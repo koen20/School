@@ -35,9 +35,8 @@ import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.AlarmReceiver;
 import com.koenhabets.school.JobUpdate;
 import com.koenhabets.school.R;
-import com.koenhabets.school.SchoolApp;
-import com.koenhabets.school.api.BackgroundUpdateService;
 import com.koenhabets.school.api.som.RefreshTokenRequest;
+import com.koenhabets.school.fragments.GradeFragment;
 import com.koenhabets.school.fragments.HomeworkFragment;
 import com.koenhabets.school.fragments.TimeTableFragment;
 
@@ -169,6 +168,8 @@ public class DrawerActivity extends AppCompatActivity
             replaceFragment(new TimeTableFragment());
         } else if (id == R.id.nav_homework) {
             replaceFragment(new HomeworkFragment());
+        } else if (id == R.id.nav_grades){
+            replaceFragment(new GradeFragment());
         } else if (id == R.id.signout) {
             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
