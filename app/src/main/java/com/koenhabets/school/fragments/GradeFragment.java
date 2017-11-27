@@ -9,12 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
+import com.koenhabets.school.adapters.GradesAdapter;
 import com.koenhabets.school.api.som.GradeItem;
 import com.koenhabets.school.api.som.GradesRequest;
 
@@ -28,7 +30,8 @@ import java.util.List;
 public class GradeFragment extends Fragment {
     RequestQueue requestQueue;
     private List<GradeItem> gradeItems = new ArrayList<>();
-
+    ListView listView;
+    GradesAdapter adapter;
 
     public GradeFragment() {
     }
@@ -40,6 +43,9 @@ public class GradeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_homework, container, false);
 
         requestQueue = Volley.newRequestQueue(getContext());
+        listView = rootView.findViewById(R.id.listViewGrades);
+        adapter = new GradesAdapter(getContext(), gradeItems);
+        listView.setAdapter(adapter);
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
 
@@ -68,10 +74,17 @@ public class GradeFragment extends Fragment {
             JSONArray jsonArray = jsonObject.getJSONArray("items");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject item = jsonArray.getJSONObject(i);
-
+                JSONObject subjectJson = item.getJSONObject("vak");
+                double grade = 0;
+                try {
+                    grade = item.getDouble("resultaat");
+                } catch (Exception ignored){}
+                String subject = subjectJson.getString("naam");
+                String datum = item.getString("datumInvoer");
+                int periode = item.getInt("periode");
+                GradeItem gradeItem = new GradeItem(grade, subject, datum, 0, periode);
             }
-
-
+            adapter.notifyDataSetChanged();
 
         } catch (JSONException e) {
             e.printStackTrace();
