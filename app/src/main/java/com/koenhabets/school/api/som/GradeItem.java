@@ -7,13 +7,15 @@ public class GradeItem {
     private String date;
     private int weight;
     private int periode;
+    private String type;
 
-    public GradeItem(double grade, String subject, String date, int weight, int periode) {
+    public GradeItem(double grade, String subject, String date, int weight, int periode, String type) {
         this.grade = grade;
         this.subject = subject;
         this.date = date;
         this.weight = weight;
         this.periode = periode;
+        this.type = type;
     }
 
     public int getPeriode() {
@@ -34,5 +36,9 @@ public class GradeItem {
 
     public String getSubject() {
         return subject;
+    }
+
+    public String getType() {
+        return type;
     }
 }

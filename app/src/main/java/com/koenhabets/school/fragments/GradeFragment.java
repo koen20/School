@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GradeFragment extends Fragment {
     RequestQueue requestQueue;
@@ -40,7 +41,7 @@ public class GradeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_homework, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_grade, container, false);
 
         requestQueue = Volley.newRequestQueue(getContext());
         listView = rootView.findViewById(R.id.listViewGrades);
@@ -68,7 +69,7 @@ public class GradeFragment extends Fragment {
         return rootView;
     }
 
-    private void parseResponse(String response){
+    private void parseResponse(String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray jsonArray = jsonObject.getJSONArray("items");
@@ -78,11 +79,16 @@ public class GradeFragment extends Fragment {
                 double grade = 0;
                 try {
                     grade = item.getDouble("resultaat");
-                } catch (Exception ignored){}
+                } catch (Exception ignored) {
+                }
                 String subject = subjectJson.getString("naam");
                 String datum = item.getString("datumInvoer");
                 int periode = item.getInt("periode");
-                GradeItem gradeItem = new GradeItem(grade, subject, datum, 0, periode);
+                String type = item.getString("type");
+                //if (Objects.equals(type, "Toetskolom")) {
+                    GradeItem gradeItem = new GradeItem(grade, subject + type, datum, 0, periode, type);
+                    gradeItems.add(gradeItem);
+                //}
             }
             adapter.notifyDataSetChanged();
 

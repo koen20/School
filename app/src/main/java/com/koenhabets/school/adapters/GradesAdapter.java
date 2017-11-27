@@ -23,7 +23,7 @@ public class GradesAdapter extends ArrayAdapter<GradeItem> {
         GradeItem gradeItem = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.homework_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.grade_item, parent, false);
         }
 
         TextView textViewSubject = convertView.findViewById(R.id.textViewGradeSubject);
