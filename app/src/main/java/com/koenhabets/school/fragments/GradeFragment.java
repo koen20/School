@@ -33,6 +33,7 @@ public class GradeFragment extends Fragment {
     private List<GradeItem> gradeItems = new ArrayList<>();
     ListView listView;
     GradesAdapter adapter;
+    JSONArray jsonArraySubjects = new JSONArray();
 
     public GradeFragment() {
     }
@@ -49,8 +50,7 @@ public class GradeFragment extends Fragment {
         listView.setAdapter(adapter);
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-
-        GradesRequest request = new GradesRequest(sharedPref.getString("somAccessToken", ""), new Response.Listener<String>() {
+        GradesRequest request = new GradesRequest(sharedPref.getString("somAccessToken", ""), "0-100", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);
@@ -65,6 +65,31 @@ public class GradeFragment extends Fragment {
         });
 
         requestQueue.add(request);
+        GradesRequest request2 = new GradesRequest(sharedPref.getString("somAccessToken", ""), "101-200", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("response", response);
+                parseResponse(response);
+                try {
+                    for (int d = 0; d < jsonArraySubjects.length(); d++) {
+                        JSONObject jsonObject1 = jsonArraySubjects.getJSONObject(d);
+                        String subject = jsonObject1.getString("subject");
+                        double grade = jsonObject1.getDouble("grade");
+                        GradeItem gradeItem = new GradeItem(grade, subject, "", 0, 1, "");
+                        gradeItems.add(gradeItem);
+                    }
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException ignored){}
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        requestQueue.add(request2);
 
         return rootView;
     }
@@ -77,23 +102,66 @@ public class GradeFragment extends Fragment {
                 JSONObject item = jsonArray.getJSONObject(i);
                 JSONObject subjectJson = item.getJSONObject("vak");
                 double grade = 0;
+                String description = "";
                 try {
                     grade = item.getDouble("resultaat");
+                } catch (Exception ignored) {
+                }
+                try {
+                    description = item.getString("omschrijving");
                 } catch (Exception ignored) {
                 }
                 String subject = subjectJson.getString("naam");
                 String datum = item.getString("datumInvoer");
                 int periode = item.getInt("periode");
                 String type = item.getString("type");
-                //if (Objects.equals(type, "Toetskolom")) {
-                    GradeItem gradeItem = new GradeItem(grade, subject + type, datum, 0, periode, type);
-                    gradeItems.add(gradeItem);
-                //}
-            }
-            adapter.notifyDataSetChanged();
+                if (Objects.equals(type, "RapportGemiddeldeKolom")) {
+                    if (!checkSubject(subject, jsonArraySubjects)) {
+                        JSONArray jsonArray1 = new JSONArray();
+                        JSONObject subjectItem = new JSONObject();//todo improve grades
+                        subjectItem.put("subject", subject);
+                        subjectItem.put("grade", grade);
+                        subjectItem.put("subjectGrades", jsonArray1);
+                        jsonArraySubjects.put(subjectItem);
+                    }
+                } else if (Objects.equals(type, "Toetskolom")) {
+                    for (int k = 0; k < jsonArraySubjects.length(); k++) {
+                        JSONObject jsonObject1 = jsonArraySubjects.getJSONObject(k);
+                        String sub = jsonObject1.getString("subject");
+                        if (Objects.equals(sub, subject)) {
+                            JSONArray jsonArray1 = jsonObject1.getJSONArray("subjectGrades");
+                            JSONObject gradeItem = new JSONObject();
+                            gradeItem.put("subject", subject);
+                            gradeItem.put("periode", periode);
+                            gradeItem.put("grade", grade);
+                            gradeItem.put("description", description);
+                            gradeItem.put("datumInvoer", datum);
+                            jsonArray1.put(gradeItem);
+                        }
+                    }
 
+                }
+            }
+            Log.i("subjects", jsonArraySubjects.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean checkSubject(String subject, JSONArray jsonArray){
+        boolean exists = false;
+        for (int d = 0; d < jsonArray.length(); d++) {
+            try {
+                JSONObject jsonObject1 = jsonArray.getJSONObject(d);
+                String sub = jsonObject1.getString("subject");
+                if(Objects.equals(subject.trim(), sub.trim())){
+                    exists = true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return exists;
     }
 }

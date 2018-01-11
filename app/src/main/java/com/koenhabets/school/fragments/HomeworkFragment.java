@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeworkFragment extends Fragment {
     private List<HomeworkItem> homeworkItems = new ArrayList<>();
@@ -64,8 +65,8 @@ public class HomeworkFragment extends Fragment {
             }
         });
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String date = format.format(new Date());
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        Log.i("homework date", date);
         getHomework(date);
         return rootView;
     }

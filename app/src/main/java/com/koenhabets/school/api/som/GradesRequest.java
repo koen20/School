@@ -9,20 +9,23 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GradesRequest extends Request<String>{
+public class GradesRequest extends Request<String> {
     private static String url = "https://mijnschoolnet-api.somtoday.nl/rest/v1/resultaten/huidigVoorLeerling/1290286199"; ///todo leerling id
 
     private Response.Listener<String> responListener;
     private String accessToken;
+    private String range;
 
     public GradesRequest(String accessToken,
-                           Response.Listener<String> responseListener,
-                           Response.ErrorListener errorListener) {
+                         String range,
+                         Response.Listener<String> responseListener,
+                         Response.ErrorListener errorListener) {
 
         super(Request.Method.GET, url, errorListener);
 
         this.responListener = responseListener;
         this.accessToken = accessToken;
+        this.range = range;
     }
 
     @Override
@@ -41,6 +44,7 @@ public class GradesRequest extends Request<String>{
         Map<String, String> params = new HashMap<>();
         params.put("Accept", "application/vnd.topicus.platinum+json");
         params.put("Authorization", "Bearer " + accessToken);
+        params.put("Range", "items=" + range);
 
         return params;
     }
