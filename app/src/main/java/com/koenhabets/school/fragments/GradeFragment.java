@@ -2,6 +2,7 @@ package com.koenhabets.school.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,13 +10,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.koenhabets.school.R;
+import com.koenhabets.school.activities.GradesActivity;
 import com.koenhabets.school.adapters.GradesAdapter;
 import com.koenhabets.school.api.som.GradeItem;
 import com.koenhabets.school.api.som.GradesRequest;
@@ -49,6 +53,31 @@ public class GradeFragment extends Fragment {
         adapter = new GradesAdapter(getContext(), gradeItems);
         listView.setAdapter(adapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                TextView textView = view.findViewById(R.id.textViewGradeSubject);
+                String subject = textView.getText().toString();
+                JSONObject jsonObject1 = new JSONObject();
+                for (int i = 0; i < jsonArraySubjects.length(); i++) {
+                    try {
+                        JSONObject jsonObject = jsonArraySubjects.getJSONObject(i);
+                        String sub = jsonObject.getString("subject");
+                        if(Objects.equals(subject, sub)){
+                            jsonObject1 = jsonObject;
+                        }
+                    } catch (JSONException ignored){
+
+                    }
+                }
+                Intent intent = new Intent(getContext(), GradesActivity.class);
+                intent.putExtra("jsonObject", jsonObject1.toString());
+                startActivity(intent);
+            }
+        });
+
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         GradesRequest request = new GradesRequest(sharedPref.getString("somAccessToken", ""), "0-100", new Response.Listener<String>() {
             @Override
@@ -74,12 +103,13 @@ public class GradeFragment extends Fragment {
                     for (int d = 0; d < jsonArraySubjects.length(); d++) {
                         JSONObject jsonObject1 = jsonArraySubjects.getJSONObject(d);
                         String subject = jsonObject1.getString("subject");
-                        double grade = jsonObject1.getDouble("grade");
-                        GradeItem gradeItem = new GradeItem(grade, subject, "", 0, 1, "");
+                        String grade = jsonObject1.getString("grade");
+                        GradeItem gradeItem = new GradeItem(grade, subject, "", 0, 1, "", "");
                         gradeItems.add(gradeItem);
                     }
                     adapter.notifyDataSetChanged();
-                } catch (JSONException ignored){}
+                } catch (JSONException ignored) {
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -101,10 +131,11 @@ public class GradeFragment extends Fragment {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject item = jsonArray.getJSONObject(i);
                 JSONObject subjectJson = item.getJSONObject("vak");
-                double grade = 0;
+                String grade = "";
+                int weight = 0;
                 String description = "";
                 try {
-                    grade = item.getDouble("resultaat");
+                    grade = item.getString("resultaat");
                 } catch (Exception ignored) {
                 }
                 try {
@@ -115,14 +146,20 @@ public class GradeFragment extends Fragment {
                 String datum = item.getString("datumInvoer");
                 int periode = item.getInt("periode");
                 String type = item.getString("type");
+                try {
+                    weight = item.getInt("weging");
+                } catch (Exception ignored) {
+                }
                 if (Objects.equals(type, "RapportGemiddeldeKolom")) {
                     if (!checkSubject(subject, jsonArraySubjects)) {
-                        JSONArray jsonArray1 = new JSONArray();
-                        JSONObject subjectItem = new JSONObject();//todo improve grades
-                        subjectItem.put("subject", subject);
-                        subjectItem.put("grade", grade);
-                        subjectItem.put("subjectGrades", jsonArray1);
-                        jsonArraySubjects.put(subjectItem);
+                        if(periode == 4) {
+                            JSONArray jsonArray1 = new JSONArray();
+                            JSONObject subjectItem = new JSONObject();//todo improve grades
+                            subjectItem.put("subject", subject);
+                            subjectItem.put("grade", grade);
+                            subjectItem.put("subjectGrades", jsonArray1);
+                            jsonArraySubjects.put(subjectItem);
+                        }
                     }
                 } else if (Objects.equals(type, "Toetskolom")) {
                     for (int k = 0; k < jsonArraySubjects.length(); k++) {
@@ -136,6 +173,8 @@ public class GradeFragment extends Fragment {
                             gradeItem.put("grade", grade);
                             gradeItem.put("description", description);
                             gradeItem.put("datumInvoer", datum);
+                            gradeItem.put("weight", weight);
+                            gradeItem.put("type", type);
                             jsonArray1.put(gradeItem);
                         }
                     }
@@ -148,13 +187,13 @@ public class GradeFragment extends Fragment {
         }
     }
 
-    private boolean checkSubject(String subject, JSONArray jsonArray){
+    private boolean checkSubject(String subject, JSONArray jsonArray) {
         boolean exists = false;
         for (int d = 0; d < jsonArray.length(); d++) {
             try {
                 JSONObject jsonObject1 = jsonArray.getJSONObject(d);
                 String sub = jsonObject1.getString("subject");
-                if(Objects.equals(subject.trim(), sub.trim())){
+                if (Objects.equals(subject.trim(), sub.trim())) {
                     exists = true;
                 }
             } catch (JSONException e) {

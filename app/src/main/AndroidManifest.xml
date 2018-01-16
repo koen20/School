@@ -47,6 +47,7 @@
 
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.TaskDetailsActivity" />
+        <activity android:name=".activities.GradesActivity"></activity>
     </application>
 
 </manifest>

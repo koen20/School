@@ -2,20 +2,22 @@ package com.koenhabets.school.api.som;
 
 public class GradeItem {
 
-    private double grade;
+    private String grade;
     private String subject;
     private String date;
     private int weight;
     private int periode;
     private String type;
+    private String description;
 
-    public GradeItem(double grade, String subject, String date, int weight, int periode, String type) {
+    public GradeItem(String grade, String subject, String date, int weight, int periode, String type, String description) {
         this.grade = grade;
         this.subject = subject;
         this.date = date;
         this.weight = weight;
         this.periode = periode;
         this.type = type;
+        this.description = description;
     }
 
     public int getPeriode() {
@@ -30,7 +32,7 @@ public class GradeItem {
         return date;
     }
 
-    public double getGrade() {
+    public String getGrade() {
         return grade;
     }
 
@@ -40,5 +42,10 @@ public class GradeItem {
 
     public String getType() {
         return type;
+    }
+
+
+    public String getDescription() {
+        return description;
     }
 }
