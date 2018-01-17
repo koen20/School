@@ -2,6 +2,7 @@ package com.koenhabets.school.adapters;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,15 @@ public class GradeDetailsAdapter extends ArrayAdapter<GradeItem> {
         TextView textViewDescription = convertView.findViewById(R.id.textViewDetDescription);
 
         String date[] = gradeItem.getDate().split("T");
+
+        try {
+            if (Double.parseDouble(gradeItem.getGrade()) > 5.9) {
+                textViewGrade.setTextColor(Color.rgb(46, 125, 50));
+            } else {
+                textViewGrade.setTextColor(Color.RED);
+            }
+        } catch (Exception ignored) {
+        }
 
         textViewGrade.setText(gradeItem.getGrade());
         textViewWeight.setText(gradeItem.getWeight() + "x");
