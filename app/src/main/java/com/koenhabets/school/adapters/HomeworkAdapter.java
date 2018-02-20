@@ -27,9 +27,11 @@ public class HomeworkAdapter extends ArrayAdapter<HomeworkItem> {
 
         TextView textViewSubject = convertView.findViewById(R.id.textViewSubject);
         TextView textViewShort = convertView.findViewById(R.id.textViewShort);
+        TextView textViewDate = convertView.findViewById(R.id.textViewHwDate);
 
         textViewSubject.setText(homeworkItem.getSubjectShort());
         textViewShort.setText(homeworkItem.getTaskSubject());
+        textViewDate.setText(homeworkItem.getDateComplete());
 
 
         return convertView;

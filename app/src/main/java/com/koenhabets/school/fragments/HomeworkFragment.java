@@ -26,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -105,12 +107,21 @@ public class HomeworkFragment extends Fragment {
             String subject = subjectJson.getString("afkorting");
             String date = task.getString("datumTijd");
             String description = "";
+            String[] dat = date.split("T");
+            DateFormat format = new SimpleDateFormat("E dd-MM-yyyy", Locale.ENGLISH);
+            Date d;
+            try {
+                d = format.parse(dat[0]);
+                //date = format.format(d);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             try {
                 description = studiewijzerItem.getString("opdrachtBeschrijving");
             } catch (JSONException ignored){
             }
             String taskSubject = studiewijzerItem.getString("onderwerp");
-            HomeworkItem item = new HomeworkItem(date, subject, description, taskSubject);
+            HomeworkItem item = new HomeworkItem(dat[0], subject, description, taskSubject);
             homeworkItems.add(item);
         }
         adapter.notifyDataSetChanged();
