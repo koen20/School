@@ -16,6 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.koenhabets.school.HomeworkComparator;
 import com.koenhabets.school.R;
 import com.koenhabets.school.activities.TaskDetailsActivity;
 import com.koenhabets.school.adapters.HomeworkAdapter;
@@ -30,6 +31,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +53,8 @@ public class HomeworkFragment extends Fragment {
 
         listView = rootView.findViewById(R.id.listViewHomework);
         requestQueue = Volley.newRequestQueue(getContext());
+
+        Collections.sort(homeworkItems, new HomeworkComparator());
 
         adapter = new HomeworkAdapter(getContext(), homeworkItems);
         listView.setAdapter(adapter);
@@ -108,21 +112,25 @@ public class HomeworkFragment extends Fragment {
             String date = task.getString("datumTijd");
             String description = "";
             String[] dat = date.split("T");
-            DateFormat format = new SimpleDateFormat("E dd-MM-yyyy", Locale.ENGLISH);
-            Date d;
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date d = null;
             try {
                 d = format.parse(dat[0]);
-                //date = format.format(d);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            DateFormat format2 = new SimpleDateFormat("EEE dd-MM-yyyy", Locale.ENGLISH);
+            date = format2.format(d);
             try {
                 description = studiewijzerItem.getString("opdrachtBeschrijving");
             } catch (JSONException ignored){
             }
             String taskSubject = studiewijzerItem.getString("onderwerp");
-            HomeworkItem item = new HomeworkItem(dat[0], subject, description, taskSubject);
-            homeworkItems.add(item);
+            Date date1 = new Date();
+            if(d.getTime() > date1.getTime()) {
+                HomeworkItem item = new HomeworkItem(date, subject, description, taskSubject);
+                homeworkItems.add(item);
+            }
         }
         adapter.notifyDataSetChanged();
     }
