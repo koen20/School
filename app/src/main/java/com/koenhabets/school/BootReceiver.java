@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.koenhabets.school.api.BackgroundUpdateService;
-
 
 public class BootReceiver extends BroadcastReceiver {
     public BootReceiver() {

@@ -29,7 +29,7 @@ import java.util.Objects;
 
 public class BackgroundUpdateService extends IntentService {
 
-    int day;
+    private int day;
 
     public BackgroundUpdateService() {
         super("BackgroundUpdateService");
@@ -47,7 +47,8 @@ public class BackgroundUpdateService extends IntentService {
         }
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String requestToken = sharedPref.getString("zermeloAccessToken", "no request token");
-        AppointmentsRequest request = new AppointmentsRequest(requestToken, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
+        String school = sharedPref.getString("school", "bernardinuscollege");
+        AppointmentsRequest request = new AppointmentsRequest(requestToken, school, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 parseResponse(response);

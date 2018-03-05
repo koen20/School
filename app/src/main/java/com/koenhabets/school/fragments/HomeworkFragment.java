@@ -38,9 +38,9 @@ import java.util.Locale;
 
 public class HomeworkFragment extends Fragment {
     private List<HomeworkItem> homeworkItems = new ArrayList<>();
-    ListView listView;
-    RequestQueue requestQueue;
-    HomeworkAdapter adapter;
+    private ListView listView;
+    private RequestQueue requestQueue;
+    private HomeworkAdapter adapter;
 
     public HomeworkFragment() {
     }

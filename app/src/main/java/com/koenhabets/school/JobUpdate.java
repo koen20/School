@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
@@ -29,7 +28,7 @@ import java.util.Objects;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class JobUpdate extends JobService {
-    int day;
+    private int day;
 
     @Override
     public boolean onStartJob(final JobParameters params) {
@@ -43,7 +42,8 @@ public class JobUpdate extends JobService {
         }
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String requestToken = sharedPref.getString("zermeloAccessToken", "no request token");
-        AppointmentsRequest request = new AppointmentsRequest(requestToken, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
+        String school = sharedPref.getString("school", "bernardinuscollege");
+        AppointmentsRequest request = new AppointmentsRequest(requestToken, school, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 parseResponse(response);

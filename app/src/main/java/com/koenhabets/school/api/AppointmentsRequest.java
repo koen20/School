@@ -8,17 +8,18 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import java.io.UnsupportedEncodingException;
 
 public class AppointmentsRequest extends Request<String> {
-    private static String url = "https://bernardinuscollege.zportal.nl/api/v3/appointments?user=~me&access_token=";
+    private static String url = ".zportal.nl/api/v3/appointments?user=~me&access_token=";
 
     private Response.Listener<String> responListener;
 
     public AppointmentsRequest(String accessToken,
+                               String school,
                                long startTime,
                                long endTime,
                                Response.Listener<String> responseListener,
                                Response.ErrorListener errorListener) {
 
-        super(Method.GET, url + accessToken + "&start=" + startTime + "&end=" + endTime, errorListener);
+        super(Method.GET, "https://" + school + url + accessToken + "&start=" + startTime + "&end=" + endTime, errorListener);
 
         this.responListener = responseListener;
     }

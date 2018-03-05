@@ -10,7 +10,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="11dp"
         android:layout_toStartOf="@+id/textViewDetWeight"
-        android:text="TextView"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -20,7 +20,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="11dp"
-        android:text="0x" />
+        android:text="@string/_0x" />
 
     <TextView
         android:id="@+id/textViewDetDescription"
@@ -30,7 +30,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="11dp"
         android:layout_toStartOf="@+id/textViewDetGrade"
-        android:text="TextView"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -39,5 +39,5 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/textViewDetDescription"
         android:layout_below="@+id/textViewDetDescription"
-        android:text="TextView" />
+        android:text="" />
 </RelativeLayout>

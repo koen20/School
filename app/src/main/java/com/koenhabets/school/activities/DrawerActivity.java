@@ -45,10 +45,10 @@ import org.json.JSONObject;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    RequestQueue requestQueue;
-    TextView email;
-    TextView name;
-    ImageView imageView;
+    private RequestQueue requestQueue;
+    private TextView email;
+    private TextView name;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

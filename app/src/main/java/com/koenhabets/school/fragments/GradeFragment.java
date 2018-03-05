@@ -33,11 +33,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class GradeFragment extends Fragment {
-    RequestQueue requestQueue;
+    private RequestQueue requestQueue;
     private List<GradeItem> gradeItems = new ArrayList<>();
-    ListView listView;
-    GradesAdapter adapter;
-    JSONArray jsonArraySubjects = new JSONArray();
+    private ListView listView;
+    private GradesAdapter adapter;
+    private JSONArray jsonArraySubjects = new JSONArray();
 
     public GradeFragment() {
     }

@@ -24,12 +24,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText editTextZermelo;
-    EditText editTextUsername;
-    EditText editTextPassword;
-    RequestQueue requestQueue;
-    boolean zermeloLogin;
-    boolean somLogin;
+    private EditText editTextZermelo;
+    private EditText editTextUsername;
+    private EditText editTextPassword;
+    private EditText editTextSchool;
+    private RequestQueue requestQueue;
+    private boolean zermeloLogin;
+    private boolean somLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +41,12 @@ public class LoginActivity extends AppCompatActivity {
         editTextZermelo = findViewById(R.id.editTextZermelo);
         editTextUsername = findViewById(R.id.editTextSomUsername);
         editTextPassword = findViewById(R.id.editTextSomPassword);
+        editTextSchool = findViewById(R.id.editTextSchool);
     }
 
     public void login(View view) {
-        TokenRequest tokenRequest = new TokenRequest(editTextZermelo.getText().toString(), new Response.Listener<String>() {
+        final String school = editTextSchool.getText().toString();
+        TokenRequest tokenRequest = new TokenRequest(editTextZermelo.getText().toString(), school, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 zermeloLogin = true;
@@ -51,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean("Logged-in", true);
                 editor.putString("zermeloAccessToken", response);
+                editor.putString("school", school);
                 editor.apply();
                 if (somLogin && zermeloLogin) {
                     Intent intent = new Intent(SchoolApp.getContext(), DrawerActivity.class);

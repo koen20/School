@@ -15,15 +15,16 @@ import java.io.UnsupportedEncodingException;
 
 public class TokenRequest extends Request<String> {
 
-    private static String url = "https://bernardinuscollege.zportal.nl/api/v2/oauth/token?grant_type=authorization_code&code=";
+    private static String url = ".zportal.nl/api/v2/oauth/token?grant_type=authorization_code&code=";
 
     private Response.Listener<String> responListener;
 
     public TokenRequest(String authCode,
+                        String school,
                         Response.Listener<String> responseListener,
                         Response.ErrorListener errorListener) {
 
-        super(Method.POST, url + authCode, errorListener);
+        super(Method.POST, "https://" + school + url + authCode, errorListener);
 
         this.responListener = responseListener;
     }

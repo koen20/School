@@ -42,12 +42,12 @@ public class TimeTableFragment extends Fragment {
 
     private List<TimeTableItem> timeTableItem = new ArrayList<>();
     private TimeTableAdapter adapter;
-    ListView listView;
-    int day;
-    RequestQueue requestQueue;
-    long start;
-    long end;
-    TextView textView;
+    private ListView listView;
+    private int day;
+    private RequestQueue requestQueue;
+    private long start;
+    private long end;
+    private TextView textView;
 
     public TimeTableFragment() {
     }
@@ -138,7 +138,7 @@ public class TimeTableFragment extends Fragment {
         getCalendar(start, end);
     }
 
-    public void getCalendar(final long startTime, long endTime) {
+    private void getCalendar(final long startTime, long endTime) {
         Date dateObj = new Date(startTime * 1000);
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy EEEE", Locale.US);
         String dateString = df.format(dateObj);
@@ -157,7 +157,8 @@ public class TimeTableFragment extends Fragment {
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String requestToken = sharedPref.getString("zermeloAccessToken", "no request token");
-        AppointmentsRequest request = new AppointmentsRequest(requestToken, startTime, endTime, new Response.Listener<String>() {
+        String school = sharedPref.getString("school", "bernardinuscollege");
+        AppointmentsRequest request = new AppointmentsRequest(requestToken, school, startTime, endTime, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);

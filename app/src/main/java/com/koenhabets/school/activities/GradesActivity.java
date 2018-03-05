@@ -20,11 +20,11 @@ import java.util.List;
 import static com.koenhabets.school.SchoolApp.getContext;
 
 public class GradesActivity extends AppCompatActivity {
-    TextView textViewSubject;
-    TextView textViewGrade;
+    private TextView textViewSubject;
+    private TextView textViewGrade;
     private List<GradeItem> gradeItems = new ArrayList<>();
-    ListView listView;
-    GradeDetailsAdapter adapter;
+    private ListView listView;
+    private GradeDetailsAdapter adapter;
 
 
     @Override

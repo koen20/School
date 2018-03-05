@@ -44,4 +44,7 @@
     <string name="ok">OK</string>
     <string name="somtoday_gebruikersnaam">Somtoday gebruikersnaam</string>
     <string name="somtoday_wachtwoord">Somtoday wachtwoord</string>
+    <string name="zportal_nl">.zportal.nl</string>
+    <string name="school">School</string>
+    <string name="_0x">0x</string>
 </resources>

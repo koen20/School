@@ -15,7 +15,7 @@ import com.koenhabets.school.AlarmReceiver;
 import com.koenhabets.school.R;
 
 public class SettingsActivity extends AppCompatActivity {
-    Switch switchSchedule;
+    private Switch switchSchedule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

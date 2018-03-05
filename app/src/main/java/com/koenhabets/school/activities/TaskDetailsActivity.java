@@ -10,11 +10,11 @@ import android.widget.TextView;
 import com.koenhabets.school.R;
 
 public class TaskDetailsActivity extends AppCompatActivity {
-    String taskSubject;
-    String taskDescription;
+    private String taskSubject;
+    private String taskDescription;
 
-    TextView textViewTaskSubject;
-    TextView textViewTaskDescription;
+    private TextView textViewTaskSubject;
+    private TextView textViewTaskDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
