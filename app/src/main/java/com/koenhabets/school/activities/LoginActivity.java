@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.android.volley.RequestQueue;
@@ -19,7 +20,9 @@ import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
 import com.koenhabets.school.api.TokenRequest;
 import com.koenhabets.school.api.som.AccessTokenRequest;
+import com.koenhabets.school.api.som.SchoolRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,6 +45,32 @@ public class LoginActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextSomUsername);
         editTextPassword = findViewById(R.id.editTextSomPassword);
         editTextSchool = findViewById(R.id.editTextSchool);
+
+        SchoolRequest request = new SchoolRequest(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("response", response);
+                try {
+                    JSONArray jsonArray = new JSONArray(response).getJSONObject(0).getJSONArray("instellingen");
+
+                    //ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                     //       (this,android.R.layout.select_dialog_item, arr);
+
+//                    autocomplete.setThreshold(2);
+  //                  autocomplete.setAdapter(adapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("errrooor", "jaaa");
+            }
+        });
+
+        requestQueue.add(request);
     }
 
     public void login(View view) {
