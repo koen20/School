@@ -97,9 +97,8 @@ public class DrawerActivity extends AppCompatActivity
 
     private void refreshSomToken(){
         SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-        String somApiUrl =  sharedPref.getString("somApiUrl", "");
 
-        RefreshTokenRequest accessTokenRequest = new RefreshTokenRequest(sharedPref.getString("somRefreshToken", ""), somApiUrl, new Response.Listener<String>() {
+        RefreshTokenRequest accessTokenRequest = new RefreshTokenRequest(sharedPref.getString("somRefreshToken", ""), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {

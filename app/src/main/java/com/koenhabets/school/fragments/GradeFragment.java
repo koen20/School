@@ -80,7 +80,8 @@ public class GradeFragment extends Fragment {
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String somApiUrl = sharedPref.getString("somApiUrl", "");
-        GradesRequest request = new GradesRequest(sharedPref.getString("somAccessToken", ""), "0-100", somApiUrl, new Response.Listener<String>() {
+        String id = sharedPref.getString("somId", "");
+        GradesRequest request = new GradesRequest(sharedPref.getString("somAccessToken", ""), "0-100", somApiUrl, id, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);
@@ -95,7 +96,8 @@ public class GradeFragment extends Fragment {
         });
 
         requestQueue.add(request);
-        GradesRequest request2 = new GradesRequest(sharedPref.getString("somAccessToken", ""), "101-200", somApiUrl, new Response.Listener<String>() {
+
+        GradesRequest request2 = new GradesRequest(sharedPref.getString("somAccessToken", ""), "101-200", somApiUrl, id, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);

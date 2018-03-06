@@ -21,6 +21,7 @@ import com.koenhabets.school.R;
 import com.koenhabets.school.SchoolApp;
 import com.koenhabets.school.api.TokenRequest;
 import com.koenhabets.school.api.som.AccessTokenRequest;
+import com.koenhabets.school.api.som.AccountRequest;
 import com.koenhabets.school.api.som.SchoolRequest;
 
 import org.json.JSONArray;
@@ -135,14 +136,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-
         AccessTokenRequest accessTokenRequest = new AccessTokenRequest(editTextUsername.getText().toString(),
                 editTextPassword.getText().toString(), uuid, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putBoolean("Logged-in", true);
                     editor.putString("somAccessToken", jsonObject.getString("access_token"));
@@ -154,7 +154,8 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (somLogin && zermeloLogin) {
-                    Intent intent = new Intent(SchoolApp.getContext(), DrawerActivity.class);
+                    getAccountId();
+                    Intent intent = new Intent(getApplicationContext(), DrawerActivity.class);
                     startActivity(intent);
                 }
             }
@@ -163,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 somLogin = false;
                 Log.e("error", "" + error.getMessage());
-                SharedPreferences sharedPref = SchoolApp.getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.clear();
                 editor.apply();
@@ -180,5 +181,34 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(accessTokenRequest);
+    }
+
+    private void getAccountId(){
+        SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        String somApiUrl =  sharedPref.getString("somApiUrl", "");
+        String somAccessToken = sharedPref.getString("somAccessToken", "");
+
+        AccountRequest request = new AccountRequest(somAccessToken, somApiUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("response", response);
+                try {
+                    JSONObject jsonObject = new JSONObject(response).getJSONObject("persoon").getJSONArray("links").getJSONObject(0);
+                    editor.putString("somId", jsonObject.getString("id"));
+                    editor.apply();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        requestQueue.add(request);
     }
 }
