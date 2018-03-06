@@ -79,8 +79,10 @@ public class HomeworkFragment extends Fragment {
 
     private void getHomework(String date) {
         SharedPreferences sharedPref = getContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        String somApiUrl =  sharedPref.getString("somApiUrl", "");
+        String somAccessToken = sharedPref.getString("somAccessToken", "");
 
-        HomeworkRequest request = new HomeworkRequest(sharedPref.getString("somAccessToken", ""), date, new Response.Listener<String>() {
+        HomeworkRequest request = new HomeworkRequest(somAccessToken, date, somApiUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);

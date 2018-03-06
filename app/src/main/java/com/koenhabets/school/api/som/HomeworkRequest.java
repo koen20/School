@@ -11,17 +11,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HomeworkRequest extends Request<String> {
-    private static String url = "https://mijnschoolnet-api.somtoday.nl/rest/v1/studiewijzeritemafspraaktoekenningen";
+    private static String url = "/rest/v1/studiewijzeritemafspraaktoekenningen";
 
     private Response.Listener<String> responListener;
     private String accessToken;
 
     public HomeworkRequest(String accessToken,
                            String date,//yyyy-MM-dd
+                           String somApiUrl,
                                Response.Listener<String> responseListener,
                                Response.ErrorListener errorListener) {
 
-        super(Request.Method.GET, url + "?vanafDatum=" + date, errorListener);
+        super(Request.Method.GET, somApiUrl + url + "?vanafDatum=" + date, errorListener);
 
         this.responListener = responseListener;
         this.accessToken = accessToken;

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GradesRequest extends Request<String> {
-    private static String url = "https://mijnschoolnet-api.somtoday.nl/rest/v1/resultaten/huidigVoorLeerling/1290286199"; ///todo leerling id
+    private static String url = "/rest/v1/resultaten/huidigVoorLeerling/1290286199"; ///todo leerling id
 
     private Response.Listener<String> responListener;
     private String accessToken;
@@ -18,10 +18,11 @@ public class GradesRequest extends Request<String> {
 
     public GradesRequest(String accessToken,
                          String range,
+                         String somApiUrl,
                          Response.Listener<String> responseListener,
                          Response.ErrorListener errorListener) {
 
-        super(Request.Method.GET, url, errorListener);
+        super(Request.Method.GET, somApiUrl + url, errorListener);
 
         this.responListener = responseListener;
         this.accessToken = accessToken;

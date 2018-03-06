@@ -27,6 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
     private EditText editTextZermelo;
     private EditText editTextUsername;
@@ -37,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private boolean zermeloLogin;
     private boolean somLogin;
+    private JSONArray jsonArraySchool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +51,20 @@ public class LoginActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextSomUsername);
         editTextPassword = findViewById(R.id.editTextSomPassword);
         editTextSchool = findViewById(R.id.editTextSchool);
-        autoCompleteSom = findViewById(R.id.autoCompleteTextView);
+        autoCompleteSom = findViewById(R.id.autoCompleteSom);
 
         SchoolRequest request = new SchoolRequest(new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);
                 try {
-                    JSONArray jsonArray = new JSONArray(response).getJSONObject(0).getJSONArray("instellingen");
-                    String[] arr = new String[jsonArray.length()];
+                    jsonArraySchool = new JSONArray(response).getJSONObject(0).getJSONArray("instellingen");
+                    String[] arr = new String[jsonArraySchool.length()];
                     for (int i = 0; i < arr.length; i++) {
-                        JSONObject item = jsonArray.getJSONObject(i);
+                        JSONObject item = jsonArraySchool.getJSONObject(i);
                         arr[i] = item.getString("naam");
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                            (this, android.R.layout.select_dialog_item, arr);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.select_dialog_item, arr);
 
                     autoCompleteSom.setThreshold(2);
                     autoCompleteSom.setAdapter(adapter);
@@ -121,8 +123,21 @@ public class LoginActivity extends AppCompatActivity {
         });
         requestQueue.add(tokenRequest);
 
+        String uuid = "";
+        for (int i = 0; i < jsonArraySchool.length(); i++) {
+            try {
+                JSONObject schoolSom = jsonArraySchool.getJSONObject(i);
+                if(Objects.equals(schoolSom.getString("naam"), autoCompleteSom.getText().toString())){
+                    uuid = schoolSom.getString("uuid");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         AccessTokenRequest accessTokenRequest = new AccessTokenRequest(editTextUsername.getText().toString(),
-                editTextPassword.getText().toString(), new Response.Listener<String>() {
+                editTextPassword.getText().toString(), uuid, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -132,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putBoolean("Logged-in", true);
                     editor.putString("somAccessToken", jsonObject.getString("access_token"));
                     editor.putString("somRefreshToken", jsonObject.getString("refresh_token"));
+                    editor.putString("somApiUrl", jsonObject.getString("somtoday_api_url"));
                     editor.apply();
                     somLogin = true;
                 } catch (JSONException e) {

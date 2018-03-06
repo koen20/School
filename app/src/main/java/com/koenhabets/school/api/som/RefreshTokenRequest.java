@@ -11,15 +11,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RefreshTokenRequest extends Request<String> {
-    private static String url = "https://productie.somtoday.nl/oauth2/token?grant_type=refresh_token&client_id=D50E0C06-32D1-4B41-A137-A9A850C892C2&client_secret=vDdWdKwPNaPCyhCDhaCnNeydyLxSGNJX&refresh_token=";
+    private static String url = "/oauth2/token?grant_type=refresh_token&client_id=D50E0C06-32D1-4B41-A137-A9A850C892C2&client_secret=vDdWdKwPNaPCyhCDhaCnNeydyLxSGNJX&refresh_token=";
 
     private Response.Listener<String> responListener;
 
     public RefreshTokenRequest(String refreshToken,
+                              String somApiUrl,
                               Response.Listener<String> responseListener,
                               Response.ErrorListener errorListener) {
 
-        super(Request.Method.POST, url + refreshToken, errorListener);
+        super(Request.Method.POST, somApiUrl  + url + refreshToken, errorListener);
 
         this.responListener = responseListener;
     }

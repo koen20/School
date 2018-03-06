@@ -39,7 +39,7 @@
     <string name="sign_out">Sign out</string>
     <string name="huiswerk">Huiswerk</string>
     <string name="incorrect_zermelo">Onjuiste zermelo toegangscode</string>
-    <string name="incorrect_som">Onjuist somtoday gebruikersnaam of wachtwoord</string>
+    <string name="incorrect_som">Onjuist somtoday school, gebruikersnaam of wachtwoord</string>
     <string name="login_failed">Inloggen mislukt</string>
     <string name="ok">OK</string>
     <string name="somtoday_gebruikersnaam">Somtoday gebruikersnaam</string>

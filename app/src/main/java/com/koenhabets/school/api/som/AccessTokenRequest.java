@@ -11,16 +11,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AccessTokenRequest extends Request<String> {
-    private static String url = "https://productie.somtoday.nl/oauth2/token?scope=openid&grant_type=password&username=28f730ff-5c19-400c-ae40-7bcad041791e\\";
+    private static String url = "https://productie.somtoday.nl/oauth2/token?scope=openid&grant_type=password&username=";
 
     private Response.Listener<String> responListener;
 
     public AccessTokenRequest(String username,
                                String password,
+                               String uuid,
                                Response.Listener<String> responseListener,
                                Response.ErrorListener errorListener) {
 
-        super(Method.POST, url + username + "&password=" + password, errorListener);
+        super(Method.POST, url + uuid + "\\" + username + "&password=" + password, errorListener);
 
         this.responListener = responseListener;
     }
