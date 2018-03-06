@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.android.volley.RequestQueue;
@@ -31,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextUsername;
     private EditText editTextPassword;
     private EditText editTextSchool;
+    private AutoCompleteTextView autoCompleteSom;
+
     private RequestQueue requestQueue;
     private boolean zermeloLogin;
     private boolean somLogin;
@@ -45,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextSomUsername);
         editTextPassword = findViewById(R.id.editTextSomPassword);
         editTextSchool = findViewById(R.id.editTextSchool);
+        autoCompleteSom = findViewById(R.id.autoCompleteTextView);
 
         SchoolRequest request = new SchoolRequest(new Response.Listener<String>() {
             @Override
@@ -52,12 +56,16 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i("response", response);
                 try {
                     JSONArray jsonArray = new JSONArray(response).getJSONObject(0).getJSONArray("instellingen");
+                    String[] arr = new String[jsonArray.length()];
+                    for (int i = 0; i < arr.length; i++) {
+                        JSONObject item = jsonArray.getJSONObject(i);
+                        arr[i] = item.getString("naam");
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                            (this, android.R.layout.select_dialog_item, arr);
 
-                    //ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                     //       (this,android.R.layout.select_dialog_item, arr);
-
-//                    autocomplete.setThreshold(2);
-  //                  autocomplete.setAdapter(adapter);
+                    autoCompleteSom.setThreshold(2);
+                    autoCompleteSom.setAdapter(adapter);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
