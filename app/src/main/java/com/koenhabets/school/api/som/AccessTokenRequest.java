@@ -39,7 +39,7 @@ public class AccessTokenRequest extends Request<String> {
 
     @Override
     public Map<String, String> getHeaders() {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("authorization", "Basic RDUwRTBDMDYtMzJEMS00QjQxLUExMzctQTlBODUwQzg5MkMyOnZEZFdkS3dQTmFQQ3loQ0RoYUNuTmV5ZHlMeFNHTkpY");
 
         return params;

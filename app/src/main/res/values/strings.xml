@@ -1,39 +1,15 @@
 <resources>
     <string name="app_name">School</string>
     <string name="action_settings">Instellingen</string>
-    <string name="Settings1">Notificatie</string>
-    <string name="Currentday">"Dag: "</string>
-    <string name="loading">Laden…</string>
-    <string name="title_activity_drawer" translatable="false">DrawerActivity</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="volgende_dag">Volgende dag</string>
-    <string name="vorige_dag">Vorige dag</string>
-    <string name="netpresenter">Netpresenter</string>
     <string name="cijfers">Cijfers</string>
-    <string name="calendar">Calender</string>
-    <string name="Gewicht">"Gewicht: "</string>
-    <string name="Onbekend">. Onbekend</string>
     <string name="Rooster">Rooster</string>
-    <string name="title_activity_login" translatable="false">Sign in</string>
 
     <string name="login" translatable="false">Login</string>
-    <string name="password">Wachtwoord</string>
-    <string name="username">Gebruikersnaam</string>
-    <string name="incorrect">Het opgegeven e-mailadres en wachtwoord komen niet overeen</string>
-    <string name="notificationnetpresnter">Staat in de netpresenter.</string>
-    <string name="klas">Klas</string>
-    <string name="add">Toevoegen</string>
-    <string name="cancel">Annuleren</string>
-    <string name="add_task">Taak toevoegen</string>
-    <string name="Remove">Verwijderen</string>
 
-    <string name="compose_shortcut_short_label1">Cijfers</string>
-    <string name="compose_shortcut_long_label1">Cijfers</string>
-    <string name="compose_disabled_message1">Uitgeschakeld</string>
     <string name="zermelo_access_code">zermelo access code</string>
     <string name="notificatie">Notificatie</string>
     <string name="sign_out">Sign out</string>
