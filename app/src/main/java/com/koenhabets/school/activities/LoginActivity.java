@@ -37,6 +37,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextSchool;
     private AutoCompleteTextView autoCompleteSom;
 
+    private View contentSomLogin;
+    private View contentZermeloLogin;
+
     private RequestQueue requestQueue;
     private boolean zermeloLogin;
     private boolean somLogin;
@@ -48,11 +51,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         requestQueue = Volley.newRequestQueue(this);
 
+        contentSomLogin = findViewById(R.id.login_som);
+        contentZermeloLogin = findViewById(R.id.login_zermelo);
+
         editTextZermelo = findViewById(R.id.editTextZermelo);
         editTextUsername = findViewById(R.id.editTextSomUsername);
         editTextPassword = findViewById(R.id.editTextSomPassword);
-        editTextSchool = findViewById(R.id.editTextSchool);
+        editTextSchool = findViewById(R.id.editTextSchoolZermelo);
         autoCompleteSom = findViewById(R.id.autoCompleteSom);
+
+        contentZermeloLogin.setVisibility(View.INVISIBLE);
 
         SchoolRequest request = new SchoolRequest(new Response.Listener<String>() {
             @Override
@@ -82,6 +90,11 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         requestQueue.add(request);
+    }
+
+    public void next(View view){
+        contentZermeloLogin.setVisibility(View.VISIBLE);
+        contentSomLogin.setVisibility(View.INVISIBLE);
     }
 
     public void login(View view) {
