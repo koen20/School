@@ -11,8 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AccessTokenRequest extends Request<String> {
-    private static String url = "https://productie.somtoday.nl/oauth2/token?scope=openid&grant_type=password&username=";
-
+    private static String url = "https://productie.somtoday.nl/oauth2/token";
+    private String username;
+    private String password;
+    private String uuid;
     private Response.Listener<String> responListener;
 
     public AccessTokenRequest(String username,
@@ -21,9 +23,12 @@ public class AccessTokenRequest extends Request<String> {
                                Response.Listener<String> responseListener,
                                Response.ErrorListener errorListener) {
 
-        super(Method.POST, url + uuid + "\\" + username + "&password=" + password, errorListener);
+        super(Method.POST, url, errorListener);
 
         this.responListener = responseListener;
+        this.username = username;
+        this.password = password;
+        this.uuid = uuid;
     }
 
     @Override
@@ -41,9 +46,20 @@ public class AccessTokenRequest extends Request<String> {
     public Map<String, String> getHeaders() {
         Map<String, String> params = new HashMap<>();
         params.put("authorization", "Basic RDUwRTBDMDYtMzJEMS00QjQxLUExMzctQTlBODUwQzg5MkMyOnZEZFdkS3dQTmFQQ3loQ0RoYUNuTmV5ZHlMeFNHTkpY");
+        params.put("Content-Type", "application/x-www-form-urlencoded");
 
         return params;
     }
+
+    @Override
+    public Map<String, String> getParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put("scope", "openid");
+        params.put("grant_type", "password");
+        params.put("username", uuid + "\\" + username);
+        params.put("password", password);
+        return params;
+    };
 
     @Override
     protected void deliverResponse(String response) {

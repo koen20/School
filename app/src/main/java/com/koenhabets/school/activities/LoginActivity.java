@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
-    public void next(View view){
+    public void next(View view) {
         contentZermeloLogin.setVisibility(View.VISIBLE);
         contentSomLogin.setVisibility(View.INVISIBLE);
     }
@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         for (int i = 0; i < jsonArraySchool.length(); i++) {
             try {
                 JSONObject schoolSom = jsonArraySchool.getJSONObject(i);
-                if(Objects.equals(schoolSom.getString("naam"), autoCompleteSom.getText().toString())){
+                if (Objects.equals(schoolSom.getString("naam"), autoCompleteSom.getText().toString())) {
                     uuid = schoolSom.getString("uuid");
                 }
             } catch (JSONException e) {
@@ -154,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 try {
+                    Log.i("response", response);
                     JSONObject jsonObject = new JSONObject(response);
                     SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
@@ -196,10 +197,10 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue.add(accessTokenRequest);
     }
 
-    private void getAccountId(){
+    private void getAccountId() {
         SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPref.edit();
-        String somApiUrl =  sharedPref.getString("somApiUrl", "");
+        String somApiUrl = sharedPref.getString("somApiUrl", "");
         String somAccessToken = sharedPref.getString("somAccessToken", "");
 
         AccountRequest request = new AccountRequest(somAccessToken, somApiUrl, new Response.Listener<String>() {
