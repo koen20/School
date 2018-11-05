@@ -188,12 +188,20 @@ public class TimeTableFragment extends Fragment {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject lesson = jsonArray.getJSONObject(i);
-                        if (lesson.getInt("startTimeSlot") == w) {
+                        if (lesson.getInt("startTimeSlot") == w) { //todo Sort list instead of this
                             if (lesson.getBoolean("valid")) {
                                 if (lastHour != lesson.getInt("startTimeSlot")) {
                                     JSONArray subjects = lesson.getJSONArray("subjects");
                                     JSONArray locations = lesson.getJSONArray("locations");
-                                    TimeTableItem item = new TimeTableItem(subjects.getString(0), locations.getString(0), lesson.getInt("startTimeSlot"),
+                                    String subject = "";
+                                    String location = "";
+                                    try{
+                                        subject = subjects.getString(0);
+                                        location = locations.getString(0);
+                                    } catch (Exception ignored){
+
+                                    }
+                                    TimeTableItem item = new TimeTableItem(subject, location, lesson.getInt("startTimeSlot"),
                                             lesson.getBoolean("cancelled"), lesson.getBoolean("modified"), lesson.getString("changeDescription"));
                                     timeTableItem.add(item);
                                 }

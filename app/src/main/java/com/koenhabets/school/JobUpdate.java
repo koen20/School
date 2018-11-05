@@ -61,7 +61,12 @@ public class JobUpdate extends JobService {
 
         Calendar calendar = Calendar.getInstance();
         weekDay = dayFormat.format(calendar.getTime());
-        if (!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday")) {
+
+        boolean disabled = false;
+        if (!Objects.equals(weekDay, "Friday") && cal.get(Calendar.HOUR_OF_DAY) > 16){
+            disabled = true;
+        }
+        if (!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday") && !disabled) {
             requestQueue.add(request);
         } else {
             NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
