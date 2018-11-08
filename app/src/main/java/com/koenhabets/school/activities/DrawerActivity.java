@@ -12,15 +12,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +45,8 @@ import com.koenhabets.school.fragments.TimeTableFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Calendar;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -87,6 +92,8 @@ public class DrawerActivity extends AppCompatActivity
 
         //serviceIntent = new Intent(this, BackgroundUpdateService.class);
         //startService(serviceIntent);
+        SharedPreferences prefs = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        prefs.edit().putLong("lastRun", 0).apply();
 
         if (sharedPref.getBoolean("scheduleNotifcation", true)) {
             scheduleJob(getApplicationContext());
@@ -95,7 +102,7 @@ public class DrawerActivity extends AppCompatActivity
         replaceFragment(new TimeTableFragment());
     }
 
-    private void refreshSomToken(){
+    private void refreshSomToken() {
         SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
 
         RefreshTokenRequest accessTokenRequest = new RefreshTokenRequest(sharedPref.getString("somRefreshToken", ""), new Response.Listener<String>() {
@@ -168,7 +175,7 @@ public class DrawerActivity extends AppCompatActivity
             replaceFragment(new TimeTableFragment());
         } else if (id == R.id.nav_homework) {
             replaceFragment(new HomeworkFragment());
-        } else if (id == R.id.nav_grades){
+        } else if (id == R.id.nav_grades) {
             replaceFragment(new GradeFragment());
         } else if (id == R.id.signout) {
             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
@@ -191,6 +198,11 @@ public class DrawerActivity extends AppCompatActivity
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel mChannel = new NotificationChannel("schedule", "Rooster notificatie", NotificationManager.IMPORTANCE_MIN);
             mNotificationManager.createNotificationChannel(mChannel);
+
+            NotificationManager mNotificationManager2 =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel mChannel2 = new NotificationChannel("scheduleChange", "Rooster weiziging notificatie", NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager2.createNotificationChannel(mChannel2);
         }
     }
 
@@ -198,9 +210,9 @@ public class DrawerActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ComponentName serviceComponent = new ComponentName(context, JobUpdate.class);
             JobInfo.Builder builder = new JobInfo.Builder(54, serviceComponent);
-            builder.setPeriodic(3600000);//1 hour
+            builder.setPeriodic(1600000);//30 minutes
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-            JobScheduler jobScheduler = (JobScheduler) getSystemService( Context.JOB_SCHEDULER_SERVICE );
+            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
             jobScheduler.schedule(builder.build());
         } else {
             AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);

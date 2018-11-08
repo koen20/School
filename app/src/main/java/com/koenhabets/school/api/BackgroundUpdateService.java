@@ -7,8 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 
@@ -65,7 +65,12 @@ public class BackgroundUpdateService extends IntentService {
 
         Calendar calendar = Calendar.getInstance();
         weekDay = dayFormat.format(calendar.getTime());
-        if (!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday")) {
+
+        boolean disabled = false;
+        if (!Objects.equals(weekDay, "Friday") && cal.get(Calendar.HOUR_OF_DAY) > 16) {
+            disabled = true;
+        }
+        if (!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday") && !disabled) {
             requestQueue.add(request);
         } else {
             NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);

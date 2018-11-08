@@ -1,6 +1,6 @@
 package com.koenhabets.school.api;
 
-public class TimeTableItem {
+public class TimeTableItem implements Comparable<TimeTableItem> {
 
     private String subject;
     private String lokaal;
@@ -40,5 +40,11 @@ public class TimeTableItem {
 
     public String getChangeDescription() {
         return changeDescription;
+    }
+
+    @Override
+    public int compareTo(TimeTableItem item) {
+        int compareage = item.getHour();
+        return this.hour-compareage;
     }
 }

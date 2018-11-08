@@ -3,8 +3,11 @@ package com.koenhabets.school.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +36,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -145,10 +150,10 @@ public class TimeTableFragment extends Fragment {
 
         textView.setText(dateString);
 
-        JSONObject jsonObject = readSchedule();
+        JSONObject jsonObject = readSchedule(getContext());
         try {
-            String response = jsonObject.getString(Long.toString(startTime));
-            parseResponse(response);
+            JSONArray response = jsonObject.getJSONArray(Long.toString(startTime));
+            proccessReponse(response);
         } catch (JSONException e) {
             timeTableItem.clear();
             adapter.notifyDataSetChanged();
@@ -162,8 +167,8 @@ public class TimeTableFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 Log.i("response", response);
-                parseResponse(response);
-                addDayToFile(startTime, response);
+                JSONArray jsonArray = parseResponse(response, startTime, getContext());
+                proccessReponse(jsonArray);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -175,8 +180,8 @@ public class TimeTableFragment extends Fragment {
         requestQueue.add(request);
     }
 
-    private void parseResponse(String response) {
-        timeTableItem.clear();
+    public static JSONArray parseResponse(String response, long startTime, Context context) {
+        JSONArray jsonArrayDay = new JSONArray();
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject jsonResp = jsonObject.getJSONObject("response");
@@ -184,59 +189,80 @@ public class TimeTableFragment extends Fragment {
 
             int lastHour = 0;
 
-            for (int w = 1; w < 12; w++) {
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    try {
-                        JSONObject lesson = jsonArray.getJSONObject(i);
-                        if (lesson.getInt("startTimeSlot") == w) { //todo Sort list instead of this
-                            if (lesson.getBoolean("valid")) {
-                                if (lastHour != lesson.getInt("startTimeSlot")) {
-                                    JSONArray subjects = lesson.getJSONArray("subjects");
-                                    JSONArray locations = lesson.getJSONArray("locations");
-                                    String subject = "";
-                                    String location = "";
-                                    try{
-                                        subject = subjects.getString(0);
-                                        location = locations.getString(0);
-                                    } catch (Exception ignored){
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    JSONObject lesson = jsonArray.getJSONObject(i);
+                    if (lesson.getBoolean("valid")) {
+                        if (lastHour != lesson.getInt("startTimeSlot")) {
+                            JSONArray subjects = lesson.getJSONArray("subjects");
+                            JSONArray locations = lesson.getJSONArray("locations");
+                            String subject = "";
+                            String location = "";
+                            try {
+                                subject = subjects.getString(0);
+                                location = locations.getString(0);
+                            } catch (Exception ignored) {
 
-                                    }
-                                    TimeTableItem item = new TimeTableItem(subject, location, lesson.getInt("startTimeSlot"),
-                                            lesson.getBoolean("cancelled"), lesson.getBoolean("modified"), lesson.getString("changeDescription"));
-                                    timeTableItem.add(item);
-                                }
-                                lastHour = lesson.getInt("startTimeSlot");
                             }
+                            JSONObject jsonObject1 = new JSONObject();
+                            jsonObject1.put("id", lesson.getInt("id"));
+                            jsonObject1.put("cancelled", lesson.getBoolean("cancelled"));
+                            jsonObject1.put("modified", lesson.getBoolean("modified"));
+                            jsonObject1.put("subject", subject);
+                            jsonObject1.put("location", location);
+                            jsonObject1.put("changeDescription", lesson.getString("changeDescription"));
+                            jsonObject1.put("startTimeSlot", lesson.getInt("startTimeSlot"));
+                            jsonArrayDay.put(jsonObject1);
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        lastHour = lesson.getInt("startTimeSlot");
                     }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        addDayToFile(startTime, jsonArrayDay, context);
+        return jsonArrayDay;
+    }
+
+    private void proccessReponse(JSONArray jsonArray) {
+        timeTableItem.clear();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject lesson = jsonArray.getJSONObject(i);
+                TimeTableItem item = new TimeTableItem(lesson.getString("subject"), lesson.getString("location"), lesson.getInt("startTimeSlot"),
+                        lesson.getBoolean("cancelled"), lesson.getBoolean("modified"), lesson.getString("changeDescription"));
+                timeTableItem.add(item);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+        Collections.sort(timeTableItem);
         adapter.notifyDataSetChanged();
     }
 
-    private void addDayToFile(long day, String dayString) {
-        JSONObject jsonObject = readSchedule();
+    public static void addDayToFile(long day, JSONArray appointments, Context context) {
+        JSONObject jsonObject = readSchedule(context);
         if (jsonObject == null) {
             jsonObject = new JSONObject();
         }
         try {
-            jsonObject.put(Long.toString(day), dayString);
+            jsonObject.put(Long.toString(day), appointments);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        saveSchedule(jsonObject);
+        saveSchedule(jsonObject, context);
     }
 
-    private void saveSchedule(JSONObject schedule) {
+    public static void saveSchedule(JSONObject schedule, Context context) {
         FileOutputStream outputStream;
         try {
-            outputStream = getContext().openFileOutput("appointment", Context.MODE_PRIVATE);
+            outputStream = context.openFileOutput("appointments", Context.MODE_PRIVATE);
             outputStream.write(schedule.toString().getBytes());
             outputStream.close();
         } catch (Exception e) {
@@ -244,11 +270,11 @@ public class TimeTableFragment extends Fragment {
         }
     }
 
-    private JSONObject readSchedule() {
+    public static JSONObject readSchedule(Context context) {
         JSONObject jsonObject = null;
         try {
             BufferedReader inputReader = new BufferedReader(new InputStreamReader(
-                    getContext().openFileInput("appointment")));
+                    context.openFileInput("appointments")));
             String inputString;
             StringBuffer stringBuffer = new StringBuffer();
             while ((inputString = inputReader.readLine()) != null) {

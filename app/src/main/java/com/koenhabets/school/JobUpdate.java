@@ -1,13 +1,21 @@
 package com.koenhabets.school;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.job.JobInfo;
 import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
 import android.app.job.JobService;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.core.app.NotificationCompat;
+
 import android.text.Html;
 import android.util.Log;
 
@@ -15,7 +23,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.koenhabets.school.activities.DrawerActivity;
 import com.koenhabets.school.api.AppointmentsRequest;
+import com.koenhabets.school.fragments.TimeTableFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,8 +33,10 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class JobUpdate extends JobService {
@@ -40,13 +52,27 @@ public class JobUpdate extends JobService {
         if (cal.get(Calendar.HOUR_OF_DAY) > 16) {
             da = 86400;
         }
+        final long startOfDay = getStartOfDay(day) + da;
+        final long endOfDay = getEndOfDay(day) + da;
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         String requestToken = sharedPref.getString("zermeloAccessToken", "no request token");
         String school = sharedPref.getString("school", "bernardinuscollege");
-        AppointmentsRequest request = new AppointmentsRequest(requestToken, school, getStartOfDay(day) + da, getEndOfDay(day) + da, new Response.Listener<String>() {
+        final SharedPreferences prefs = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+        AppointmentsRequest request = new AppointmentsRequest(requestToken, school, startOfDay, endOfDay, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                JSONObject jsonObject = TimeTableFragment.readSchedule(getApplicationContext());
+                try {
+                    JSONArray oldAppointments = TimeTableFragment.parseResponse(response, startOfDay, getApplicationContext());
+                    JSONArray appointments = jsonObject.getJSONArray(Long.toString(startOfDay));
+                    checkScheduleChange(appointments, oldAppointments);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 parseResponse(response);
+                Date dt = new Date();
+
+                prefs.edit().putLong("lastRun", dt.getTime()).apply();
                 jobFinished(params, false);
             }
         }, new Response.ErrorListener() {
@@ -63,10 +89,23 @@ public class JobUpdate extends JobService {
         weekDay = dayFormat.format(calendar.getTime());
 
         boolean disabled = false;
-        if (!Objects.equals(weekDay, "Friday") && cal.get(Calendar.HOUR_OF_DAY) > 16){
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        long interval = 1600000;//30 minutes
+        if (hour > 15 || hour < 7) {
+            interval = 3600000 * 3;//3 hours
+        }
+        Date date = new Date();
+        long l = prefs.getLong("lastRun", 0);
+        if (date.getTime() - l < interval){
+            Log.i("Job", "Job stopped");
+            disabled = true;
+        }
+
+        if (Objects.equals(weekDay, "Friday") && cal.get(Calendar.HOUR_OF_DAY) > 16) {
             disabled = true;
         }
         if (!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday") && !disabled) {
+            Log.i("Job", "Getting schedule");
             requestQueue.add(request);
         } else {
             NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -80,11 +119,41 @@ public class JobUpdate extends JobService {
         return true;
     }
 
+    private void checkScheduleChange(JSONArray appointments, JSONArray oldAppointments) throws JSONException {
+        for (int i = 0; i < appointments.length(); i++){
+            JSONObject newAppointment = appointments.getJSONObject(i);
+            for (int k = 0; k < oldAppointments.length(); k++){
+                JSONObject oldAppointment = oldAppointments.getJSONObject(k);
+                if (newAppointment.getInt("id") == oldAppointment.getInt("id")){
+                    if(newAppointment.getBoolean("cancelled") != oldAppointment.getBoolean("cancelled")){
+                        if(newAppointment.getBoolean("cancelled")){
+                            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "scheduleChange")
+                                    .setSmallIcon(R.drawable.ic_time_table_black_24dp)
+                                    .setContentTitle("Uitval")
+                                    .setContentText("Het " + newAppointment.getInt("startTimeSlot") + "e uur val uit.")
+                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            mNotificationManager.notify(ThreadLocalRandom.current().nextInt(1, 500 + 1), mBuilder.build());
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     private void parseResponse(String response) {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int priority = 1;
+        if(hour >= 7 && hour < 17){
+            priority = 2;
+        }
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, "schedule")
                         .setSmallIcon(R.drawable.ic_time_table_black_24dp)
                         .setContentTitle("Rooster")
+                        .setPriority(priority)
                         .setChannelId("schedule");
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         try {
@@ -140,6 +209,8 @@ public class JobUpdate extends JobService {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, d);
         cal.set(Calendar.HOUR_OF_DAY, 1);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         return cal.getTimeInMillis() / 1000;
     }
 
@@ -147,6 +218,8 @@ public class JobUpdate extends JobService {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, d);
         cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         return cal.getTimeInMillis() / 1000;
     }
 }
