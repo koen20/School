@@ -22,7 +22,7 @@ public class BootReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ComponentName serviceComponent = new ComponentName(context, JobUpdate.class);
             JobInfo.Builder builder = new JobInfo.Builder(54, serviceComponent);
-            builder.setPeriodic(3600000);
+            builder.setPeriodic(1600000);
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
             jobScheduler.schedule(builder.build());

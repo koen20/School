@@ -59,7 +59,7 @@ public class DrawerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
-        createNotificationChannel();
+        createNotificationChannel(1);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         requestQueue = Volley.newRequestQueue(this);
@@ -192,11 +192,11 @@ public class DrawerActivity extends AppCompatActivity
         return true;
     }
 
-    private void createNotificationChannel() {
+    private void createNotificationChannel(int priority) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel mChannel = new NotificationChannel("schedule", "Rooster notificatie", NotificationManager.IMPORTANCE_MIN);
+            NotificationChannel mChannel = new NotificationChannel("schedule", "Rooster notificatie", priority);
             mNotificationManager.createNotificationChannel(mChannel);
 
             NotificationManager mNotificationManager2 =

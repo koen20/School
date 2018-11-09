@@ -2,6 +2,7 @@ package com.koenhabets.school;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
@@ -96,20 +97,17 @@ public class JobUpdate extends JobService {
         }
         Date date = new Date();
         long l = prefs.getLong("lastRun", 0);
-        if (date.getTime() - l < interval){
-            Log.i("Job", "Job stopped");
-            disabled = true;
-        }
-
-        if (Objects.equals(weekDay, "Friday") && cal.get(Calendar.HOUR_OF_DAY) > 16) {
-            disabled = true;
-        }
-        if (!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday") && !disabled) {
-            Log.i("Job", "Getting schedule");
-            requestQueue.add(request);
-        } else {
-            NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.cancel(555);
+        if (date.getTime() - l > interval){
+            if (Objects.equals(weekDay, "Friday") && cal.get(Calendar.HOUR_OF_DAY) > 16) {
+                disabled = true;
+            }
+            if (!Objects.equals(weekDay, "Saturday") && !Objects.equals(weekDay, "Sunday") && !disabled) {
+                Log.i("Job", "Getting schedule");
+                requestQueue.add(request);
+            } else {
+                NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(555);
+            }
         }
         return true;
     }
@@ -147,7 +145,7 @@ public class JobUpdate extends JobService {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int priority = 1;
         if(hour >= 7 && hour < 17){
-            priority = 2;
+            priority = 3;
         }
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, "schedule")
