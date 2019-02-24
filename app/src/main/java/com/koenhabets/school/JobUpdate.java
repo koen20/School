@@ -1,17 +1,10 @@
 package com.koenhabets.school;
 
 import android.annotation.TargetApi;
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.job.JobInfo;
 import android.app.job.JobParameters;
-import android.app.job.JobScheduler;
 import android.app.job.JobService;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 
@@ -24,7 +17,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.koenhabets.school.activities.DrawerActivity;
 import com.koenhabets.school.api.AppointmentsRequest;
 import com.koenhabets.school.fragments.TimeTableFragment;
 
@@ -64,8 +56,8 @@ public class JobUpdate extends JobService {
             public void onResponse(String response) {
                 JSONObject jsonObject = TimeTableFragment.readSchedule(getApplicationContext());
                 try {
-                    JSONArray oldAppointments = TimeTableFragment.parseResponse(response, startOfDay, getApplicationContext());
-                    JSONArray appointments = jsonObject.getJSONArray(Long.toString(startOfDay));
+                    JSONArray appointments = TimeTableFragment.parseResponse(response, startOfDay, getApplicationContext());
+                    JSONArray oldAppointments = jsonObject.getJSONArray(Long.toString(startOfDay));
                     checkScheduleChange(appointments, oldAppointments);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -118,6 +110,8 @@ public class JobUpdate extends JobService {
     }
 
     private void checkScheduleChange(JSONArray appointments, JSONArray oldAppointments) throws JSONException {
+        Log.i("old" ,oldAppointments.toString());
+        Log.i("new", appointments.toString());
         for (int i = 0; i < appointments.length(); i++){
             JSONObject newAppointment = appointments.getJSONObject(i);
             for (int k = 0; k < oldAppointments.length(); k++){

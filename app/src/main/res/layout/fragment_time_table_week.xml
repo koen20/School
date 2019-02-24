@@ -1,0 +1,20 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.koenhabets.school.fragments.TimeTableWeekFragment">
+
+    <com.alamkanak.weekview.WeekView
+        android:id="@+id/weekView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:firstDayOfWeek="monday"
+        app:horizontalScrollingEnabled="false"
+        app:numberOfVisibleDays="7"
+        app:showFirstDayOfWeekFirst="true"
+        app:eventPadding="1dp"
+        app:hourHeight="60dp"
+        />
+
+</RelativeLayout>

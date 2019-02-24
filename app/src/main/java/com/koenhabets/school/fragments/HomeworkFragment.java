@@ -106,32 +106,36 @@ public class HomeworkFragment extends Fragment {
         JSONObject jsonObject = new JSONObject(response);
         JSONArray jsonArray = jsonObject.getJSONArray("items");
         for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject task = jsonArray.getJSONObject(i);
-            JSONObject subjectJson = task.getJSONObject("vak");
-            JSONObject studiewijzerItem = task.getJSONObject("studiewijzerItem");
+            try {
+                JSONObject task = jsonArray.getJSONObject(i);
+                JSONObject subjectJson = task.getJSONObject("vak");
+                JSONObject studiewijzerItem = task.getJSONObject("studiewijzerItem");
 
-            String subject = subjectJson.getString("afkorting");
-            String date = task.getString("datumTijd");
-            String description = "";
-            String[] dat = date.split("T");
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-            Date d = null;
-            try {
-                d = format.parse(dat[0]);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            DateFormat format2 = new SimpleDateFormat("EEE dd-MM-yyyy", Locale.ENGLISH);
-            date = format2.format(d);
-            try {
-                description = studiewijzerItem.getString("opdrachtBeschrijving");
+                String subject = subjectJson.getString("afkorting");
+                String date = task.getString("datumTijd");
+                String description = "";
+                String[] dat = date.split("T");
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                Date d = null;
+                try {
+                    d = format.parse(dat[0]);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                DateFormat format2 = new SimpleDateFormat("EEE dd-MM-yyyy", Locale.ENGLISH);
+                date = format2.format(d);
+                try {
+                    description = studiewijzerItem.getString("opdrachtBeschrijving");
+                } catch (JSONException ignored) {
+                }
+                String taskSubject = studiewijzerItem.getString("onderwerp");
+                Date date1 = new Date();
+                if (d.getTime() > date1.getTime()) {
+                    HomeworkItem item = new HomeworkItem(date, subject, description, taskSubject);
+                    homeworkItems.add(item);
+                }
             } catch (JSONException ignored){
-            }
-            String taskSubject = studiewijzerItem.getString("onderwerp");
-            Date date1 = new Date();
-            if(d.getTime() > date1.getTime()) {
-                HomeworkItem item = new HomeworkItem(date, subject, description, taskSubject);
-                homeworkItems.add(item);
+
             }
         }
         adapter.notifyDataSetChanged();

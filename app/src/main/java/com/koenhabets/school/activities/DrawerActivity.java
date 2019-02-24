@@ -42,6 +42,7 @@ import com.koenhabets.school.api.som.RefreshTokenRequest;
 import com.koenhabets.school.fragments.GradeFragment;
 import com.koenhabets.school.fragments.HomeworkFragment;
 import com.koenhabets.school.fragments.TimeTableFragment;
+import com.koenhabets.school.fragments.TimeTableWeekFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +60,7 @@ public class DrawerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
-        createNotificationChannel(1);
+        createNotificationChannel();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         requestQueue = Volley.newRequestQueue(this);
@@ -99,7 +100,7 @@ public class DrawerActivity extends AppCompatActivity
             scheduleJob(getApplicationContext());
         }
 
-        replaceFragment(new TimeTableFragment());
+        replaceFragment(new TimeTableWeekFragment());
     }
 
     private void refreshSomToken() {
@@ -192,11 +193,11 @@ public class DrawerActivity extends AppCompatActivity
         return true;
     }
 
-    private void createNotificationChannel(int priority) {
+    private void createNotificationChannel() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel mChannel = new NotificationChannel("schedule", "Rooster notificatie", priority);
+            NotificationChannel mChannel = new NotificationChannel("schedule", "Rooster notificatie", NotificationManager.IMPORTANCE_MIN);
             mNotificationManager.createNotificationChannel(mChannel);
 
             NotificationManager mNotificationManager2 =
