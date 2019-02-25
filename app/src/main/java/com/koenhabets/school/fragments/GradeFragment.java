@@ -28,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -127,9 +129,9 @@ public class GradeFragment extends Fragment {
                     }
                     GradeItem gradeItem3 = new GradeItem( "", "", "", 0, 1, "", "");
                     gradeItems.add(gradeItem3);
-                    GradeItem gradeItem = new GradeItem((Math.round(verliespunten * 10d) / 10d) + "", "verliespunten", "", 0, 1, "", "");
+                    GradeItem gradeItem = new GradeItem((round(verliespunten, 1)) + "", "verliespunten", "", 0, 1, "", "");
                     gradeItems.add(gradeItem);
-                    GradeItem gradeItem2 = new GradeItem((Math.round(gemiddelde / avarageCount * 10d) / 10d) + "", "gemiddelde", "", 0, 1, "", "");
+                    GradeItem gradeItem2 = new GradeItem(round(gemiddelde / avarageCount, 1) + "", "gemiddelde", "", 0, 1, "", "");
                     gradeItems.add(gradeItem2);
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
@@ -147,6 +149,14 @@ public class GradeFragment extends Fragment {
         requestQueue.add(request2);
 
         return rootView;
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     private void parseResponse(String response) {

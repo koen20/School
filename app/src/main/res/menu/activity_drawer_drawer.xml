@@ -15,6 +15,9 @@
             android:icon="@drawable/ic_action_grades"
             android:title="@string/cijfers" />
         <item
+            android:id="@+id/nav_absence"
+            android:title="Absentie" />
+        <item
             android:id="@+id/signout"
             android:title="@string/sign_out" />
     </group>
