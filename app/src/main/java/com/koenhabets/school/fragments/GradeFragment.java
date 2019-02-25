@@ -61,21 +61,23 @@ public class GradeFragment extends Fragment {
 
                 TextView textView = view.findViewById(R.id.textViewGradeSubject);
                 String subject = textView.getText().toString();
-                JSONObject jsonObject1 = new JSONObject();
-                for (int i = 0; i < jsonArraySubjects.length(); i++) {
-                    try {
-                        JSONObject jsonObject = jsonArraySubjects.getJSONObject(i);
-                        String sub = jsonObject.getString("subject");
-                        if(Objects.equals(subject, sub)){
-                            jsonObject1 = jsonObject;
-                        }
-                    } catch (JSONException ignored){
+                if (!subject.equals("verliespunten") && !subject.equals("gemiddelde")) {
+                    JSONObject jsonObject1 = new JSONObject();
+                    for (int i = 0; i < jsonArraySubjects.length(); i++) {
+                        try {
+                            JSONObject jsonObject = jsonArraySubjects.getJSONObject(i);
+                            String sub = jsonObject.getString("subject");
+                            if (Objects.equals(subject, sub)) {
+                                jsonObject1 = jsonObject;
+                            }
+                        } catch (JSONException ignored) {
 
+                        }
                     }
+                    Intent intent = new Intent(getContext(), GradesActivity.class);
+                    intent.putExtra("jsonObject", jsonObject1.toString());
+                    startActivity(intent);
                 }
-                Intent intent = new Intent(getContext(), GradesActivity.class);
-                intent.putExtra("jsonObject", jsonObject1.toString());
-                startActivity(intent);
             }
         });
 
@@ -104,15 +106,34 @@ public class GradeFragment extends Fragment {
                 Log.i("response", response);
                 parseResponse(response);
                 try {
+                    double verliespunten = 0.0;
+                    double gemiddelde = 0.0;
+                    double avarageCount = 0;
                     for (int d = 0; d < jsonArraySubjects.length(); d++) {
                         JSONObject jsonObject1 = jsonArraySubjects.getJSONObject(d);
                         String subject = jsonObject1.getString("subject");
                         String grade = jsonObject1.getString("grade");
                         GradeItem gradeItem = new GradeItem(grade, subject, "", 0, 1, "", "");
                         gradeItems.add(gradeItem);
+                        try {
+                            double gradeDouble= Double.parseDouble(grade);
+                            if (gradeDouble < 6){
+                                verliespunten = verliespunten + 6 - gradeDouble;
+                            }
+                            avarageCount++;
+                            gemiddelde = gemiddelde + gradeDouble;
+                        } catch (Exception ignored){
+                        }
                     }
+                    GradeItem gradeItem3 = new GradeItem( "", "", "", 0, 1, "", "");
+                    gradeItems.add(gradeItem3);
+                    GradeItem gradeItem = new GradeItem((Math.round(verliespunten * 10d) / 10d) + "", "verliespunten", "", 0, 1, "", "");
+                    gradeItems.add(gradeItem);
+                    GradeItem gradeItem2 = new GradeItem((Math.round(gemiddelde / avarageCount * 10d) / 10d) + "", "gemiddelde", "", 0, 1, "", "");
+                    gradeItems.add(gradeItem2);
                     adapter.notifyDataSetChanged();
-                } catch (JSONException ignored) {
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                 proccessGrades();
 
