@@ -3,6 +3,8 @@ package com.koenhabets.school.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,6 +34,8 @@ public class GradesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grades);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         listView = findViewById(R.id.listView);
         adapter = new GradeDetailsAdapter(getContext(), gradeItems);
         listView.setAdapter(adapter);
@@ -59,5 +63,10 @@ public class GradesActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 }

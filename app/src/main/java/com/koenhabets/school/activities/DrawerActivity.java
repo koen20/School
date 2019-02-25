@@ -173,7 +173,7 @@ public class DrawerActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_time_table) {
-            replaceFragment(new TimeTableFragment());
+            replaceFragment(new TimeTableWeekFragment());
         } else if (id == R.id.nav_homework) {
             replaceFragment(new HomeworkFragment());
         } else if (id == R.id.nav_grades) {

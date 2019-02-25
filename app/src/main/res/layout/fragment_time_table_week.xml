@@ -9,12 +9,15 @@
         android:id="@+id/weekView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:showCurrentTimeFirst="true"
         app:firstDayOfWeek="monday"
-        app:horizontalScrollingEnabled="false"
-        app:numberOfVisibleDays="7"
+        app:horizontalScrollingEnabled="true"
+        app:numberOfVisibleDays="5"
         app:showFirstDayOfWeekFirst="true"
         app:eventPadding="1dp"
         app:hourHeight="60dp"
+        app:eventTextSize="15dp"
+        app:todayBackgroundColor="#f2fcff"
         />
 
 </RelativeLayout>

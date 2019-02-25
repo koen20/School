@@ -38,6 +38,7 @@ public class GradeFragment extends Fragment {
     private ListView listView;
     private GradesAdapter adapter;
     private JSONArray jsonArraySubjects = new JSONArray();
+    private JSONArray jsonArrayGrades = new JSONArray();
 
     public GradeFragment() {
     }
@@ -113,6 +114,7 @@ public class GradeFragment extends Fragment {
                     adapter.notifyDataSetChanged();
                 } catch (JSONException ignored) {
                 }
+                proccessGrades();
 
             }
         }, new Response.ErrorListener() {
@@ -121,7 +123,6 @@ public class GradeFragment extends Fragment {
                 error.printStackTrace();
             }
         });
-
         requestQueue.add(request2);
 
         return rootView;
@@ -135,8 +136,47 @@ public class GradeFragment extends Fragment {
                 JSONObject item = jsonArray.getJSONObject(i);
                 JSONObject subjectJson = item.getJSONObject("vak");
                 String grade = "";
+                if (item.has("resultaatLabelAfkorting")){
+                    grade = item.getString("resultaatLabelAfkorting");
+                }
+                try {
+                    grade = item.getString("resultaat");
+                } catch (Exception ignored) {
+                }
+                String subject = subjectJson.getString("naam");
+                String type = item.getString("type");
+                if (Objects.equals(type, "SEGemiddeldeKolom")) {
+                    //if (!checkSubject(subject, jsonArraySubjects)) {
+                        //if(periode == 4) {
+                            JSONArray jsonArray1 = new JSONArray();
+                            JSONObject subjectItem = new JSONObject();//todo improve grades
+                            subjectItem.put("subject", subject);
+                            subjectItem.put("grade", grade);
+                            subjectItem.put("subjectGrades", jsonArray1);
+                            jsonArraySubjects.put(subjectItem);
+                        //}
+                    //}
+                } else if (Objects.equals(type, "Toetskolom")) {
+                    jsonArrayGrades.put(item);
+                }
+            }
+            Log.i("subjects", jsonArraySubjects.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void proccessGrades(){
+        for(int i = 0; i < jsonArrayGrades.length(); i++){
+            try {
+                JSONObject item = jsonArrayGrades.getJSONObject(i);
+                JSONObject subjectJson = item.getJSONObject("vak");
+                String grade = "";
                 int weight = 0;
                 String description = "";
+                if (item.has("resultaatLabelAfkorting")) {
+                    grade = item.getString("resultaatLabelAfkorting");
+                }
                 try {
                     grade = item.getString("resultaat");
                 } catch (Exception ignored) {
@@ -153,40 +193,25 @@ public class GradeFragment extends Fragment {
                     weight = item.getInt("weging");
                 } catch (Exception ignored) {
                 }
-                if (Objects.equals(type, "RapportGemiddeldeKolom")) {
-                    if (!checkSubject(subject, jsonArraySubjects)) {
-                        if(periode == 4) {
-                            JSONArray jsonArray1 = new JSONArray();
-                            JSONObject subjectItem = new JSONObject();//todo improve grades
-                            subjectItem.put("subject", subject);
-                            subjectItem.put("grade", grade);
-                            subjectItem.put("subjectGrades", jsonArray1);
-                            jsonArraySubjects.put(subjectItem);
-                        }
+                for (int k = 0; k < jsonArraySubjects.length(); k++) {
+                    JSONObject jsonObject1 = jsonArraySubjects.getJSONObject(k);
+                    String sub = jsonObject1.getString("subject");
+                    if (Objects.equals(sub, subject)) {
+                        JSONArray jsonArray1 = jsonObject1.getJSONArray("subjectGrades");
+                        JSONObject gradeItem = new JSONObject();
+                        gradeItem.put("subject", subject);
+                        gradeItem.put("periode", periode);
+                        gradeItem.put("grade", grade);
+                        gradeItem.put("description", description);
+                        gradeItem.put("datumInvoer", datum);
+                        gradeItem.put("weight", weight);
+                        gradeItem.put("type", type);
+                        jsonArray1.put(gradeItem);
                     }
-                } else if (Objects.equals(type, "Toetskolom")) {
-                    for (int k = 0; k < jsonArraySubjects.length(); k++) {
-                        JSONObject jsonObject1 = jsonArraySubjects.getJSONObject(k);
-                        String sub = jsonObject1.getString("subject");
-                        if (Objects.equals(sub, subject)) {
-                            JSONArray jsonArray1 = jsonObject1.getJSONArray("subjectGrades");
-                            JSONObject gradeItem = new JSONObject();
-                            gradeItem.put("subject", subject);
-                            gradeItem.put("periode", periode);
-                            gradeItem.put("grade", grade);
-                            gradeItem.put("description", description);
-                            gradeItem.put("datumInvoer", datum);
-                            gradeItem.put("weight", weight);
-                            gradeItem.put("type", type);
-                            jsonArray1.put(gradeItem);
-                        }
-                    }
-
                 }
+            } catch (Exception e){
+                e.printStackTrace();
             }
-            Log.i("subjects", jsonArraySubjects.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 

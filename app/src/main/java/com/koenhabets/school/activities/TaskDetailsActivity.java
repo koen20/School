@@ -5,6 +5,7 @@ import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.koenhabets.school.R;
@@ -20,6 +21,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_details);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textViewTaskSubject = findViewById(R.id.textViewTaskSubject);
         textViewTaskDescription = findViewById(R.id.textViewTaskDescription);
@@ -35,5 +37,10 @@ public class TaskDetailsActivity extends AppCompatActivity {
             textViewTaskDescription.setText(Html.fromHtml(taskDescription));
         }
 
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 }

@@ -62,7 +62,7 @@ public class TimeTableWeekFragment extends Fragment implements EventClickListene
         mWeekView.setEventLongPressListener(this);
         mWeekView.setEmptyViewLongPressListener(this);
 
-        String res = getAppointments(getStartOfWeek(0), getEndOfWeek(0));
+        String res = getAppointments(getStartOfWeek(0), getEndOfWeek(0) + 604800);
         parseResponse(res, 0);
 
         return rootView;
@@ -101,7 +101,6 @@ public class TimeTableWeekFragment extends Fragment implements EventClickListene
             e.printStackTrace();
         }
 
-        Log.i("jaiosdfje", stringBuilder.toString());
         return stringBuilder.toString();
     }
 
@@ -150,9 +149,12 @@ public class TimeTableWeekFragment extends Fragment implements EventClickListene
                         calStart.setTime(date2);
                         Log.i("dag", calStart.toString());
                         Log.i("aso8efihdj", calStart.get(Calendar.DAY_OF_WEEK) + "");
-                        int color = Color.GRAY;
+                        int color = Color.parseColor("#d3d3d3");
+                        if (lesson.getBoolean("modified")){
+                            color = Color.parseColor("#FF9800");
+                        }
                         if (lesson.getBoolean("cancelled")){
-                            color = Color.RED;
+                            color = Color.parseColor("#E57373");
                         }
                         TimeTableEvent item = new TimeTableEvent(lesson.getInt("id"), subject, location, calStart, calEnd, color);
                         events.add(item);

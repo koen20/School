@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 
@@ -30,18 +31,20 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
-    implementation 'com.github.thellmund:Android-Week-View:3.2.1'
-    //implementation 'com.squareup.okhttp3:okhttp:3.13.1'
+    //implementation 'com.github.thellmund:Android-Week-View:3.2.1'
+    implementation project(":library-debug")
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true
     }
     testImplementation 'junit:junit:4.12'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 repositories {
     maven {
         url 'https://maven.google.com'
     }
+    mavenCentral()
 }
 
 
