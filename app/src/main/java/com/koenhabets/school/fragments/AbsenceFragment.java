@@ -103,7 +103,11 @@ public class AbsenceFragment extends Fragment {
                 if (absenceObject.getJSONObject("absentieReden").has("omschrijving")){
                     omschrijving = absenceObject.getJSONObject("absentieReden").getString("omschrijving");
                 }
-                AbsenceItem absenceItem = new AbsenceItem(omschrijving, beginLesuur, eindLesuur, geoorloofd, opmerkingen, eigenaar);
+                String beginDatumTijd = "";
+                if (absenceObject.has("beginDatumTijd")){
+                    beginDatumTijd = absenceObject.getString("beginDatumTijd");
+                }
+                AbsenceItem absenceItem = new AbsenceItem(omschrijving, beginLesuur, eindLesuur, geoorloofd, opmerkingen, eigenaar, beginDatumTijd);
                 absenceItems.add(absenceItem);
             } catch (JSONException ignored) {
 

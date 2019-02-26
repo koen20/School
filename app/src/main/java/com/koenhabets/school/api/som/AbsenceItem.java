@@ -8,14 +8,16 @@ public class AbsenceItem {
     private boolean geoorloofd;
     private String opmerkingen;
     private String eigenaar;
+    private String beginDatumTijd;
 
-    public AbsenceItem(String omschrijving, int beginLesuur, int eindLesuur, boolean geoorloofd, String opmerkingen, String eigenaar) {
+    public AbsenceItem(String omschrijving, int beginLesuur, int eindLesuur, boolean geoorloofd, String opmerkingen, String eigenaar, String beginDatumTijd) {
         this.omschrijving = omschrijving;
         this.beginLesuur = beginLesuur;
         this.eindLesuur = eindLesuur;
         this.geoorloofd = geoorloofd;
         this.opmerkingen = opmerkingen;
         this.eigenaar = eigenaar;
+        this.beginDatumTijd = beginDatumTijd;
     }
 
     public String getOmschrijving() {
@@ -40,5 +42,9 @@ public class AbsenceItem {
 
     public String getEigenaar() {
         return eigenaar;
+    }
+
+    public String getBeginDatumTijd() {
+        return beginDatumTijd;
     }
 }

@@ -10,7 +10,12 @@ import android.widget.TextView;
 import com.koenhabets.school.R;
 import com.koenhabets.school.api.som.AbsenceItem;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AbsenceAdapter extends ArrayAdapter<AbsenceItem> {
     public AbsenceAdapter(Context context, List<AbsenceItem> absenceItems) {
@@ -29,11 +34,36 @@ public class AbsenceAdapter extends ArrayAdapter<AbsenceItem> {
         TextView textViewOpmerkingen = convertView.findViewById(R.id.textViewOpmerkingen);
         TextView textViewEigenaar = convertView.findViewById(R.id.textViewEigenaar);
         TextView textViewUur = convertView.findViewById(R.id.textViewUur);
+        TextView textViewDate = convertView.findViewById(R.id.textViewAbsenceDate);
+        if (absenceItem.getOpmerkingen().equals("")){
+            textViewOpmerkingen.setVisibility(View.GONE);
+        }
+        if (absenceItem.getBeginLesuur() == 0 && absenceItem.getEindLesuur() == 0){
+            textViewUur.setVisibility(View.INVISIBLE);
+        }
 
-        textViewUur.setText(absenceItem.getBeginLesuur() + "-" + absenceItem.getEindLesuur());
+        String date = absenceItem.getBeginDatumTijd();
+        String[] dat = date.split("T");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date d = null;
+        try {
+            d = format.parse(dat[0]);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        DateFormat format2 = new SimpleDateFormat("EEE dd-MM-yyyy", Locale.ENGLISH);
+        date = format2.format(d);
+        String uurText = "";
+        if (absenceItem.getEindLesuur() == 0){
+            uurText = absenceItem.getBeginLesuur() + "";
+        } else {
+            uurText = absenceItem.getBeginLesuur() + "-" + absenceItem.getEindLesuur();
+        }
+        textViewUur.setText(uurText);
         textViewEigenaar.setText(absenceItem.getEigenaar());
         textViewOmschrijving.setText(absenceItem.getOmschrijving());
         textViewOpmerkingen.setText(absenceItem.getOpmerkingen());
+        textViewDate.setText(date);
 
 
         return convertView;
