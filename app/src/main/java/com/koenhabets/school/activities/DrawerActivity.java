@@ -94,14 +94,18 @@ public class DrawerActivity extends AppCompatActivity
 
         //serviceIntent = new Intent(this, BackgroundUpdateService.class);
         //startService(serviceIntent);
-        SharedPreferences prefs = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
-        prefs.edit().putLong("lastRun", 0).apply();
+        sharedPref.edit().putLong("lastRun", 0).apply();
 
         if (sharedPref.getBoolean("scheduleNotifcation", true)) {
             scheduleJob(getApplicationContext());
         }
 
-        replaceFragment(new TimeTableWeekFragment());
+        if (sharedPref.getBoolean("scheduleWeek", true)) {
+            replaceFragment(new TimeTableWeekFragment());
+        } else {
+            replaceFragment(new TimeTableFragment());
+        }
+        getSupportActionBar().setTitle("Rooster");
     }
 
     private void refreshSomToken() {
@@ -168,18 +172,26 @@ public class DrawerActivity extends AppCompatActivity
         transaction.commit();
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_time_table) {
-            replaceFragment(new TimeTableWeekFragment());
+            getSupportActionBar().setTitle("Rooster");
+            SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
+            if (sharedPref.getBoolean("scheduleWeek", true)) {
+                replaceFragment(new TimeTableWeekFragment());
+            } else {
+                replaceFragment(new TimeTableFragment());
+            }
         } else if (id == R.id.nav_homework) {
+            getSupportActionBar().setTitle("Huiswerk");
             replaceFragment(new HomeworkFragment());
         } else if (id == R.id.nav_grades) {
+            getSupportActionBar().setTitle("Cijfers");
             replaceFragment(new GradeFragment());
         }else if (id == R.id.nav_absence) {
+            getSupportActionBar().setTitle("Afwezigheid");
             replaceFragment(new AbsenceFragment());
         } else if (id == R.id.signout) {
             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);

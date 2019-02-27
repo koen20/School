@@ -16,6 +16,7 @@ import com.koenhabets.school.R;
 
 public class SettingsActivity extends AppCompatActivity {
     private Switch switchSchedule;
+    private Switch switchScheduleLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +24,13 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings2);
 
         switchSchedule = findViewById(R.id.switchSchedule);
+        switchScheduleLayout = findViewById(R.id.switchScheduleLayout);
 
         SharedPreferences sharedPref = this.getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPref.edit();
 
         switchSchedule.setChecked(sharedPref.getBoolean("scheduleNotifcation", true));
+        switchScheduleLayout.setChecked(sharedPref.getBoolean("scheduleWeek", true));
 
         switchSchedule.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -46,6 +49,15 @@ public class SettingsActivity extends AppCompatActivity {
                     notificationManager.cancel(555);
                 }
 
+            }
+        });
+        switchScheduleLayout.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                editor.putBoolean("scheduleWeek", isChecked);
+                editor.apply();
             }
         });
     }
