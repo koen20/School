@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -23,6 +25,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings2);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         switchSchedule = findViewById(R.id.switchSchedule);
         switchScheduleLayout = findViewById(R.id.switchScheduleLayout);
 
@@ -31,6 +35,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         switchSchedule.setChecked(sharedPref.getBoolean("scheduleNotifcation", true));
         switchScheduleLayout.setChecked(sharedPref.getBoolean("scheduleWeek", true));
+
+        getSupportActionBar().setTitle("Instellingen");
 
         switchSchedule.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -68,5 +74,10 @@ public class SettingsActivity extends AppCompatActivity {
         this.startService(alarmIntent);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
         manager.setRepeating(AlarmManager.RTC_WAKEUP, 5000, AlarmManager.INTERVAL_HOUR, pendingIntent);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 }

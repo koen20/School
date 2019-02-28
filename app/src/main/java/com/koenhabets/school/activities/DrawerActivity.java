@@ -42,6 +42,7 @@ import com.koenhabets.school.api.som.RefreshTokenRequest;
 import com.koenhabets.school.fragments.AbsenceFragment;
 import com.koenhabets.school.fragments.GradeFragment;
 import com.koenhabets.school.fragments.HomeworkFragment;
+import com.koenhabets.school.fragments.SpecialFragment;
 import com.koenhabets.school.fragments.TimeTableFragment;
 import com.koenhabets.school.fragments.TimeTableWeekFragment;
 
@@ -193,6 +194,10 @@ public class DrawerActivity extends AppCompatActivity
         }else if (id == R.id.nav_absence) {
             getSupportActionBar().setTitle("Afwezigheid");
             replaceFragment(new AbsenceFragment());
+        }else if (id == R.id.nav_special) {
+            replaceFragment(new SpecialFragment("https://koenhabets.nl/school"));
+        }else if (id == R.id.nav_calendar){
+            replaceFragment(new SpecialFragment("https://www.bernardinuscollege.nl/events/"));
         } else if (id == R.id.signout) {
             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();

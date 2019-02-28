@@ -1,6 +1,8 @@
 package com.koenhabets.school;
 
 
+import android.util.Log;
+
 import com.koenhabets.school.api.som.HomeworkItem;
 
 import java.text.DateFormat;
@@ -28,6 +30,7 @@ public class HomeworkComparator implements Comparator<HomeworkItem> {
         }
         Long a = item1.getTime();
         Long b = item2.getTime();
+        Log.i("dada", a + "asdf" + b);
         return a.compareTo(b);
     }
 }

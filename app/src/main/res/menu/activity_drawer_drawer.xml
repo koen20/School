@@ -15,8 +15,17 @@
             android:icon="@drawable/ic_action_grades"
             android:title="@string/cijfers" />
         <item
+            android:icon="@drawable/ic_person_black_24dp"
             android:id="@+id/nav_absence"
             android:title="Absentie" />
+        <item
+            android:icon="@drawable/ic_time_table_black_24dp"
+            android:id="@+id/nav_special"
+            android:title="SE rooster"/>
+        <item
+            android:icon="@drawable/ic_time_table_black_24dp"
+            android:id="@+id/nav_calendar"
+            android:title="School kalender"/>
         <item
             android:id="@+id/signout"
             android:title="@string/sign_out" />

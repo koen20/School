@@ -1,6 +1,7 @@
 package com.koenhabets.school.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,9 @@ public class AbsenceAdapter extends ArrayAdapter<AbsenceItem> {
         textViewOmschrijving.setText(absenceItem.getOmschrijving());
         textViewOpmerkingen.setText(absenceItem.getOpmerkingen());
         textViewDate.setText(date);
+        if (!absenceItem.isGeoorloofd()){
+            textViewOmschrijving.setTextColor(Color.RED);
+        }
 
 
         return convertView;

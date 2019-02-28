@@ -12,6 +12,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.koenhabets.school.AbsenceComparator;
+import com.koenhabets.school.HomeworkComparator;
 import com.koenhabets.school.R;
 import com.koenhabets.school.adapters.AbsenceAdapter;
 import com.koenhabets.school.api.som.AbsenceItem;
@@ -22,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
@@ -96,8 +99,8 @@ public class AbsenceFragment extends Fragment {
                     opmerkingen = absenceObject.getString("opmerkingen");
                 }
                 boolean geoorloofd = false;
-                if (absenceObject.has("geoorloofd")){
-                    geoorloofd = absenceObject.getBoolean("geoorloofd");
+                if (absenceObject.getJSONObject("absentieReden").has("geoorloofd")){
+                    geoorloofd = absenceObject.getJSONObject("absentieReden").getBoolean("geoorloofd");
                 }
                 String omschrijving = "";
                 if (absenceObject.getJSONObject("absentieReden").has("omschrijving")){
@@ -113,6 +116,8 @@ public class AbsenceFragment extends Fragment {
 
             }
         }
+        AbsenceComparator absenceComparator = new AbsenceComparator();
+        Collections.sort(absenceItems, absenceComparator);
         adapter.notifyDataSetChanged();
     }
 }
