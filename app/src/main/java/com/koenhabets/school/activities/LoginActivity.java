@@ -99,7 +99,9 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View view) {
         final String school = editTextSchool.getText().toString();
-        TokenRequest tokenRequest = new TokenRequest(editTextZermelo.getText().toString(), school, new Response.Listener<String>() {
+        final String accessCode = editTextZermelo.getText().toString().replaceAll("\\s+","");
+
+        TokenRequest tokenRequest = new TokenRequest(accessCode.trim(), school, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 zermeloLogin = true;
