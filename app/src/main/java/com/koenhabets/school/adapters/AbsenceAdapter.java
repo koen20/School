@@ -52,7 +52,7 @@ public class AbsenceAdapter extends ArrayAdapter<AbsenceItem> {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        DateFormat format2 = new SimpleDateFormat("EEE dd-MM-yyyy", Locale.ENGLISH);
+        DateFormat format2 = new SimpleDateFormat("EEE dd-MM-yyyy", Locale.getDefault());
         date = format2.format(d);
         String uurText = "";
         if (absenceItem.getEindLesuur() == 0){

@@ -195,9 +195,11 @@ public class DrawerActivity extends AppCompatActivity
             getSupportActionBar().setTitle("Afwezigheid");
             replaceFragment(new AbsenceFragment());
         }else if (id == R.id.nav_special) {
+            getSupportActionBar().setTitle("SE rooster");
             replaceFragment(new SpecialFragment("https://koenhabets.nl/school"));
         }else if (id == R.id.nav_calendar){
-            replaceFragment(new SpecialFragment("https://www.bernardinuscollege.nl/events/"));
+            getSupportActionBar().setTitle("Jaarplanner");
+            replaceFragment(new SpecialFragment("https://koenhabets.nl/school/jaar-planner"));
         } else if (id == R.id.signout) {
             SharedPreferences sharedPref = getSharedPreferences("com.koenhabets.school", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();

@@ -31,6 +31,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -70,10 +71,12 @@ public class HomeworkFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        Log.i("homework date", date);
-        getHomework(date);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -2);
+        Date date = cal.getTime();
+        String dateString = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
+        Log.i("homework date", dateString);
+        getHomework(dateString);
         return rootView;
     }
 
@@ -122,7 +125,7 @@ public class HomeworkFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                DateFormat format2 = new SimpleDateFormat("EEE dd-MM-yyyy", Locale.ENGLISH);
+                DateFormat format2 = new SimpleDateFormat("EEE dd-MM-yyyy", Locale.getDefault());
                 date = format2.format(d);
                 try {
                     description = studiewijzerItem.getString("opdrachtBeschrijving");

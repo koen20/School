@@ -20,7 +20,6 @@ public class AbsenceComparator implements Comparator<AbsenceItem> {
         String obj2 = absenceItem1.getBeginDatumTijd();
         String[] dat = obj1.split("T");
         String[] dat1 = obj2.split("T");
-        Log.i("datummm", obj1 + "  " + obj2);
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Date item1 = null;
@@ -33,7 +32,6 @@ public class AbsenceComparator implements Comparator<AbsenceItem> {
         }
         Long a = item1.getTime();
         Long b = item2.getTime();
-        Log.i("dada", item1.toString() + "asdf" + b);
         return b.compareTo(a);
     }
 }
